@@ -1,0 +1,82 @@
+# Format Registry Comparison
+
+```js
+display(1 + 2);
+```
+
+<div id="venn"></div>
+
+```js
+import {default as venn} from "venn.js";
+
+var sets = [ {sets: ['A'], size: 12}, 
+             {sets: ['B'], size: 12},
+             {sets: ['A','B'], size: 2}];
+
+```
+
+<style>
+.venntooltip {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  position: absolute;
+  text-align: center;
+  width: 128px;
+  height: 18px;
+  background: #333;
+  color: #ddd;
+  padding: 2px;
+  border: 0px;
+  border-radius: 8px;
+  opacity: 0;
+}
+</style>
+
+
+```js
+var chart = venn.VennDiagram()
+                 .width(500)
+                 .height(500);
+
+var div = d3.select("#venn")
+div.datum(sets).call(chart);
+
+var tooltip = d3.select("body").append("div")
+    .attr("class", "venntooltip");
+
+div.selectAll("path")
+    .style("stroke-opacity", 0)
+    .style("stroke", "#fff")
+    .style("stroke-width", 3)
+
+
+div.selectAll("g")
+    .on("mouseover", function(event, d) {
+        // sort all the areas relative to the current item
+        venn.sortAreas(div, d);
+
+        // Display a tooltip with the current size
+        tooltip.transition().duration(400).style("opacity", .9);
+        tooltip.text(d.size + " things");
+
+        // highlight the current path
+        var selection = d3.select(this).transition("tooltip").duration(400);
+        selection.select("path")
+            .style("fill-opacity", d.sets.length == 1 ? .4 : .1)
+            .style("stroke-opacity", 1);
+    })
+
+    .on("mousemove", function (e) {
+        tooltip
+            .style('top', e.clientY - 10 + 'px')
+            .style('left', e.clientX + 10 + 'px');
+    })
+
+    .on("mouseout", function(event, d) {
+        tooltip.transition().duration(400).style("opacity", 0);
+        var selection = d3.select(this).transition("tooltip").duration(400);
+        selection.select("path")
+            .style("fill-opacity", d.sets.length == 1 ? .25 : .0)
+            .style("stroke-opacity", 0);
+    });
+```
