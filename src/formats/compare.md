@@ -1,10 +1,5 @@
 # Format Registry Comparison
 
-```js
-const overlaps = await FileAttachment("../data/overlaps.json").json();
-
-display(overlaps);
-```
 
 ```js
 import { load_extension_data } from "./registries.js";
@@ -54,7 +49,7 @@ function onHover(set) {
 }
 
 function rerender() {
-  const props = { sets, combinations, width: "900", height: 500, selection, onHover };
+  const props = { sets, combinations, width: "1200", height: 600, selection, onHover };
   render(d3.select("#upset").node(), props);
 }
 
@@ -62,7 +57,7 @@ rerender();
 
 ```
 
-<div id="upset"></div>
+<div id="upset" style="overflow-x:scroll;"></div>
 <pre id="upset_set" style="overflow-x:scroll;"> </pre>
 
 <div id="venn"></div>
@@ -110,8 +105,8 @@ const venn_sets = generate_union_sets(upset_input);
 
 ```js
 var chart = venn.VennDiagram()
-                 .width(500)
-                 .height(500);
+                 .width(400)
+                 .height(400);
 
 var div = d3.select("#venn")
 div.datum(venn_sets).call(chart);
