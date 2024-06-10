@@ -1,5 +1,8 @@
 # Format Registry Comparison
 
+<https://upset.app/>
+
+The most common set visualization approach – Venn Diagrams – doesn’t scale beyond three or four sets. UpSet, in contrast, is well suited for the quantitative analysis of data with more than three sets.
 
 ```js
 import { load_extension_data } from "./registries.js";
@@ -15,6 +18,26 @@ exts.forEach( function (item, index) {
     // Store the registry IDs:
     registries.push(item.reg_id);
 });
+registries.push('uploaded');
+
+```
+
+```js
+const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv", required: true}));
+```
+
+```js
+const uploaded = await csvfile.csv();
+display(uploaded);
+if( uploaded ) {
+    const uploaded_item = { reg_id: 'uploaded', extensions: [] };
+    uploaded.forEach( function (item, index) {
+        var ext = item.extension.trim();
+        ext = `*.${ext}`;
+        uploaded_item.extensions.push(ext);
+    });
+    exts.push(uploaded_item);
+}
 
 ```
 
@@ -23,7 +46,6 @@ const selected = view(Inputs.checkbox(registries, {label: "Registries", value: r
 ```
 
 ```js
-
 // We have Registry_ID -> [extensions] but we need extension -> Registry_IDs
 const ext_to_regs = {};
 exts.forEach( function (item, index) {
