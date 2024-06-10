@@ -1,4 +1,6 @@
 // See https://observablehq.com/framework/config for documentation.
+import MarkdownItFootnote from "markdown-it-footnote";
+
 export default {
   // The project’s title; used in the sidebar and webpage titles.
   title: "DigiPres Workbench",
@@ -10,6 +12,7 @@ export default {
     {
       name: "Formats",
       collapsible : true,
+      open: true,
       pages: [
         { name: "Format Registry Index", path: "/formats/"},
         { name: "Format Diversity Estimation", path: "/formats/species"},
@@ -38,11 +41,15 @@ export default {
   // footer: "Built with Observable.", // what to show in the footer (HTML)
   // footer: ({path}) => `<a href="https://github.com/example/test/blob/main/src${path}.md?plain=1">view source</a>`,
   // sidebar: true, // whether to show the sidebar
-  // toc: true, // whether to show the table of contents
+  toc: true, // whether to show the table of contents
   // pager: true, // whether to show previous & next links in the footer
   // output: "dist", // path to the output root for build
   // search: true, // activate search
   // linkify: true, // convert URLs in Markdown to links
   // typographer: false, // smart quotes and other typographic improvements
   // cleanUrls: true, // drop .html from URLs
+
+  // Add footnote support:
+  markdownIt: (md) => md.use(MarkdownItFootnote),
+
 };

@@ -1,4 +1,4 @@
-# Registry Comparison
+# DigiPres Workbench
 
 This is an [Observable Framework](https://observablehq.com/framework) project. To start the local preview server, run:
 
