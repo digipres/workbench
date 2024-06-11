@@ -10,38 +10,36 @@ import { extractCombinations, render } from 'npm:@upsetjs/bundle';
 
 const exts = await load_extension_data();
 
+const user_profile_key = 'your-profile';
 
-const registries = [];
-const reg_items = {};
+const registries = new Set();
 
 exts.forEach( function (item, index) {
     // Store the registry IDs:
-    registries.push(item.reg_id);
+    registries.add(item.reg_id);
 });
-registries.push('uploaded');
+
 
 ```
 
 ```js
-const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv", required: true}));
+const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv"}));
 ```
 
+
 ```js
-const uploaded = await csvfile.csv();
-display(uploaded);
-if( uploaded ) {
-    const uploaded_item = { reg_id: 'uploaded', extensions: [] };
+if( csvfile != null ) {
+    const uploaded = await csvfile.csv();
+    const uploaded_item = { reg_id: user_profile_key, extensions: [] };
     uploaded.forEach( function (item, index) {
         var ext = item.extension.trim();
         ext = `*.${ext}`;
         uploaded_item.extensions.push(ext);
     });
     exts.push(uploaded_item);
+    registries.add(user_profile_key);
 }
 
-```
-
-```js
 const selected = view(Inputs.checkbox(registries, {label: "Registries", value: registries , format: (x) => x}));
 ```
 
