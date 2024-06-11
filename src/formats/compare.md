@@ -10,20 +10,18 @@ import { extractCombinations, render } from 'npm:@upsetjs/bundle';
 
 const exts = await load_extension_data();
 
-const user_profile_key = 'your-profile';
+const user_profile_key = 'your profile';
 
 const registries = new Set();
-
 exts.forEach( function (item, index) {
     // Store the registry IDs:
     registries.add(item.reg_id);
 });
 
-
 ```
 
 ```js
-const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv"}));
+const csvfile = view(Inputs.file({label: "CSV File", accept: ".csv"}));
 ```
 
 
@@ -32,11 +30,12 @@ if( csvfile != null ) {
     const uploaded = await csvfile.csv();
     const uploaded_item = { reg_id: user_profile_key, extensions: [] };
     uploaded.forEach( function (item, index) {
+        console.log(item);
         var ext = item.extension.trim();
         ext = `*.${ext}`;
         uploaded_item.extensions.push(ext);
     });
-    exts.push(uploaded_item);
+    exts.push(uploaded_item); 
     registries.add(user_profile_key);
 }
 
@@ -71,13 +70,12 @@ for (const [key, value] of Object.entries(ext_to_regs)) {
 
 
 ```js
-const { sets, combinations } = extractCombinations(upset_input, {type: 'distinctIntersection'});
+const { sets, combinations } = extractCombinations(upset_input, {type: 'distinctIntersection', combinationOrder: 'cardinality:desc', setOrder: 'cardinality:desc' });
 //display(combinations)
-
 
 let selection = null;
 
-function onHover(set) {
+function updateSelection(set) {
   selection = set;
   var exts = " ";
   if( set != null ) {
@@ -91,7 +89,7 @@ function onHover(set) {
 }
 
 function rerender() {
-  const props = { sets, combinations, width: "900", height: 600, selection, onHover };
+  const props = { sets, combinations, width: "900", height: 600, selection, onClick:updateSelection};
   render(d3.select("#upset").node(), props);
 }
 
