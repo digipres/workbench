@@ -14,9 +14,9 @@ export default {
       collapsible : true,
       open: true,
       pages: [
-        { name: "Format Registry Index", path: "/formats/"},
-        { name: "Format Diversity Estimation", path: "/formats/species"},
-        { name: "Registry Comparison", path: "/formats/compare"}
+        { name: "Introduction", path: "/formats/"},
+        { name: "Comparing All Registries", path: "/formats/compare"},
+        { name: "Format Diversity Estimate", path: "/formats/species"}
       ]
     },
     {
