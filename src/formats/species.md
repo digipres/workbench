@@ -5,7 +5,7 @@ This analysis uses data from the various registries to build a [Species Accumula
 
 ## Method
 
-Different format registries use different levels of definitions of format for their records, so we need to choose some common granularity so that we can combine the data.
+For this analysis, we compare and combine registry data by reducing everything down to file extensions, as outlined [here](./#file-extensions). The assumptions and caveats outlined on that page should be kept in mind when analysing these results.
 
 ```js
 import {load_extension_data} from "./registries.js";
