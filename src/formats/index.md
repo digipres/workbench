@@ -6,7 +6,9 @@
 These pages present various tools and analyses based on the content of the following sources of format information (of 'format registries').
 
 ```js
-const sources = FileAttachment("../data/format-sources.csv").csv({typed: true});
+// Read the source data from the first sheet of this XLSX file:
+const workbook = await FileAttachment("../data/format-sources.xlsx").xlsx();
+const sources = workbook.sheet(workbook.sheetNames[0], {headers: true});
 ```
 
 ```js
@@ -46,19 +48,24 @@ exts.forEach( function (item, index) {
     reg_items[item.reg_id] = item;
 });
 
+// Set up the plot:
 const exts_chart = Plot.plot({
     style: "overflow: visible;",
-    y: {grid: true, label: null },
-    x: {grid: true, label: "Total Number of File Extensions in Format Registry Records" },
-    color: {legend: false, label: "Registry ID"},
+    x: {grid: true, label: "Registry ID" },
+    y: {grid: true, label: "No. of File Extensions" },
+    // Using the same label as 'x' stops both being shown in the tooltip:
+    color: {legend: false, label: "Registry ID" },
     marks: [
-        Plot.ruleX([0]),
-        Plot.rectX(exts, {x: "num_extensions", y: "reg_id", fill: "reg_id", sort: { y: "x" } }),
-        Plot.text(exts, {x: "num_extensions", y: "reg_id", text: (d) => d.num_extensions, dx:2, textAnchor: "start"})
+        Plot.ruleY([0]),
+        Plot.rectY(exts, {x: "reg_id", y: "num_extensions", fill: "reg_id", sort: { x: "y" }, tip: true }),
+        Plot.text(exts, {x: "reg_id", y: "num_extensions", text: (d) => d.num_extensions, dy:-8, textAnchor: "middle"}),
+        Plot.axisY({label: "Total Number of File Extensions in Format Registry Records"}),
     ]
 });
 display(exts_chart);
 ```
+
+
 
 Even in this case, different registries handle things in slightly different ways. Most just specify extensions as simple strings, where for example `xmpl` would mean any file that ended in `.xmpl` or indeed `.XMPL` or `.Xmpl`. In contract, Apache Tika's format registry is based on the [Shared MIME-info Database specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html) which uses the [glob syntax](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm45387609262192). i.e. like `*.xmpl`, but also like `*-gz`. Therefore, when comparing sets of extensions, we reduce them all to lower case and shift them to the `*.ext` glob syntax.
 

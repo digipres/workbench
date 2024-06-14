@@ -20,6 +20,26 @@ exts.forEach( function (item, index) {
 
 ```
 
+
+
+```js
+const exts_chart = Plot.plot({
+    style: "overflow: visible;",
+    y: {grid: true, label: null },
+    x: {grid: true, label: "Total Number of File Extensions in Format Registry Records" },
+    color: {legend: false, label: "Registry ID"},
+    marks: [
+        Plot.ruleX([0]),
+        Plot.rectX(exts, {x: "num_extensions", y: "reg_id", fill: "reg_id", sort: { y: "x" } }),
+        Plot.text(exts, {x: "num_extensions", y: "reg_id", text: (d) => d.num_extensions, dx:2, textAnchor: "start"})
+    ]
+});
+
+display(exts_chart);
+```
+
+
+
 ```js
 const csvfile = view(Inputs.file({label: "CSV File", accept: ".csv"}));
 ```
@@ -39,7 +59,9 @@ if( csvfile != null ) {
     registries.add(user_profile_key);
 }
 
-const selected = view(Inputs.checkbox(registries, {label: "Registries", value: registries , format: (x) => x}));
+const selection = [ "pronom", "fdd", "wikidata", "ffw" ]; // use registries to select all initially
+
+const selector = view(Inputs.checkbox(registries, {label: "Registries", value: selection , format: (x) => x}));
 ```
 
 ```js
@@ -47,7 +69,7 @@ const selected = view(Inputs.checkbox(registries, {label: "Registries", value: r
 const ext_to_regs = {};
 exts.forEach( function (item, index) {
     // Filter down the list, to the selected ones, but keep the order consistent:
-    if( selected.includes(item.reg_id) ) {
+    if( selector.includes(item.reg_id) ) {
     // Go through the extensions for this registry:
     item.extensions.forEach( function (ext, ext_index) {
         if( !(ext in ext_to_regs) ) {
@@ -89,7 +111,7 @@ function updateSelection(set) {
 }
 
 function rerender() {
-  const props = { sets, combinations, width: "900", height: 600, selection, onClick:updateSelection};
+  const props = { sets, combinations, width: 640, height: 600, selection, onClick:updateSelection};
   render(d3.select("#upset").node(), props);
 }
 

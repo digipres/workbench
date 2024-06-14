@@ -1,8 +1,0 @@
-key,short_name,title,homepage
-fdd,LoC FDD,Library of Congress Format Descriptions,https://www.loc.gov/preservation/digital/formats/
-ffw,FFW,'Just Solve The Problem' File Format Wiki by ArchiveTeam,http://fileformats.archiveteam.org/
-pronom,PRONOM,PRONOM Format Registry by the National Archives (UK),https://www.nationalarchives.gov.uk/PRONOM/
-tika,Apache Tika,The Apache Tika Format Identification & Metadata Extraction Tool,https://tika.apache.org/
-trid,TRiD,The TRiD Format Identification Tool,https://mark0.net/soft-trid-e.html
-githublinguist,GitHub Linguist,Linguist Format Identification Tool by GitHub,https://github.com/github-linguist/linguist
-wikidata,WikiData,The WikiData Informatics Project,https://www.wikidata.org/wiki/Wikidata:WikiProject_Informatics

@@ -29,22 +29,6 @@ exts.forEach( function (item, index) {
 
 ```
 
-```js
-const exts_chart = Plot.plot({
-    style: "overflow: visible;",
-    y: {grid: true, label: null },
-    x: {grid: true, label: "Total Number of File Extensions in Format Registry Records" },
-    color: {legend: false, label: "Registry ID"},
-    marks: [
-        Plot.ruleX([0]),
-        Plot.rectX(exts, {x: "num_extensions", y: "reg_id", fill: "reg_id", sort: { y: "x" } }),
-        Plot.text(exts, {x: "num_extensions", y: "reg_id", text: (d) => d.num_extensions, dx:2, textAnchor: "start"})
-    ]
-});
-
-display(exts_chart);
-```
-
 That
 ```js
 const weirdness_chart = Plot.plot({
