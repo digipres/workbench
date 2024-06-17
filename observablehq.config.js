@@ -20,11 +20,12 @@ export default {
       ]
     },
     {
-      name: "Examples",
-      open: false,
+      name: "Publications",
+      open: true,
       pages: [
-        {name: "Dashboard", path: "/example-dashboard"},
-        {name: "Report", path: "/example-report"}
+        {name: "Introduction", path: "/publications/"},
+        //{name: "Dashboard", path: "/example-dashboard"},
+        //{name: "Report", path: "/example-report"}
       ]
     }
   ],
@@ -36,7 +37,7 @@ export default {
   root: "src",
 
   // Some additional configuration options and their defaults:
-  // theme: "default", // try "light", "dark", "slate", etc.
+  theme: "light", // try "light", "dark", "slate", etc.
   // header: "", // what to show in the header (HTML)
   // footer: "Built with Observable.", // what to show in the footer (HTML)
   // footer: ({path}) => `<a href="https://github.com/example/test/blob/main/src${path}.md?plain=1">view source</a>`,

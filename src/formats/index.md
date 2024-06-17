@@ -1,4 +1,4 @@
-# Introduction
+# Finding Formats
 ## Analysing & Comparing Format Registries
 
 ## Introduction
@@ -12,6 +12,7 @@ const sources = workbook.sheet(workbook.sheetNames[0], {headers: true});
 ```
 
 ```js
+// Using a JavaScript approach so HTML can be emitted while looping over data:
 htl.html`
 <table>
 <thead>
