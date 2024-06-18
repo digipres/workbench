@@ -1,4 +1,5 @@
 import {FileAttachment} from "npm:@observablehq/stdlib";
+import * as Plot from "npm:@observablehq/plot";
 import 'npm:core-js/actual/set';
 
 export const load_extension_data = async function() {
@@ -37,3 +38,32 @@ export const load_extension_data = async function() {
   
     return exts;
 };
+
+
+/* 
+ * re-usable plot generation as this appears on multiple pages
+ */
+export const generate_exts_chart = async function(width) {
+    const exts = await load_extension_data();
+
+    // Set up the plot:
+    const exts_chart = Plot.plot({
+        title: "Comparing Format Registries",
+        subtitle: "Based on counting file extensions",
+        style: "overflow: visible;",
+        width,
+        marginBottom: 50,
+        x: {grid: true, label: "Registry ID", tickRotate: -30 },
+        y: {grid: true, label: "No. of File Extensions" },
+        // Using the same label as 'x' stops both being shown in the tooltip:
+        color: {legend: false, label: "Registry ID" },
+        marks: [
+            Plot.ruleY([0]),
+            Plot.rectY(exts, {x: "reg_id", y: "num_extensions", fill: "reg_id", sort: { x: "y" }, tip: true }),
+            Plot.text(exts, {x: "reg_id", y: "num_extensions", text: (d) => d.num_extensions, dy:-8, textAnchor: "middle"}),
+            Plot.axisY({label: "Total Number of File Extensions"}),
+        ]
+    });
+
+    return exts_chart;
+}

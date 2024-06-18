@@ -15,7 +15,9 @@ export default {
       open: true,
       pages: [
         { name: "Introduction", path: "/formats/"},
-        { name: "Comparing All Registries", path: "/formats/compare"},
+        { name: "About the Registries", path: "/formats/about"},
+        { name: "Combining Registries", path: "/formats/combine"},
+        { name: "Comparing Registries", path: "/formats/compare"},
         { name: "Format Diversity Estimate", path: "/formats/species"}
       ]
     },
