@@ -13,10 +13,10 @@ The simplest way to make this work is to discard the finer-grained information a
 
 ```js
 import { generate_exts_chart } from "./registries.js";
-const exts_chart = generate_exts_chart();
-display(await exts_chart);
 ```
-
+<div class="card">
+  ${ resize((width) => generate_exts_chart(width) ) }
+</div>
 
 Even in this case, different registries handle things in slightly different ways. Most just specify extensions as simple strings, where for example `xmpl` would mean any file that ended in `.xmpl` or indeed `.XMPL` or `.Xmpl`. In contract, Apache Tika's format registry is based on the [Shared MIME-info Database specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html) which uses the [glob syntax](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm45387609262192). i.e. like `*.xmpl`, but also like `*-gz`. Therefore, when comparing sets of extensions, we reduce them all to lower case and shift them to the `*.ext` glob syntax.
 
@@ -50,6 +50,10 @@ Note that this does not apply when the format extensions come from user-generate
 
 
 ```js
+import { load_extension_data } from "./registries.js";
+
+const exts = await load_extension_data();
+
 // Filter down the list, to the selected ones, but keep the order consistent:
 const exts_filtered = [];
 

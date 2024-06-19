@@ -6,7 +6,7 @@ toc: true
 
 ## Tools and technical resources for practical digital preservation
 
-Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu at the side or the plots and links below to get started.
+Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
 
 ```js
 import { generate_exts_chart } from "./formats/registries.js";
@@ -39,7 +39,7 @@ const penguins = FileAttachment("penguins.csv").csv({typed: true});
 
 ## Next steps
 
-Here are some ideas of things you could try…
+Here are some things you could try...
 
 <div class="grid grid-cols-4">
   <div class="card">
@@ -57,11 +57,11 @@ Here are some ideas of things you could try…
 
 The DigiPres Workbench was inspired by:
 
-- The [GLAM Workbench](https://glam-workbench.net/) by [Tim Sherratt](https://timsherratt.au/) 
-- [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/) by [Ashley Blewer](https://ashleyblewer.com/)
-- [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/) and [Demystify-lite](https://ross-spencer.github.io/demystify-lite/) by [Ross Spencer](http://exponentialdecay.co.uk/) 
-- [Datasette](https://datasette.io/) and [Datasette-lite](https://lite.datasette.io/)
- by [Simon Willison](https://simonwillison.net/)
+- The [GLAM Workbench](https://glam-workbench.net/) by [Tim Sherratt](https://timsherratt.au/).
+- [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/) by [Ashley Blewer](https://ashleyblewer.com/).
+- [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/) and [Demystify-lite](https://ross-spencer.github.io/demystify-lite/) by [Ross Spencer](http://exponentialdecay.co.uk/).
+- [Datasette](https://datasette.io/) and [Datasette-lite](https://lite.datasette.io/).
+ by [Simon Willison](https://simonwillison.net/).
  - The [Observable Framework](https://observablehq.com/framework/), which is the open source engine used to create and maintain this site.
 
 ---

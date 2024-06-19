@@ -28,6 +28,7 @@ const exts_chart = Plot.plot({
     y: {grid: true, label: null },
     x: {grid: true, label: "Total Number of File Extensions in Format Registry Records" },
     color: {legend: false, label: "Registry ID"},
+    marginLeft: 70,
     marks: [
         Plot.ruleX([0]),
         Plot.rectX(exts, {x: "num_extensions", y: "reg_id", fill: "reg_id", sort: { y: "x" } }),
@@ -35,8 +36,11 @@ const exts_chart = Plot.plot({
     ]
 });
 
-display(exts_chart);
 ```
+
+<div class="card">
+${exts_chart}
+</div>
 
 
 
@@ -110,12 +114,39 @@ function updateSelection(set) {
   rerender();
 }
 
+function getPreferredColorScheme() {
+  if (window.matchMedia) {
+    if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+      return 'dark';
+    } else {
+      return 'light';
+    }
+  }
+  return 'light';
+}
+
 function rerender() {
-  const props = { sets, combinations, width: 640, height: 600, selection, onClick:updateSelection};
+  var theme = 'light';
+  // Support switching dark/light mode:
+  if(window.matchMedia){
+    theme = getPreferredColorScheme();
+  }
+  const props = { 
+    sets, combinations, 
+    width: 640, height: 600, 
+    selection, onClick:updateSelection,
+    theme
+    };
   render(d3.select("#upset").node(), props);
 }
 
 rerender();
+
+// Make sure we update if the light/dark mode is switched:
+if(window.matchMedia){
+  var colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  colorSchemeQuery.addEventListener('change', rerender);
+}
 
 ```
 
