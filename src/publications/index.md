@@ -7,7 +7,7 @@ As part of the [Registries of Good Practice project](https://github.com/digipres
 
 This page provides an initial proof-of-concept showing how analysis and visualisation tools can be applied to that database, and used to generate visualisations that help us understand and explore the data.  It runs in your browser, downloads the database, and generates graphs based on SQL queries.
 
-Note that at the current time, the index only contains the iPRES conference proceedings dataset.
+<div class="note">Note that at the current time, the index only contains the iPRES conference proceedings dataset.</div>
 
 ```js
 import {SQLiteDatabaseClient} from "npm:@observablehq/sqlite";
@@ -30,11 +30,16 @@ const pubs = db.sql`SELECT year, type, COUNT(*) as count FROM publications GROUP
 
 The results can then be presented as a stacked bar chart.
 
-```js
-Plot.barY(
-  pubs, {x: "year", y: "count", fill: "type", tip: true }
-).plot({ x: { tickFormat: (d) => d.toString() } })
-```
+<div class="grid grid-cols-1">
+${ resize((width) => Plot.plot({
+  x: { tickFormat: (d) => d.toString() },
+  width,
+  marks: [
+    Plot.barY(pubs, {x: "year", y: "count", fill: "type", tip: true })
+  ] 
+})
+)}
+</div>
 
 ## iPRES Keywords Over Time
 
@@ -49,14 +54,15 @@ const auths = db.sql`SELECT year, keyword.value as keyword, COUNT(*) as count FR
 // Similar JSON_EACH(publications.creators) creator, 
 ```
 
-The data can then be visualised as an [ordinal scatterplot](https://observablehq.com/@observablehq/plot-ordinal-scatterplot), where ongoing usage should show up as horizontal sequences of dots, with the dot size indicating the number of papers using that keyword in that year:
+The data can then be visualised as an [ordinal scatterplot](https://observablehq.com/@observablehq/plot-ordinal-scatterplot), where ongoing usage should show up as horizontal sequences of dots, with the dot size indicating the number of papers using that keyword in that year.
 
+<div class="tip">The text is quite small on this visualisation so you might find it needs a large screen.</div>
 
-```js
+<div class="grid grid-cols-1">${
 Plot.dot(
   auths, {x: "year", y: "keyword", r: "count", tip: true }
 ).plot({ marginLeft: 200, x: { tickFormat: (d) => d.toString() } })
-```
+}</div>
 
 This plot vividly illustrates that publication keywords have been used in different ways over the years.
 
@@ -67,7 +73,9 @@ We can also pull out the authors, and make a graph where the size of each node i
 
 This requires quite a lot of manipulation of the raw data, but the network can then be displayed using a slightly modified version of a [widely-used network visualisation method](https://observablehq.com/framework/lib/d3).
 
-If you carefully hover your mouse pointer over each dot, the author name should appear as a tool-tip.
+<div class="warning">This isn't easy to interact with on a mobile device. Try using a laptop or desktop computer.</div>
+
+<div class="tip">Scroll down and press the <b>Go!</b> button to start the visualisation. When the network is visible, you can hover your mouse pointer over any node inside the dashed border and it will show the author's name and publication count.</div>
 
 ```js
 // Get the creator strings, and parse them into lists of creators:
@@ -83,12 +91,13 @@ const node_index = Object.keys(nodes_counter);
 //display(node_index);
 
 // Assemble an index of nodes including the counts:
-const nodes = [];
+const node_list = [];
 for ( var i = 0; i < node_index.length; i++ ) {
-  nodes.push( { 
+  node_list.push( { 
     id: i,
     name: node_index[i],
-    count: nodes_counter[node_index[i]]
+    count: nodes_counter[node_index[i]],
+    group: 0
   });
 }
 //display(nodes);
@@ -132,10 +141,9 @@ for (var i = 0; i < single_links.length; i++)
 //display(links);
 
 const data = {
-  nodes: nodes,
+  nodes: node_list,
   links: links
 }
-
 ```
 
 ```js
@@ -147,11 +155,13 @@ const color = d3.scaleOrdinal(d3.schemeObservable10);
 const links = data.links.map((d) => Object.create(d));
 const nodes = data.nodes.map((d) => Object.create(d));
 
+// Set up the graph
 const simulation = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).id((d) => d.id))
     .force("charge", d3.forceManyBody().strength(-5))
     .force("center", d3.forceCenter(width / 2, height / 2))
-    .on("tick", ticked);
+    .on("tick", ticked)
+    .stop();
 
 const svg = d3.create("svg")
     .attr("width", width)
@@ -161,19 +171,19 @@ const svg = d3.create("svg")
 
 const link = svg.append("g")
     .attr("stroke", "var(--theme-foreground-faint)")
-    .attr("stroke-opacity", 0.6)
-  .selectAll("line")
-  .data(links)
-  .join("line")
+    .attr("stroke-opacity", 0.3)
+    .selectAll("line")
+    .data(links)
+    .join("line")
     .attr("stroke-width", (d) => d.value);
-
+  
 const node = svg.append("g")
     .attr("stroke", "var(--theme-background)")
-    .attr("stroke-width", 1.5)
-  .selectAll("circle")
-  .data(nodes)
-  .join("circle")
-    .attr("r", (d) => Math.sqrt(d.count) )
+    .attr("stroke-width", 1.0)
+    .selectAll("circle")
+    .data(nodes)
+    .join("circle")
+    .attr("r", (d) => 1 + Math.sqrt(d.count) )
     .attr("fill", (d) => color(d.group))
     .call(drag(simulation));
 
@@ -182,17 +192,19 @@ node.append("title")
 
 function ticked() {
   link
-      .attr("x1", (d) => d.source.x)
-      .attr("y1", (d) => d.source.y)
-      .attr("x2", (d) => d.target.x)
-      .attr("y2", (d) => d.target.y);
+    .attr("x1", (d) => d.source.x)
+    .attr("y1", (d) => d.source.y)
+    .attr("x2", (d) => d.target.x)
+    .attr("y2", (d) => d.target.y);
 
   node
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y);
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y);
 }
 
-display(svg.node());
+function restarter() {
+  simulation.restart();
+}
 ```
 
 ```js
@@ -220,4 +232,28 @@ function drag(simulation) {
       .on("drag", dragged)
       .on("end", dragended);
 }
+```
+<!-- This is, quite accidentally, the most awesome effect ever! -->
+```js
+const graph = view(Inputs.button("Go!", {value: null, reduce: () => restarter() } ));
+```
+
+<div class="grid grid-cols-1" style="border: 1.5px #ccc dashed;">
+${svg.node()}
+</div>
+
+```js
+const highlight = view(Inputs.text({ label: "Highlight", placeholder: "e.g. an author name."}));
+```
+
+```js
+// Highlight some items:
+d3.selectAll("circle").attr("fill", (d) => {
+  console.log(d);
+  if( highlight.length > 0 && d.name && d.name.toLowerCase().indexOf(highlight.toLowerCase()) >= 0 ) {
+    return 'red';
+  } else {
+    return color(d.group)
+  }
+  });
 ```

@@ -25,9 +25,9 @@ import { generate_exts_chart } from "./formats/registries.js";
       ]
     }))
   }</div>
-  <div class="card">${
+  <a href="./formats/" style="--theme-foreground-focus: #000;"><div class="card" style="margin-top: 0;">${
     resize((width) => generate_exts_chart(width) )
-  }</div>
+  }</div></a>
 </div>
 
 ```js
