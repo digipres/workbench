@@ -18,9 +18,8 @@ Here you'll find a collection of tools, reports, visualisations and tutorials to
 
 ```js
 const db = await FileAttachment("data/registries.db").sqlite();
-const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM format GROUP BY registry_id, year;`;
+const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats WHERE registry_id == 'pronom' GROUP BY year ORDER BY year;`;
 ```
-
 
 ```js
 import { generate_exts_chart } from "./formats/registries.js";
@@ -29,14 +28,14 @@ import { generate_exts_chart } from "./formats/registries.js";
 <div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
   <div class="card">${
  resize((width) => Plot.plot({
-  title: "Registry Records by Year of Creation",
-  subtitle: "Cumulative growth over time",
+  title: "PRONOM Registry Records Over Time",
+  subtitle: "Cumulative growth by year of creation",
   y: { tickFormat: (d) => d.toString() },
-  color: { legend: true },
+  color: { legend: false },
   width,
-  marginTop: -10,
+  marginTop: 0,
   marginLeft: 50,
-  height: 380,
+  height: 420,
   marks: [
     Plot.barX(fr, 
         Plot.mapX("cumsum", {x: "count", y: "year", fill:  "registry_id", tip: true, sort: { y: "-y" } })

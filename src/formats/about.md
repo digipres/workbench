@@ -10,6 +10,10 @@ const db = FileAttachment("../data/registries.db").sqlite();
 const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM format GROUP BY registry_id, year;`;
 ```
 
+```
+const fr = db.sql`SELECT CAST(STRFTIME("%Y", created) AS INT) AS year, genre.value as genre, COUNT(*) as count FROM formats, JSON_EACH(formats.genres) genre WHERE registry_id == 'pronom' GROUP BY genre.value, year ORDER BY year;`;
+```
+
 <div class="grid grid-cols-1">
 ${ resize((width) => Plot.plot({
   x: { tickFormat: (d) => d.toString() },
