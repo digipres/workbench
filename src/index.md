@@ -8,7 +8,7 @@ toc: true
 
 Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
 
-<div class="tip">Well done! You found my 'secret' project! Feel free to look around, but please don't publicise this site or post about it until it's ready... The launch will be at iPRES 2024, which isn't that far away. So until then... <br>
+<div class="caution" label="⚠️ Confound it all! ⚠️">You've found my 'secret' project! Feel free to look around, but please don't publicise this site or post about it until it's ready... The launch will be at <a href="https://ipres2024.pubpub.org/">iPRES 2024</a>, which isn't that far away. So until then... <br>
 <br>
 <img src="./kiskis.gif" width="100%" title="...keep it secret...keep it safe...">
 <br>
@@ -25,10 +25,10 @@ const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS ye
 import { generate_exts_chart } from "./formats/registries.js";
 ```
 
-<div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <a href="./formats/about" style="--theme-foreground-focus: #000;"><div class="card" style="margin-top: 0;">${
+<div class="grid grid-cols-2" style="grid-auto-rows: auto;">
+  <div class="card">${
  resize((width) => Plot.plot({
-  title: "PRONOM Registry Records Over Time",
+  title: 'PRONOM Registry Records Over Time',
   subtitle: "Cumulative growth by year of creation",
   y: { tickFormat: (d) => d.toString() },
   color: { legend: false },
@@ -43,16 +43,16 @@ import { generate_exts_chart } from "./formats/registries.js";
   ] 
 })
 )
-  }</div>
-  <a href="./formats/" style="--theme-foreground-focus: #000;"><div class="card" style="margin-top: 0;">${
+  }
+  <p style="text-align: center"><a href="./formats/about">Click here for more statistics from format registries...</a></p>
+  </div>
+  <div class="card">${
     resize((width) => generate_exts_chart(width) )
-  }</div></a>
+  }
+  <p style="text-align: center"><a href="./formats/">Click here for more information about formats...</a></p>
+  </div>
 </div>
 
-```js
-const aapl = FileAttachment("aapl.csv").csv({typed: true});
-const penguins = FileAttachment("penguins.csv").csv({typed: true});
-```
 
 ---
 
@@ -63,6 +63,9 @@ Here are some things you could try...
 <div class="grid grid-cols-4">
   <div class="card">
     <a href="./formats/">Analyse and compare different data format registries</a>, to find out which ones might help you understand your digital collections.
+  </div>
+  <div class="card">
+    Read about how a <a href="./formats/species">ecological model of formats as different species</a> allows us to use the gaps between format registries to estimate the total number of data formats across the digital world.
   </div>
   <div class="card">
     Understand the <a href="./publications/">data behind the index of publications related to digital preservation</a>, and the networks beneath.

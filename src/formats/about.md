@@ -10,7 +10,10 @@ const db = FileAttachment("../data/registries.db").sqlite();
 const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats GROUP BY registry_id, year;`;
 ```
 
+<div class="card">
 ${ resize((width) => Plot.plot({
+  title: "Registry Records By Year Of Creation",
+  subtitle: "Note that this does not reflect when records are updated",
   x: { tickFormat: (d) => d.toString() },
   color: { legend: true },
   width,
@@ -19,7 +22,9 @@ ${ resize((width) => Plot.plot({
   ] 
 })
 )}
+</div>
 
+Note detailed analysis possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/workbench/main/src/data/registries.db#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id&_facet_array=genres&_facet_array=extensions&_facet_array=iana_media_types)
 
 ## PRONOM
 
@@ -34,7 +39,10 @@ ${ resize((width) => Plot.plot({
 const pr = db.sql`SELECT genre.value as genre, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats, JSON_EACH(formats.genres) genre WHERE registry_id == 'pronom' GROUP BY genre.value, year ORDER BY year;`;
 ```
 
+<div class="card">
 ${ resize((width) => Plot.plot({
+  title: "PRONOM Records By Year of Creation & Genre",
+  subtitle: "Note that this does not reflect when records are updated",
   x: { tickFormat: (d) => d.toString() },
   color: { legend: true },
   width,
@@ -43,6 +51,7 @@ ${ resize((width) => Plot.plot({
   ] 
 })
 )}
+</div>
 
 
 ## WikiData
