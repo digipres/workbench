@@ -183,7 +183,7 @@ const node = svg.append("g")
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", (d) => 1 + Math.sqrt(d.count) )
+    .attr("r", (d) => 1 + d.count )
     .attr("fill", (d) => color(d.group))
     .call(drag(simulation));
 
@@ -234,16 +234,16 @@ function drag(simulation) {
 }
 ```
 <!-- This is, quite accidentally, the most awesome effect ever! -->
-```js
-const graph = view(Inputs.button("Go!", {value: null, reduce: () => restarter() } ));
-```
-
 <div class="grid grid-cols-1" style="border: 1.5px #ccc dashed;">
 ${svg.node()}
 </div>
 
 ```js
-const highlight = view(Inputs.text({ label: "Highlight", placeholder: "e.g. an author name."}));
+const graph = view(Inputs.button("Go!", {label: "View the network", value: null, reduce: () => restarter() } ));
+```
+
+```js
+const highlight = view(Inputs.text({ label: "Highlight by name", placeholder:"any part of someone's name"}));
 ```
 
 ```js

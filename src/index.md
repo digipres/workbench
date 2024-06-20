@@ -8,6 +8,14 @@ toc: true
 
 Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
 
+<div class="tip">Well done! You found my 'secret' project! Feel free to look around, but please don't publicise this site or post about it until it's ready... The launch will be at iPRES 2024, which isn't that far away. So until then... <br>
+<br>
+<img src="./kiskis.gif" width="100%" title="...keep it secret...keep it safe...">
+<br>
+<br>Thank you!
+<br>Andy
+</div>
+
 ```js
 import { generate_exts_chart } from "./formats/registries.js";
 ```
