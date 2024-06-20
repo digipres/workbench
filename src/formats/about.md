@@ -2,6 +2,26 @@
 ## Where does the format data come from?
 
 
+```js
+const db = FileAttachment("../data/registries.db").sqlite();
+```
+
+```js
+const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM format GROUP BY registry_id, year;`;
+```
+
+<div class="grid grid-cols-1">
+${ resize((width) => Plot.plot({
+  x: { tickFormat: (d) => d.toString() },
+  color: { legend: true },
+  width,
+  marks: [
+    Plot.barY(fr, {x: "year", y: "count", fill: "registry_id", tip: true })
+  ] 
+})
+)}
+</div>
+
 
 ## PRONOM
 

@@ -17,21 +17,33 @@ Here you'll find a collection of tools, reports, visualisations and tutorials to
 </div>
 
 ```js
+const db = await FileAttachment("data/registries.db").sqlite();
+const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM format GROUP BY registry_id, year;`;
+```
+
+
+```js
 import { generate_exts_chart } from "./formats/registries.js";
 ```
 
 <div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
   <div class="card">${
-    resize((width) => Plot.plot({
-      title: "Your awesomeness over time 🚀",
-      subtitle: "Up and to the right!",
-      width,
-      y: {grid: true, label: "Awesomeness"},
-      marks: [
-        Plot.ruleY([0]),
-        Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ]
-    }))
+ resize((width) => Plot.plot({
+  title: "Registry Records by Year of Creation",
+  subtitle: "Cumulative growth over time",
+  y: { tickFormat: (d) => d.toString() },
+  color: { legend: true },
+  width,
+  marginTop: -10,
+  marginLeft: 50,
+  height: 380,
+  marks: [
+    Plot.barX(fr, 
+        Plot.mapX("cumsum", {x: "count", y: "year", fill:  "registry_id", tip: true, sort: { y: "-y" } })
+    )
+  ] 
+})
+)
   }</div>
   <a href="./formats/" style="--theme-foreground-focus: #000;"><div class="card" style="margin-top: 0;">${
     resize((width) => generate_exts_chart(width) )
