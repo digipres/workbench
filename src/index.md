@@ -26,7 +26,7 @@ import { generate_exts_chart } from "./formats/registries.js";
 ```
 
 <div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <div class="card">${
+  <a href="./formats/about" style="--theme-foreground-focus: #000;"><div class="card" style="margin-top: 0;">${
  resize((width) => Plot.plot({
   title: "PRONOM Registry Records Over Time",
   subtitle: "Cumulative growth by year of creation",

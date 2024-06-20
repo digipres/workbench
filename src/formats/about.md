@@ -7,14 +7,9 @@ const db = FileAttachment("../data/registries.db").sqlite();
 ```
 
 ```js
-const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM format GROUP BY registry_id, year;`;
+const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats GROUP BY registry_id, year;`;
 ```
 
-```
-const fr = db.sql`SELECT CAST(STRFTIME("%Y", created) AS INT) AS year, genre.value as genre, COUNT(*) as count FROM formats, JSON_EACH(formats.genres) genre WHERE registry_id == 'pronom' GROUP BY genre.value, year ORDER BY year;`;
-```
-
-<div class="grid grid-cols-1">
 ${ resize((width) => Plot.plot({
   x: { tickFormat: (d) => d.toString() },
   color: { legend: true },
@@ -24,7 +19,6 @@ ${ resize((width) => Plot.plot({
   ] 
 })
 )}
-</div>
 
 
 ## PRONOM
@@ -35,6 +29,20 @@ ${ resize((width) => Plot.plot({
 * [https://api.pronom.ffdev.info/docs](https://api.pronom.ffdev.info/docs#/)
 * https://preservica.com/resources/blogs-and-news/updating-preservica-following-a-pronom-update
 * https://exponentialdecay.co.uk/blog/pronom-release-statistics/
+
+```js
+const pr = db.sql`SELECT genre.value as genre, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats, JSON_EACH(formats.genres) genre WHERE registry_id == 'pronom' GROUP BY genre.value, year ORDER BY year;`;
+```
+
+${ resize((width) => Plot.plot({
+  x: { tickFormat: (d) => d.toString() },
+  color: { legend: true },
+  width,
+  marks: [
+    Plot.barY(pr, {x: "year", y: "count", fill: "genre", tip: true })
+  ] 
+})
+)}
 
 
 ## WikiData
