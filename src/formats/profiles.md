@@ -28,23 +28,27 @@ const profiles = [
   {
     key: "yul",
     title: "Yale University Library (unidentified files only) 2024-04-01",
+    terms: "CC-BY - Yale University Library",
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-identified-extensions-2024-04-01.csv").csv({typed: true})
   },
   {
     key: "kb-edepot",
     title: "KB eDepot 2014-03",
+    terms: "CC-BY - KB",
+    link: "https://www.bitsgalore.org/2015/04/29/top-50-file-formats-in-the-kb-e-depot",
     raw_data: await FileAttachment("../data/collection-profiles/kb/KB-eDepot-FExtensions-v3-2014-03.csv").csv({typed: true})
   },
-  {
-    key: "nara-era",
-    title: "NARA ERA (extensions truncated to six characters) 2024-06-12",
-    truncated_at: 6,
-    raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
-  },
+//  {
+//    key: "nara-era",
+//    title: "NARA ERA (extensions truncated to six characters) 2024-06-12",
+//    terms: "CC-0 NARA TBC",
+//    truncated_at: 6,
+//    raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
+//  },
   {
     key: "harvard-library",
     title: "Harvard Library DRS 2024-06-06",
-    terms: "CC-BY Harvard University",
+    terms: "CC-BY - Harvard University",
     raw_data: await FileAttachment("../data/collection-profiles/harvard/Harvard-Library-DRS-2024-06-06.csv").csv({typed: true})
   }
 
@@ -269,7 +273,7 @@ profile_1.ok_data.forEach((item, index) => {
 })
 
 // Channels to show:
-const diff_channels =  {extension: "extension", percent_1: "percentage_1", percentage_2: "percentage_2"};
+const diff_channels =  { Relation: "relation", Extension: "extension", "%tage of Primary Collection": "percentage_1","%tage of Secondary Collection": "percentage_2", "Difference of %tages": "percentage_diff" };
 ```
 
 <div class="grid grid-cols-1">
@@ -278,11 +282,12 @@ const diff_channels =  {extension: "extension", percent_1: "percentage_1", perce
 ```js
 Plot.plot({
     title: "Title...",
-    y: {domain: [-100, 100], type: 'sqrt', grid: true},
-    color: {legend: true},
+    y: {domain: [-100, 100], type: 'sqrt', grid: true, label: "Difference of %tages"},
+    color: {legend: true, label: "Relation" },
+    width,
     marks: [
         Plot.ruleY([0]),
-        Plot.dotY(differences, Plot.dodgeX('middle', {y: "percentage_diff", fill: "relation", tip: true,channels: diff_channels }))
+        Plot.dotY(differences, Plot.dodgeX('middle', {y: "percentage_diff", fill: "relation", tip: true,channels: diff_channels, r: 4 }))
     ]
 })
 ```
@@ -293,13 +298,14 @@ Plot.plot({
 ```js
 Plot.plot({
   title: "Title...",
-  x: { type: 'sqrt', grid: true },
-  y: { type: 'sqrt', grid: true },
-  color: {legend: true},
+  x: { type: 'sqrt', grid: true, label: "%tage of Secondary Collection" },
+  y: { type: 'sqrt', grid: true, label: "%tage of Primary Collection" },
+  color: {legend: true, label: "Relation" },
+  width,
   marks: [
     Plot.ruleX([0]),
     Plot.ruleY([0]),
-    Plot.dotX(differences, {x: "percentage_2", y: "percentage_1", fill: "relation", tip: true, channels: diff_channels})
+    Plot.dotX(differences, {x: "percentage_2", y: "percentage_1", fill: "relation", tip: true, channels: diff_channels, r: 4})
   ]
 })
 ```
@@ -418,10 +424,11 @@ Plot.plot({
   y: { type: 'linear', label: 'Potential number of files that may match based on file extension', grid: true },
   marginLeft: 70,
   color: {legend: true},
+  width,
   marks: [
     Plot.ruleY([0]),
     Plot.ruleX([0]),
-    Plot.dotX(candidates, {x: "total_matched_extensions", y: "total_matched_files", fill: "reg_id", tip: true})
+    Plot.dotX(candidates, {x: "total_matched_extensions", y: "total_matched_files", r: 5, fill: "reg_id", tip: true})
   ]
 })
 ```
@@ -430,51 +437,60 @@ Plot.plot({
 </div>
 
 ```js
-const selection = view(Inputs.table(candidates, {
-  columns: [
-    "reg_id",
-    "matched_extensions",
-    "matched_files",
-    "total_matched_extensions",
-    "total_matched_files",
-  ],
-  header: {
-    reg_id: "Registry ID",
-    total_matched_extensions: "Total Matched Extensions",
-    total_matched_files: "Total Matched Files",
-    matched_extensions: "Matched Extensions",
-    matched_files: "Matched Files",
-  },
-  //value: candidates,
-  required: false,
-  multiple: false
-}));
+function generate_coverage_table(coverage_list) {
+    return Inputs.table(coverage_list, {
+    columns: [
+        "reg_id",
+        "matched_extensions",
+        "matched_files",
+        "total_matched_extensions",
+        "total_matched_files",
+        "total_unmatched_files",
+    ],
+    header: {
+        reg_id: "Registry ID",
+        total_matched_extensions: "Total Matched Extensions",
+        total_matched_files: "Total Matched Files",
+        matched_extensions: "Matched Extensions",
+        matched_files: "Matched Files",
+        total_unmatched_files: "Total Unmatched Files",
+    },
+    multiple: false
+    })
+}
+
+const selection = view(generate_coverage_table(candidates));
 ```
 
 ```js
-var matched_exts = [];
-if( selection ) {
-    const sorted_exts = Object.values(selection.matched).sort( (a,b) => a.file_count < b.file_count ? 1 : -1 );
-    sorted_exts.forEach((m) => matched_exts.push( { 
-        reg_id: selection.reg_id,
+
+function generate_extension_table(extension_list, reg_id) {
+    const exts = [];
+    extension_list.forEach((m) => exts.push( { 
+        reg_id: reg_id,
         extension: m.extension,
         file_count: m.file_count
     }));
 
-    display(html`<h4>Extensions matched by ${selection.reg_id}</h4>`);
-    view(Inputs.table(matched_exts,{
+    return Inputs.table(exts,{
         header: {
             reg_id: "Registry ID",
-        }
-    }));
+        },
+        sort: "file_count",
+        reverse: true
+    })
+}
 
+if( selection ) {
+    display(html`<h4>Extensions matched by ${selection.reg_id}</h4>`);
+    view(generate_extension_table(Object.values(selection.matched), selection.reg_id));
 } else {
     display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats</div>`);
 }
 
 ```
 
-### Using All Sources
+### Using All The Registries
 
 TBA, run through all the registries and list the extensions that remain, that are not in any of them.
 
@@ -496,31 +512,38 @@ for( var i = 0; i < source_num; i++ ) {
     source_list.delete(best.reg_id);
     coverage.push(best);
 }
-view(Inputs.table(coverage))
+view(generate_coverage_table(coverage));
 ```
+
+<div class="grid grid-cols-1">
+<div class="card">
 
 ```js
 Plot.plot({
-  title: "Which tools or registries might help the most?",
-  subtitle: "Based on potential matches with the selected file extension collection profile.",
-  x: { label: 'Registry ID' },
-  y: { type: 'linear', label: 'Number of unmatchable files', grid: true, type: "linear" },
-  marginLeft: 70,
-  marginBottom: 40,
-  color: {legend: true},
-  marks: [
-    Plot.ruleY([0]),
-    Plot.ruleX([0]),
-    Plot.barY(coverage, {x: (d) => (d.reg_id === "" ?  "" : `+${d.reg_id}`), y: "total_unmatched_files", fill: "reg_id", sort: {x: "-y"}, tip: true})
-  ]
+    title: "What happens when we use all the registries?",
+    subtitle: "Applying all the tools, one by one, in the optimal order.",
+    x: { label: 'Registry ID' },
+    y: { label: 'Number of unmatchable files', grid: true },
+    marginLeft: 70,
+    marginBottom: 40,
+    color: {legend: true},
+    width,
+    marks: [
+        Plot.ruleY([0]),
+        Plot.ruleX([0]),
+        Plot.barY(coverage, {x: (d) => (d.reg_id === "" ?  "" : `+${d.reg_id}`), y: "total_unmatched_files", fill: "reg_id", sort: {x: "-y"}, tip: true})
+    ]
 })
 ```
+
+</div>
+</div>
 
 #### Unique Extensions
 
 ```js
-const remainder_exts = Object.values(coverage.slice(-1)[0].remainder).sort( (a,b) => a.file_count < b.file_count ? 1 : -1 );
-view(Inputs.table(remainder_exts))
+const remainder_exts = Object.values(coverage.slice(-1)[0].remainder);
+view(generate_extension_table(remainder_exts, null));
 ```
 
 
