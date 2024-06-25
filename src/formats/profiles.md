@@ -37,12 +37,14 @@ const profiles = [
   },
   {
     key: "nara-era",
-    title: "NARA ERA 2024-06-12",
+    title: "NARA ERA (extensions truncated to six characters) 2024-06-12",
+    truncated_at: 6,
     raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
   },
   {
     key: "harvard-library",
     title: "Harvard Library DRS 2024-06-06",
+    terms: "CC-BY Harvard University",
     raw_data: await FileAttachment("../data/collection-profiles/harvard/Harvard-Library-DRS-2024-06-06.csv").csv({typed: true})
   }
 
@@ -60,6 +62,8 @@ var default_2 = "kb-edepot";
 
 
 ```js
+// Make it clear to Observable Framework that this cell depends on this parameter:
+extensions_truncated_at;
 
 // Generate a plot from a profile:
 function gen_profile_plot(profile, width) {
@@ -69,7 +73,7 @@ function gen_profile_plot(profile, width) {
         subtitle: "Showing the number of files with the given file extension.",
         y: {grid: true, label: "File Count" },
         x: {grid: true, label: "Extension", tickRotate: -50 },
-        color: {legend: false, label: "Registry ID"},
+        color: {legend: false, label: "Registry ID", scheme: "Observable10" },
         marginBottom: 100,
         width: width,
         marks: [
@@ -80,35 +84,14 @@ function gen_profile_plot(profile, width) {
                     y: "file_count", 
                     x: "extension", 
                     sort: { x: "-y" },
-                    tip: true
+                    tip: true,
+                    fill: 1
                 }
             ),
         ]
     });
     return profile_plot;
 }
-
-```
-
-<div class="grid grid-cols-1">
-<div class="card">
-${ resize((width) => gen_profile_plot(profile_1, width) ) }
-</div>
-</div>
-
-- Introduce the idea of using extensions and the number of files.
-- Optional Upload
-- Pointers to other things you can use...
-
-
-
-
-```js
-const csvfile = view(Inputs.file({label: "CSV File", accept: ".csv"}));
-
-const file_count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "File Count Threshold" }));
-
-const extensions_truncated_at = view(Inputs.range([0, 100], {step: 1, value: 100, label: "Maximum Length for File Extensions" }));
 
 ```
 
@@ -185,12 +168,22 @@ function process_profile(profile) {
     return profile;
 }
 
-
 // Go through the profiles:
-const profile_list = []
 profiles.forEach((p) => process_profile(p));
+```
+
+- Introduce the idea of using extensions and the number of files.
+- Optional Upload
+- Pointers to other things you can use...
 
 
+
+
+
+### Select Your Collection Profile
+
+
+```js
 // Select
 const profile_1 = view(
   Inputs.select(profiles, {
@@ -200,7 +193,41 @@ const profile_1 = view(
     width: "100%",
   })
 );
+```
 
+```js
+const csvfile = view(Inputs.file({label: "Add Your CSV Extension Profile", accept: ".csv"}));
+```
+
+<details class="card">
+<summary>How do I create a suitable Extension Profile in CSV format?</summary>
+
+Details TBA...
+</details>
+
+
+### Configuration
+
+```js
+const file_count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "Ignore Extensions With A File Count Lower Than:" }));
+
+const extensions_truncated_at = view(Inputs.range([0, 100], {step: 1, value: 100, label: "Truncate Extensions Longer Than (Characters):" }));
+
+```
+
+<div class="grid grid-cols-1">
+<div class="card">
+${ resize((width) => gen_profile_plot(profile_1, width) ) }
+</div>
+</div>
+
+
+
+## Comparing Collections
+
+- e.g. Yale vs KB
+
+```js
 const profile_2 = view(
   Inputs.select(profiles, {
     label: "Secondary Profile",
@@ -209,12 +236,8 @@ const profile_2 = view(
     width: "100%",
   })
 );
-
 ```
 
-## Comparing Collections
-
-- e.g. Yale vs KB
 
 
 ```js
@@ -255,9 +278,10 @@ const diff_channels =  {extension: "extension", percent_1: "percentage_1", perce
 ```js
 Plot.plot({
     title: "Title...",
-    y: {domain: [-100, 100], type: 'sqrt'},
+    y: {domain: [-100, 100], type: 'sqrt', grid: true},
     color: {legend: true},
     marks: [
+        Plot.ruleY([0]),
         Plot.dotY(differences, Plot.dodgeX('middle', {y: "percentage_diff", fill: "relation", tip: true,channels: diff_channels }))
     ]
 })
@@ -269,10 +293,12 @@ Plot.plot({
 ```js
 Plot.plot({
   title: "Title...",
-  x: { type: 'sqrt' },
-  y: { type: 'sqrt' },
+  x: { type: 'sqrt', grid: true },
+  y: { type: 'sqrt', grid: true },
   color: {legend: true},
   marks: [
+    Plot.ruleX([0]),
+    Plot.ruleY([0]),
     Plot.dotX(differences, {x: "percentage_2", y: "percentage_1", fill: "relation", tip: true, channels: diff_channels})
   ]
 })
@@ -281,18 +307,221 @@ Plot.plot({
 </div>
 </div>
 
-## Registry Coverage
+## Tool & Registry Coverage
 
 - e.g. With collection X, starting with PRONOM, then what?
 - Multi-level bulk extension lookup.
 
 ```js
-const selection = [ "pronom", "fdd", "wikidata", "ffw" ]; // use registries to select all initially
 
-const selector = view(Inputs.checkbox(registries, {label: "Registries", value: selection , format: (x) => x}));
+const ext_dict = {}
+profile_1.ok_data.forEach( (item, i) => {
+    ext_dict[item.extension] = item;
+});
+const initial_coverage = {
+    matched: {},
+    remainder: ext_dict,
+    total_unmatched_extensions: Object.keys(ext_dict).length,
+    total_matched_extensions: 0,
+    total_unmatched_files: profile_1.total_ok_file_count,
+    total_matched_files: 0
+}
+
+
+/**
+ * This function compares the current coverage with a given registry source, and returns
+ * an object that updates the coverage according to that source.
+ */
+function compare_with_reg(coverage, reg) {
+    // Use the Set API to determine the overlap between this registry and the colletion:
+    const overlap = new Set(Object.keys(coverage.remainder)).intersection(reg.extensions);
+
+    // Use the results to update the coverage data:
+    var matched_files = 0;
+    const profile_matched = {};
+    const profile_remains = {...coverage.remainder};
+    overlap.forEach((extension) => {
+        profile_matched[extension] = profile_remains[extension];
+        matched_files += profile_remains[extension].file_count;
+        delete profile_remains[extension];
+    })
+
+    // Return an updated version of the coverage data:
+    return {
+        reg_id: reg.reg_id,
+        matched: profile_matched,
+        remainder: profile_remains,
+        matched_extensions: overlap.size,
+        matched_files: matched_files,
+        total_unmatched_extensions: coverage.total_unmatched_extensions - overlap.size,
+        total_matched_extensions: coverage.total_matched_extensions + overlap.size,
+        total_unmatched_files: coverage.total_unmatched_files - matched_files,
+        total_matched_files: coverage.total_matched_files + matched_files,
+    };
+}
+
+/**
+ * Here we loop over all the un-used registries to work out which one gives the most coverage
+ */
+function get_next_best_reg(currentCoverage, sources) {
+    const candidates = [];
+    sources.forEach((reg_id) => { 
+        const reg = exts.find( (r) => r.reg_id == reg_id );
+        if( reg ) {
+            const next = compare_with_reg(currentCoverage, reg);
+            candidates.push(next);
+        }
+    });
+    // Sort by number of files:
+    return candidates.sort( (a,b) => a.total_matched_files < b.total_matched_files ? 1 : -1 );
+}
+```
+
+```js
+const always_pronom_first = view(Inputs.toggle({label: html`Always Start With PRONOM?`, value: true}));
 ```
 
 
+```js
+const sources = new Set(registries);
+
+// Drop PRONOM if it's always first:
+if( always_pronom_first ) {
+    sources.delete('pronom');
+}
+
+const selected_sources = sources; // use registries to select all initially
+
+const selector = view(Inputs.checkbox(sources, {label: "Tools & Registries", value: selected_sources , format: (x) => x}));
+```
+
+
+```js
+var starting_coverage = initial_coverage;
+
+if( always_pronom_first ) {
+    starting_coverage = get_next_best_reg(initial_coverage, ['pronom']);
+    starting_coverage = starting_coverage[0];
+}
+
+const candidates = get_next_best_reg(starting_coverage, selector);
+```
+
+<div class="grid grid-cols-1">
+<div class="card">
+
+```js
+Plot.plot({
+  title: "Which tools or registries might help the most?",
+  subtitle: "Based on potential matches with the selected file extension collection profile.",
+  x: { type: 'linear', label: 'Total number of collection file extensions in each registry', grid: true },
+  y: { type: 'linear', label: 'Potential number of files that may match based on file extension', grid: true },
+  marginLeft: 70,
+  color: {legend: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.dotX(candidates, {x: "total_matched_extensions", y: "total_matched_files", fill: "reg_id", tip: true})
+  ]
+})
+```
+
+</div>
+</div>
+
+```js
+const selection = view(Inputs.table(candidates, {
+  columns: [
+    "reg_id",
+    "matched_extensions",
+    "matched_files",
+    "total_matched_extensions",
+    "total_matched_files",
+  ],
+  header: {
+    reg_id: "Registry ID",
+    total_matched_extensions: "Total Matched Extensions",
+    total_matched_files: "Total Matched Files",
+    matched_extensions: "Matched Extensions",
+    matched_files: "Matched Files",
+  },
+  //value: candidates,
+  required: false,
+  multiple: false
+}));
+```
+
+```js
+var matched_exts = [];
+if( selection ) {
+    const sorted_exts = Object.values(selection.matched).sort( (a,b) => a.file_count < b.file_count ? 1 : -1 );
+    sorted_exts.forEach((m) => matched_exts.push( { 
+        reg_id: selection.reg_id,
+        extension: m.extension,
+        file_count: m.file_count
+    }));
+
+    display(html`<h4>Extensions matched by ${selection.reg_id}</h4>`);
+    view(Inputs.table(matched_exts,{
+        header: {
+            reg_id: "Registry ID",
+        }
+    }));
+
+} else {
+    display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats</div>`);
+}
+
+```
+
+### Using All Sources
+
+TBA, run through all the registries and list the extensions that remain, that are not in any of them.
+
+```js
+const coverage = [ initial_coverage ];
+initial_coverage['reg_id'] = '';
+
+const source_list = new Set(selector);
+// If PRONOM First: do that, and drop from the source_list:
+const pronom_coverage = get_next_best_reg(coverage[0], ['pronom'])[0];
+coverage.push(pronom_coverage);
+source_list.delete("pronom");
+// Copy the list size as we're modifying the list:
+var source_num = source_list.size;
+// Loop through the rest, picking the best coverage each time:
+for( var i = 0; i < source_num; i++ ) {
+    const results = get_next_best_reg(coverage.slice(-1)[0], source_list);
+    const best = results[0];
+    source_list.delete(best.reg_id);
+    coverage.push(best);
+}
+view(Inputs.table(coverage))
+```
+
+```js
+Plot.plot({
+  title: "Which tools or registries might help the most?",
+  subtitle: "Based on potential matches with the selected file extension collection profile.",
+  x: { label: 'Registry ID' },
+  y: { type: 'linear', label: 'Number of unmatchable files', grid: true, type: "linear" },
+  marginLeft: 70,
+  marginBottom: 40,
+  color: {legend: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.barY(coverage, {x: (d) => (d.reg_id === "" ?  "" : `+${d.reg_id}`), y: "total_unmatched_files", fill: "reg_id", sort: {x: "-y"}, tip: true})
+  ]
+})
+```
+
+#### Unique Extensions
+
+```js
+const remainder_exts = Object.values(coverage.slice(-1)[0].remainder).sort( (a,b) => a.file_count < b.file_count ? 1 : -1 );
+view(Inputs.table(remainder_exts))
+```
 
 
 ## Feedback & Futures
