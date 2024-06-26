@@ -609,11 +609,18 @@ const selection = view(generate_coverage_table(candidates));
 
 function generate_extension_table(extension_list, reg_id) {
     const exts = [];
-    extension_list.forEach((m) => exts.push( { 
-        reg_id: reg_id,
-        extension: m.extension,
-        file_count: m.file_count
-    }));
+    extension_list.forEach((m) => {
+        const entry = {};
+        // Add optional Registry ID:
+        if( reg_id ) {
+            entry.reg_id = reg_id;
+        }
+        // Add standard columns:
+        entry.extension = m.extension;
+        entry.file_count = m.file_count;
+        // Store:
+        exts.push(entry);
+    });
 
     return Inputs.table(exts,{
         header: {
