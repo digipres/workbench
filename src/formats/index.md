@@ -1,11 +1,11 @@
-# Finding Formats
-## Searching, Analysing & Comparing Format Registries
+# All About Formats
+## Searching, analysing & comparing format registries
 
 ## Introduction
 
-One of the most fundamental facets of preserving born-digital cultural materials is understanding the data formats they are in. In contrast to the relatively constrained worlds of metadata and digitised materials, born-digital items can come in a huge range of formats, making format identification a crucial step towards understanding the informational and software dependencies we need to capture, to make future access possible.
+One of the most fundamental facets of preserving digital cultural materials is understanding the data formats they are in. Born-digital items are particularly challenging as, in comparison to the relatively constrained worlds of metadata and digitised materials, they come in a huge range of formats. This makes format identification a crucial step towards understanding the information and software dependencies we need to capture, to make future access possible.
 
-As part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), we have been indexing, analysing and comparing data from a wide range of format information sources (a.k.a. format registries) and format identification tools. This part of the DigiPres Workbench summarizes our findings so far.
+As part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), we have been indexing, analysing and comparing data from a wide range of format information sources (a.k.a. format registries) and format identification tools. This part of the DigiPres Workbench summarizes our findings so far and provides tools for you to explore further.
 
 ## The Registries
 
@@ -43,6 +43,11 @@ import { generate_exts_chart } from "./registries.js";
 
 The [Combining Registries](./combine) page provides the details of how this is done, and outlines the assumptions involved.
 
-## The Analysis
+## The Analysis Tools
 
-## The Tools
+There are three different analysis tools available for you to try.
+
+- [Collection Profiles](./profiles), which uses file-extension format profiles to compare digital collections against others, and against the full set of available format registries.
+- [Comparing Registries](./compare), which explores ways of comparing the contents of different format registries.
+- [Format Diversity Estimation](./species), which uses the gaps between registries to estimate the total number of digital formats.
+

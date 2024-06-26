@@ -15,11 +15,11 @@ export default {
       collapsible : true,
       open: true,
       pages: [
-        { name: "Introduction", path: "/formats/"},
+        { name: "All About Formats", path: "/formats/"},
         { name: "About the Registries", path: "/formats/about"},
         { name: "Combining Registries", path: "/formats/combine"},
         { name: "Comparing Registries", path: "/formats/compare"},
-        { name: "Format Diversity Estimate", path: "/formats/species"},
+        { name: "Format Diversity Estimation", path: "/formats/species"},
         { name: "Collection Profiles", path: "/formats/profiles"}
       ]
     },
@@ -27,7 +27,7 @@ export default {
       name: "Publications",
       open: true,
       pages: [
-        {name: "Introduction", path: "/publications/"},
+        {name: "Publication Statistics", path: "/publications/"},
         //{name: "Dashboard", path: "/example-dashboard"},
         //{name: "Report", path: "/example-report"}
       ]

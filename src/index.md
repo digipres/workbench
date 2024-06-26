@@ -4,7 +4,7 @@ toc: true
 
 # Welcome to the DigiPres Workbench
 
-## Tools and technical resources for practical digital preservation
+## Tools, analysis and technical resources for practical digital preservation
 
 Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
 
@@ -65,6 +65,9 @@ Here are some things you could try...
     <a href="./formats/">Analyse and compare different data format registries</a>, to find out which ones might help you understand your digital collections.
   </div>
   <div class="card">
+    Use collection format profiles to <a href="./formats/profiles">compare your own collections against other collections and against the various format registries.</a>
+  </div>
+  <div class="card">
     Read about how a <a href="./formats/species">ecological model of formats as different species</a> allows us to use the gaps between format registries to estimate the total number of data formats across the digital world.
   </div>
   <div class="card">
@@ -101,3 +104,4 @@ This site is designed with long-term sustainability in mind, and the DPC will en
 
 Contact information for the primary author, Andy Jackson, is available [here](https://anjackson.net/). If that doesn't work, get in touch via the [Digital Preservation Coalition](https://www.dpconline.org/).
 
+We also hosts a monthly [Preservation Registries Special Interest Group](https://www.dpconline.org/digipres/pr-sig) call, which is open to anybody interested in understanding or working on the information resources that make digital preservation possible.

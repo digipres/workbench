@@ -3,11 +3,20 @@
 
 ## Introduction
 
-- The goals, comparing collections and understand tool coverage.
-- Bulk extension lookup, in effect.
+Here we look at two different ways of exploring and understanding our digital collections.
 
-## Collection Profiles
+- We'd like to be able to compare our collections with those of other institutions, so we can find our common ground, but also understand what makes us distinctive.
+- We'd like to be able to compare our collections with the various format registries and identification tools that are out there. This would help us understand which format information sources have the most potential to illuminate our collections.
 
+This page provides interactive tools allowing you to do both of these things, based on some basic statistical information about your collection in the form of a format profile.
+
+## Collection Format Profiles
+
+A format profile for a collection simply lists all the formats there are, along with a count of how many distinct files or bitstreams appear to be in that format. For example, this is precisely what the [UK National Archives File Profiling Tool (DROID) does](https://www.nationalarchives.gov.uk/information-management/manage-information/policy-process/digital-continuity/file-profiling-tool-droid/). For the formats that PRONOM covers, this works very well, and the resulting profile can be analysed within DROID itself, or by using complementary tools like [Freud](https://github.com/digital-preservation/freud) or [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/).
+
+However, to compare against a wider range of sources, we need to boil things down to the simplest format signature: file extensions. This lets us combine multiple information sources, with [all of the benefits and limitations that implies](./combine#file-extensions).
+
+A number of institutions have already made suitable file extension collection profiles available, so you can use those to explore this idea. Note that this analysis discards any extensions that appear to be just numbers or contain spaces, but anything else is OK. If you want to look at the source CSV files, you can find them [here](https://github.com/digipres/workbench/tree/main/src/data/collection-profiles).
 
 
 ```js
@@ -23,8 +32,19 @@ exts.forEach( function (item, index) {
     registries.add(item.reg_id);
 });
 
+// Helper to make links to registry index:
+function make_link(ext, reg_id) {
+    if( reg_id ) {
+        return html`<a target="_blank" href="https://www.digipres.org/formats/extensions/#${ext}">${ext}</a>`;
+    } else {
+        return ext
+    }
+}
+
+
+
 // Load collections profile data:
-const profiles = [
+const source_profiles = [
   {
     key: "yul",
     title: "Yale University Library (unidentified files only) 2024-04-01",
@@ -46,7 +66,7 @@ const profiles = [
 //    raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
 //  },
   {
-    key: "harvard-library",
+    key: "hl-drs",
     title: "Harvard Library DRS 2024-06-06",
     terms: "CC-BY - Harvard University",
     raw_data: await FileAttachment("../data/collection-profiles/harvard/Harvard-Library-DRS-2024-06-06.csv").csv({typed: true})
@@ -66,9 +86,6 @@ var default_2 = "kb-edepot";
 
 
 ```js
-// Make it clear to Observable Framework that this cell depends on this parameter:
-extensions_truncated_at;
-
 // Generate a plot from a profile:
 function gen_profile_plot(profile, width) {
     if( ! profile ) return "";
@@ -100,13 +117,14 @@ function gen_profile_plot(profile, width) {
 ```
 
 ```js
+
 if( csvfile != null ) {
     const uploaded = await csvfile.csv();
-    const uploaded_item = profiles.find((p) => p.key == user_profile_key);
+    const uploaded_item = source_profiles.find((p) => p.key == user_profile_key);
     if( uploaded_item ) {
         uploaded_item.raw_data = uploaded
     } else {
-        profiles.push({
+        source_profiles.push({
         key: user_profile_key, 
         title: "Your uploaded extension profile",
         raw_data: uploaded
@@ -123,12 +141,23 @@ function process_profile(profile) {
     profile['total_file_count'] = 0;
     const count_by_extension = {};
     profile.raw_data.forEach( function (raw_item, index) {
-        // Clone original item for modification:
-        const item = Object.create(raw_item);
+        // Clone original item for modification, keeping only needed bits:
+        const item = {
+            extension: raw_item.extension,
+            file_count: raw_item.file_count,
+        };
         // Ensure the count is a count:
         item.file_count = parseInt(item.file_count);
+        // Check that worked, drop NaNs:
+        if( isNaN(item.file_count) ) {
+            // Nope:
+            profile.strange.push(item);
+            return;
+        }
+        // Add up the total:
+        profile.total_file_count += item.file_count;
         // Canonicalize the extension:
-        if( typeof item.extension == "string" ) {
+        if(  item.extension && typeof item.extension == "string" ) {
             // Start with a copy:
             var ext = item.extension;
             // Split NARA format:
@@ -166,28 +195,80 @@ function process_profile(profile) {
             profile.strange.push(item);
             profile.total_strange_file_count += item.file_count;
         }
-        // Add up the total:
-        profile.total_file_count += item.file_count;
     });
     return profile;
 }
 
 // Go through the profiles:
-profiles.forEach((p) => process_profile(p));
+// n.b. best to create new top-level objects in blocks, rather than update existing ones, as that makes if easier for Observable Framework to keep track of block dependencies:
+const profiles = [];
+source_profiles.forEach((p) => profiles.push(process_profile(p)));
 ```
 
-- Introduce the idea of using extensions and the number of files.
-- Optional Upload
-- Pointers to other things you can use...
+```js
 
+// output the table:
+view(Inputs.table(profiles, {
+    columns: [
+        "title",
+        "link",
+        "total_file_count",
+        "total_ok_file_count",
+    ],
+    header: {
+        title: "Title",
+        terms: "Terms",
+        link: "Link",
+        total_file_count: "Total Files",
+        total_ok_file_count: "Total 'OK' Files",
+    },
+    format: {
+        link: (d) => html`<a href="${d}" target="_blank">[open]</a>`
+    },
+    width: {
+        title: "50%",
+        total_ok_file_count: "15%",
+    },
+    sort: "total_ok_file_count",
+}))
+```
 
-
-
-
-### Select Your Collection Profile
-
+However, you can also add your own profile to this page, and analyse it without uploading your data anywhere:
 
 ```js
+const csvfile = view(Inputs.file({label: "Use Your Own CSV Extension Profile", accept: ".csv"}));
+```
+
+<details class="card">
+<summary>How do I create a suitable Extension Profile in CSV format?</summary>
+
+Your file extension collection profile should have at least two columns, one called 'extension' and one called 'file_count'. Other columns will be ignored. This would look something like:
+
+| extension | file_count |
+| --------- | ---------- | 
+| PDF       |        50  |
+| DOCX      |       202  |
+| pdf       |        12  |
+| ...       |       ...  |
+
+Note that extensions that are just numbers, or contain spaces, will be dropped. Note also that the system will attempt to convert the extensions into a canonical lower-case format, i.e. `*.pdf`, but you can just supply the extension e.g. `pdf` or `.pdf` and it should work it out.
+
+Finally, note that if the same (canonical) extension appears multiple times, the total file count will be add together all occurrences. e.g. in the example above, you'd end up with:
+
+| extension | file_count |
+| --------- | ---------- | 
+| *.pdf     |        62  |
+
+If you have any problems, please [get in touch via the contact details on the homepage](../#contact).
+
+</details>
+
+## Select A Collection Profile
+
+First, we need to select 'our' profile, the primary collection profile we want to compare with other collections and registries:
+
+```js
+
 // Select
 const profile_1 = view(
   Inputs.select(profiles, {
@@ -199,25 +280,23 @@ const profile_1 = view(
 );
 ```
 
-```js
-const csvfile = view(Inputs.file({label: "Add Your CSV Extension Profile", accept: ".csv"}));
-```
+Then, there are some configuration options to consider. 
 
-<details class="card">
-<summary>How do I create a suitable Extension Profile in CSV format?</summary>
-
-Details TBA...
-</details>
-
-
-### Configuration
+Firstly, it usually makes sense to ignore extremely rare file extensions. Often, these are simply errors, but also some collections are so large that dropping some of the 'long tail' of formats helps make the analysis a bit easier. You can see this by changing the value here, and observing how this affects the frequency plot below.
 
 ```js
 const file_count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "Ignore Extensions With A File Count Lower Than:" }));
-
-const extensions_truncated_at = view(Inputs.range([0, 100], {step: 1, value: 100, label: "Truncate Extensions Longer Than (Characters):" }));
-
 ```
+
+Secondly, it may be that whoever is generating the format profile is concerned that some personal data may leak out through the file extension, and so extensions are truncated so that there is a limit to how much information they can contain. Generally, this is not needed, but if you know that one of the collections you are interested in has truncated the file extensions, this configuration should be set to match, so that the comparison can be as accurate as possible.
+
+```js
+const extensions_truncated_at = view(Inputs.range([0, 100], {step: 1, value: 100, label: "Truncate Extensions Longer Than (Characters):" }));
+```
+
+### Summary of Your Collection Profile
+
+This graph provides a summary of the selected format profile.
 
 <div class="grid grid-cols-1">
 <div class="card">
@@ -225,11 +304,13 @@ ${ resize((width) => gen_profile_plot(profile_1, width) ) }
 </div>
 </div>
 
-
+This gives a reasonable overview, but also hides all the interesting details of what's going on in that long tail of other formats.
 
 ## Comparing Collections
 
-- e.g. Yale vs KB
+Simple format profile above is particularly ill-suited to comparing one collection with another, so here we explore some alternative visualisations.
+
+First, we need to select a different profile to compare against:
 
 ```js
 const profile_2 = view(
@@ -242,11 +323,14 @@ const profile_2 = view(
 );
 ```
 
+Given this, we can now build up a comparison. We start by going through every file extension that is in either collection, and recording the percentage of the overall collection that represents, in terms of numbers of files. We do this because using percentages means we can compare collections of very different sizes.
 
+These percentages can be plotted directly against each other for each file format, with the vertical position representing the percentage in our primary collection, and the horizontal position representing the percentage in the secondary collection.  Similar collections should appear as a diagonal line, with outliers representing where collections differ.
 
 ```js
 // Loop over profile_1, finding items in profile_2, and comparing
 const differences = [];
+var largest_percentage = 0.0;
 profile_1.ok_data.forEach((item, index) => {
     // Skip/filter:
     if( item.file_count < file_count_threshold ) {
@@ -255,7 +339,7 @@ profile_1.ok_data.forEach((item, index) => {
     // Look up matched item:
     const item_2 = profile_2.ok_data.find((i) => i.extension == item.extension);
     var item_2_count = 0;
-    var relation = 'unique'
+    var relation = 'primary only'
     if( item_2 && item_2.file_count > 0.0 ) {
         item_2_count = item_2.file_count;
         relation = 'in common'
@@ -270,7 +354,43 @@ profile_1.ok_data.forEach((item, index) => {
         percentage_diff: (percentage_1 - percentage_2),
         relation,
     });
+    // Record the largest percentage:
+    if( percentage_1 > largest_percentage ) {
+        largest_percentage = percentage_1;
+    }
+    if( percentage_2 > largest_percentage ) {
+        largest_percentage = percentage_2;
+    }
 })
+// Loop over profile_2, adding any uniques in:
+profile_2.ok_data.forEach((item, index) => {
+    // Skip/filter:
+    if( item.file_count < file_count_threshold ) {
+        return;
+    }
+    // Look up matched item:
+    const item_1 = profile_1.ok_data.find((i) => i.extension == item.extension);
+    var item_1_count = 0;
+    var relation = 'secondary only'
+    if( item_1 && item_1.file_count > 0.0 ) {
+        // Already dealt with these on the first pass.
+        return;
+    }
+    // Calculate percentages:
+    const percentage_1 = 0.0;
+    const percentage_2 = 100.0 * item.file_count/profile_2.total_ok_file_count;
+    differences.push({
+        extension: item.extension,
+        percentage_1,
+        percentage_2,
+        percentage_diff: (percentage_1 - percentage_2),
+        relation,
+    });
+    if( percentage_2 > largest_percentage ) {
+        largest_percentage = percentage_2;
+    }
+})
+
 
 // Channels to show:
 const diff_channels =  { Relation: "relation", Extension: "extension", "%tage of Primary Collection": "percentage_1","%tage of Secondary Collection": "percentage_2", "Difference of %tages": "percentage_diff" };
@@ -281,25 +401,9 @@ const diff_channels =  { Relation: "relation", Extension: "extension", "%tage of
 
 ```js
 Plot.plot({
-    title: "Title...",
-    y: {domain: [-100, 100], type: 'sqrt', grid: true, label: "Difference of %tages"},
-    color: {legend: true, label: "Relation" },
-    width,
-    marks: [
-        Plot.ruleY([0]),
-        Plot.dotY(differences, Plot.dodgeX('middle', {y: "percentage_diff", fill: "relation", tip: true,channels: diff_channels, r: 4 }))
-    ]
-})
-```
-
-</div>
-<div class="card">
-
-```js
-Plot.plot({
-  title: "Title...",
-  x: { type: 'sqrt', grid: true, label: "%tage of Secondary Collection" },
-  y: { type: 'sqrt', grid: true, label: "%tage of Primary Collection" },
+  title: "Comparing Collections Based on Extension Percentages",
+  x: { type: 'sqrt', grid: true, label: `%tage of ${profile_2.title}`, domain: [0,largest_percentage] },
+  y: { type: 'sqrt', grid: true, label: `%tage of ${profile_1.title}`, domain: [0,largest_percentage] },
   color: {legend: true, label: "Relation" },
   width,
   marks: [
@@ -313,10 +417,38 @@ Plot.plot({
 </div>
 </div>
 
+We can use a ['beeswarm' plot](https://datavizcatalogue.com/blog/chart-snapshot-beeswarm-plot/) to really focus on on the different in percentages. Here, we calculate the difference between the percentages for each extension, and plot that difference vertically. This means formats that are distinctive of our primary collection appear near the top, and those distinctive of the secondary collection appear a the bottom.  Rarer and similar extensions bunch up in the middle.
+
+<div class="grid grid-cols-1">
+<div class="card" style="overflow: hidden">
+
+```js
+Plot.plot({
+    title: "Beeswarm Plot of Differences in Percentages",
+    y: {domain: [-100, 100], type: 'sqrt', grid: true, label: "Difference of %tages"},
+    color: {legend: true, label: "Relation" },
+    width,
+    marks: [
+        Plot.ruleY([0]),
+        Plot.dotY(differences, Plot.dodgeX('middle', {y: "percentage_diff", fill: "relation", tip: true,channels: diff_channels, r: 4 }))
+    ]
+})
+```
+
+</div>
+</div>
+
+
 ## Tool & Registry Coverage
 
-- e.g. With collection X, starting with PRONOM, then what?
-- Multi-level bulk extension lookup.
+We can use similar methods to compare our primary collection profile with the available format registries and identification tools. This should help us understand what tools might be able to help analyse our collections.
+
+We look at answering this in two ways. Firstly, what single additional tool or registry should I consider, in order to identify as many files as possible? Secondly, if I used all the available tools and registries, what kind of format coverage might I get?
+
+
+### One More Tool
+
+Here, we take your selected collection profile, and work out how much coverage of that set of extension each registry or tool offers.
 
 ```js
 
@@ -383,10 +515,25 @@ function get_next_best_reg(currentCoverage, sources) {
 }
 ```
 
+As most digital preservation systems and workflows will already include an identification step using PRONOM data (e.g. via DROID, Siegfried or Fido), we start by comparing everything to PRONOM and consider those extensions to be covered. If that doesn't suite you, you can switch it off here:
+
 ```js
 const always_pronom_first = view(Inputs.toggle({label: html`Always Start With PRONOM?`, value: true}));
 ```
 
+```js
+var starting_coverage = initial_coverage;
+
+if( always_pronom_first ) {
+    const starting_coverage_list = get_next_best_reg(initial_coverage, ['pronom']);
+    starting_coverage = starting_coverage_list[0];
+    view(generate_coverage_table(starting_coverage_list));
+} else {
+    display(html` `);
+}
+```
+
+Then, we get to choose which of the other supported tools and registries to consider.  This defaults to 'all of them', but you might want to switch off ones you don't want to use.
 
 ```js
 const sources = new Set(registries);
@@ -401,17 +548,11 @@ const selected_sources = sources; // use registries to select all initially
 const selector = view(Inputs.checkbox(sources, {label: "Tools & Registries", value: selected_sources , format: (x) => x}));
 ```
 
-
 ```js
-var starting_coverage = initial_coverage;
-
-if( always_pronom_first ) {
-    starting_coverage = get_next_best_reg(initial_coverage, ['pronom']);
-    starting_coverage = starting_coverage[0];
-}
-
 const candidates = get_next_best_reg(starting_coverage, selector);
 ```
+
+Given this starting point, what tool/registry might help understand the largest number of files? We can start by plotting the number of recognised extensions and the corresponding total file count for each one:
 
 <div class="grid grid-cols-1">
 <div class="card">
@@ -436,6 +577,8 @@ Plot.plot({
 </div>
 </div>
 
+The underlying data is shown here, and you can select one of the rows to see what extensions are being matched by each tool.
+
 ```js
 function generate_coverage_table(coverage_list) {
     return Inputs.table(coverage_list, {
@@ -458,7 +601,9 @@ function generate_coverage_table(coverage_list) {
     multiple: false
     })
 }
+```
 
+```js
 const selection = view(generate_coverage_table(candidates));
 ```
 
@@ -475,6 +620,11 @@ function generate_extension_table(extension_list, reg_id) {
     return Inputs.table(exts,{
         header: {
             reg_id: "Registry ID",
+            extension: "Extension",
+            file_count: "File Count",
+        },
+        format: {
+            extension: (d) => make_link(d, reg_id),
         },
         sort: "file_count",
         reverse: true
@@ -485,14 +635,16 @@ if( selection ) {
     display(html`<h4>Extensions matched by ${selection.reg_id}</h4>`);
     view(generate_extension_table(Object.values(selection.matched), selection.reg_id));
 } else {
-    display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats</div>`);
+    display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats.</div>`);
 }
 
 ```
 
 ### Using All The Registries
 
-TBA, run through all the registries and list the extensions that remain, that are not in any of them.
+Rather than just using one registry, what if we tried them all? Here, we run the analysis above multiple times, and each time around, we take the registry that provides the greatest improvement in overall coverage.
+
+As a table, we can see what happens at each stage, and how the total number of files without any potential matches drops each time.
 
 ```js
 const coverage = [ initial_coverage ];
@@ -512,8 +664,20 @@ for( var i = 0; i < source_num; i++ ) {
     source_list.delete(best.reg_id);
     coverage.push(best);
 }
-view(generate_coverage_table(coverage));
+const cover_selection = view(generate_coverage_table(coverage));
 ```
+
+```js
+if( cover_selection ) {
+    display(html`<h4>Extensions matched by ${cover_selection.reg_id}</h4>`);
+    view(generate_extension_table(Object.values(cover_selection.matched), cover_selection.reg_id));
+} else {
+    display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats.</div>`);
+}
+
+```
+
+Plotting that as a graph, we can see overall benefit each tool brings.
 
 <div class="grid grid-cols-1">
 <div class="card">
@@ -541,12 +705,21 @@ Plot.plot({
 
 #### Unique Extensions
 
+Finally, we can look at the unique extensions: those that are in your collection profile, but do not appear to be in any of the thousands of format records aggregated across all the registries.
+
 ```js
 const remainder_exts = Object.values(coverage.slice(-1)[0].remainder);
 view(generate_extension_table(remainder_exts, null));
 ```
 
+So far, it seems that it is not uncommon for any reasonably large collection to have a significant number of files with genuine format extensions that are not in any registry! 
+
+This distribution of formats is important for the wider community to analyse, in order to understand how best to address the format identification problem. So, please get in touch if you are able to share your collections format profiles!
 
 ## Feedback & Futures
 
-- Ideas? Decide and store formats?
+This is a first prototype of this kind of analysis tool, and we are keen to hear your feedback on what works, what doesn't, and what a future version could look like!
+
+It will be launched at [iPRES 2024](https://ipres2024.pubpub.org/), as part of the [Digital Preservation Registries: What We Have & What We Need](https://ipres2024.pubpub.org/pub/52dby49z/release/1?readingCollection=ef524688) workshop. But if you see us at the conference you are encourage to ask us to walk you through using this tool and talk to us about sharing your own format profiles.
+
+You can also get in touch with us directly. See the [contact details on the homepage](../#contact).

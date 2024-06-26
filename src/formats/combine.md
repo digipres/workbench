@@ -1,5 +1,10 @@
 # Combining Format Registries
-## Implementation Details, Assumptions & Approximations
+## Implementation details, assumptions & approximations
+
+
+<div class="note">
+This page documents the assumptions and approximations that underlie the various analysis tools and reports in the <i>Formats</i> section of the DigiPres Workbench.
+</div>
 
 ## Introduction
 

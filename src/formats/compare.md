@@ -1,8 +1,9 @@
-# Format Registry Comparison
+# Comparing Registries
+## Ways of exploring what formats are where...
 
-<https://upset.app/>
+## Introduction
 
-The most common set visualization approach – Venn Diagrams – doesn’t scale beyond three or four sets. UpSet, in contrast, is well suited for the quantitative analysis of data with more than three sets.
+
 
 ```js
 import { load_extension_data } from "./registries.js";
@@ -10,7 +11,7 @@ import { extractCombinations, render } from 'npm:@upsetjs/bundle';
 
 const exts = await load_extension_data();
 
-const user_profile_key = 'your profile';
+const user_profile_key = 'yours';
 
 const registries = new Set();
 exts.forEach( function (item, index) {
@@ -26,7 +27,7 @@ exts.forEach( function (item, index) {
 const exts_chart = Plot.plot({
     style: "overflow: visible;",
     y: {grid: true, label: null },
-    x: {grid: true, label: "Total Number of File Extensions in Format Registry Records" },
+    x: {grid: true, label: "Total Number of Distinct File Extensions in Format Registry Records" },
     color: {legend: false, label: "Registry ID"},
     marginLeft: 70,
     marks: [
@@ -44,20 +45,31 @@ ${exts_chart}
 
 
 
+
+<https://upset.app/>
+
+The most common set visualization approach – Venn Diagrams – doesn’t scale beyond three or four sets. UpSet, in contrast, is well suited for the quantitative analysis of data with more than three sets.
+
+
+
+
 ```js
 const csvfile = view(Inputs.file({label: "CSV File", accept: ".csv"}));
 ```
 
 
 ```js
+// FIXME Replace this with shared code to avoid pain:
 if( csvfile != null ) {
     const uploaded = await csvfile.csv();
     const uploaded_item = { reg_id: user_profile_key, extensions: [] };
     uploaded.forEach( function (item, index) {
+      if( item.extension ) {
         console.log(item);
         var ext = item.extension.trim();
         ext = `*.${ext}`;
         uploaded_item.extensions.push(ext);
+      }
     });
     exts.push(uploaded_item); 
     registries.add(user_profile_key);
@@ -77,7 +89,7 @@ exts.forEach( function (item, index) {
     // Go through the extensions for this registry:
     item.extensions.forEach( function (ext, ext_index) {
         if( !(ext in ext_to_regs) ) {
-            ext_to_regs[ext] = []
+            ext_to_regs[ext] = [];
         }
         ext_to_regs[ext].push(item.reg_id);
     });

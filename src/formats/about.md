@@ -1,6 +1,11 @@
 # About the Registries
 ## Where does the format data come from?
 
+<div class="warning">
+This page is under development and has major gaps at present.
+</div>
+
+## Introduction
 
 ```js
 const db = FileAttachment("../data/registries.db").sqlite();
