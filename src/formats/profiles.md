@@ -308,7 +308,7 @@ This gives a reasonable overview, but also hides all the interesting details of 
 
 ## Comparing Collections
 
-Simple format profile above is particularly ill-suited to comparing one collection with another, so here we explore some alternative visualisations.
+The simple format profile above is particularly ill-suited to comparing one collection with another, so here we explore some alternative visualisations.
 
 First, we need to select a different profile to compare against:
 
@@ -417,7 +417,7 @@ Plot.plot({
 </div>
 </div>
 
-We can use a ['beeswarm' plot](https://datavizcatalogue.com/blog/chart-snapshot-beeswarm-plot/) to really focus on on the different in percentages. Here, we calculate the difference between the percentages for each extension, and plot that difference vertically. This means formats that are distinctive of our primary collection appear near the top, and those distinctive of the secondary collection appear a the bottom.  Rarer and similar extensions bunch up in the middle.
+We can use a ['beeswarm' plot](https://datavizcatalogue.com/blog/chart-snapshot-beeswarm-plot/) to really focus on on the difference in percentages. Here, we calculate the difference between the percentages for each extension, and plot that difference vertically. This means formats that are distinctive of our primary collection appear near the top, and those distinctive of the secondary collection appear at the bottom.  Rarer and similar extensions bunch up in the middle.
 
 <div class="grid grid-cols-1">
 <div class="card" style="overflow: hidden">
@@ -448,7 +448,7 @@ We look at answering this in two ways. Firstly, what single additional tool or r
 
 ### One More Tool
 
-Here, we take your selected collection profile, and work out how much coverage of that set of extension each registry or tool offers.
+Here, we take your selected collection profile, and work out how much coverage of that set of extensions each registry or tool offers.
 
 ```js
 
@@ -677,7 +677,7 @@ if( cover_selection ) {
 
 ```
 
-Plotting that as a graph, we can see overall benefit each tool brings.
+Plotting that as a graph, we can see the overall benefit each tool brings.
 
 <div class="grid grid-cols-1">
 <div class="card">
@@ -703,14 +703,15 @@ Plot.plot({
 </div>
 </div>
 
-#### Unique Extensions
+## Unique Extensions
 
-Finally, we can look at the unique extensions: those that are in your collection profile, but do not appear to be in any of the thousands of format records aggregated across all the registries.
+Finally, we can look at the unique extensions: those that are in your collection profile, but do not appear to be in any of the thousands of format records aggregated across all the registries. These don't have a _Registry ID_ or a link to the _Format Index_, because they do not appear in any of the sources we have.
 
 ```js
 const remainder_exts = Object.values(coverage.slice(-1)[0].remainder);
 view(generate_extension_table(remainder_exts, null));
 ```
+
 
 So far, it seems that it is not uncommon for any reasonably large collection to have a significant number of files with genuine format extensions that are not in any registry! 
 
@@ -720,6 +721,6 @@ This distribution of formats is important for the wider community to analyse, in
 
 This is a first prototype of this kind of analysis tool, and we are keen to hear your feedback on what works, what doesn't, and what a future version could look like!
 
-It will be launched at [iPRES 2024](https://ipres2024.pubpub.org/), as part of the [Digital Preservation Registries: What We Have & What We Need](https://ipres2024.pubpub.org/pub/52dby49z/release/1?readingCollection=ef524688) workshop. But if you see us at the conference you are encourage to ask us to walk you through using this tool and talk to us about sharing your own format profiles.
+It will be launched at [iPRES 2024](https://ipres2024.pubpub.org/), as part of the [Digital Preservation Registries: What We Have & What We Need](https://ipres2024.pubpub.org/pub/52dby49z/release/1?readingCollection=ef524688) workshop. But if you see us at the conference you are encouragedto ask us to walk you through using this tool and talk to us about sharing your own format profiles.
 
 You can also get in touch with us directly. See the [contact details on the homepage](../#contact).
