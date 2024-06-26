@@ -446,7 +446,7 @@ We can use similar methods to compare our primary collection profile with the av
 We look at answering this in two ways. Firstly, what single additional tool or registry should I consider, in order to identify as many files as possible? Secondly, if I used all the available tools and registries, what kind of format coverage might I get?
 
 
-### One More Tool
+## Adding One Registry
 
 Here, we take your selected collection profile, and work out how much coverage of that set of extensions each registry or tool offers.
 
@@ -567,8 +567,6 @@ Plot.plot({
   color: {legend: true},
   width,
   marks: [
-    Plot.ruleY([0]),
-    Plot.ruleX([0]),
     Plot.dotX(candidates, {x: "total_matched_extensions", y: "total_matched_files", r: 5, fill: "reg_id", tip: true})
   ]
 })
@@ -640,7 +638,7 @@ if( selection ) {
 
 ```
 
-### Using All The Registries
+## Using All The Registries
 
 Rather than just using one registry, what if we tried them all? Here, we run the analysis above multiple times, and each time around, we take the registry that provides the greatest improvement in overall coverage.
 
@@ -684,18 +682,37 @@ Plotting that as a graph, we can see the overall benefit each tool brings.
 
 ```js
 Plot.plot({
-    title: "What happens when we use all the registries?",
-    subtitle: "Applying all the tools, one by one, in the optimal order.",
+    title: "How well do the whole set of registries cover our collection extensions?",
+    subtitle: "Starting from scratch, applying all the tools one by one, in the optimal order.",
     x: { label: 'Registry ID' },
-    y: { label: 'Number of unmatchable files', grid: true },
+    y: { label: 'Total Unmatchable Extensions', grid: true, type: 'linear' },
     marginLeft: 70,
     marginBottom: 40,
     color: {legend: true},
     width,
     marks: [
         Plot.ruleY([0]),
-        Plot.ruleX([0]),
-        Plot.barY(coverage, {x: (d) => (d.reg_id === "" ?  "" : `+${d.reg_id}`), y: "total_unmatched_files", fill: "reg_id", sort: {x: "-y"}, tip: true})
+        Plot.barY(coverage, {x: (d) => (d.reg_id === "" ?  "" : `+${d.reg_id}`), y: "total_unmatched_extensions", fill: "reg_id", r: 5, sort: {x: "-y"}, tip: true}),
+    ]
+})
+```
+
+</div>
+<div class="card">
+
+```js
+Plot.plot({
+    title: "How well do the whole set of registries cover our collection files?",
+    subtitle: "Starting from scratch, applying all the tools one by one, in the optimal order.",
+    x: { label: 'Registry ID' },
+    y: { label: 'Total Unmatchable Files', grid: true, type: 'log' },
+    marginLeft: 70,
+    marginBottom: 40,
+    color: {legend: true},
+    width,
+    marks: [
+        Plot.ruleY([1]),
+        Plot.barY(coverage, {x: (d) => (d.reg_id === "" ?  "" : `+${d.reg_id}`), y1: 1, y2: "total_unmatched_files", fill: "reg_id", r: 5, sort: {x: "-y"}, tip: { format: { "y1": false }}}),
     ]
 })
 ```
