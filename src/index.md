@@ -26,8 +26,10 @@ import { generate_exts_chart } from "./formats/registries.js";
 ```
 
 <div class="grid grid-cols-2" style="grid-auto-rows: auto;">
-  <div class="card">${
- resize((width) => Plot.plot({
+  <div class="card">
+
+```js
+resize((width) => Plot.plot({
   title: 'PRONOM Registry Records Over Time',
   subtitle: "Cumulative growth by year of creation",
   y: { tickFormat: (d) => d.toString() },
@@ -41,14 +43,17 @@ import { generate_exts_chart } from "./formats/registries.js";
         Plot.mapX("cumsum", {x: "count", y: "year", fill:  "registry_id", tip: true, sort: { y: "-y" } })
     )
   ] 
-})
-)
-  }
+}))
+```
+
   <p style="text-align: center"><a href="./formats/about">Click here for more statistics from format registries...</a></p>
   </div>
-  <div class="card">${
+  <div class="card">
+
+```js
     resize((width) => generate_exts_chart(width) )
-  }
+```
+
   <p style="text-align: center"><a href="./formats/">Click here for more information about formats...</a></p>
   </div>
 </div>

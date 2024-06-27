@@ -1,6 +1,7 @@
 // See https://observablehq.com/framework/config for documentation.
 import MarkdownItFootnote from "markdown-it-footnote";
 
+// Set up anonymised analytics if building on GITHUB:
 const analytics = process.env.GITHUB_JOB == undefined ? '' : '<script defer src="https://cloud.umami.is/script.js" data-website-id="0ed0c854-0297-411f-b19c-4688ea996bdc"></script>';
 
 export default {
@@ -19,9 +20,9 @@ export default {
         { name: "All About Formats", path: "/formats/"},
         { name: "About the Registries", path: "/formats/about"},
         { name: "Combining Registries", path: "/formats/combine"},
+        { name: "Collection Profiles", path: "/formats/profiles"},
         { name: "Comparing Registries", path: "/formats/compare"},
         { name: "Format Diversity Estimation", path: "/formats/species"},
-        { name: "Collection Profiles", path: "/formats/profiles"}
       ]
     },
     {
@@ -45,7 +46,7 @@ export default {
   //theme: "light", // try "light", "dark", "slate", etc.
   // header: "", // what to show in the header (HTML)
   // footer: "Built with Observable.", // what to show in the footer (HTML)
-  footer: ({path}) => `<a href="https://github.com/digipres/workbench/blob/main/src${path}.md?plain=1">View the source for this page</a>.`,
+  footer: ({path}) => `<a href="https://github.com/digipres/workbench/blob/main/src${path}.md?plain=1">View/edit the source for this page</a>.`,
   // sidebar: true, // whether to show the sidebar
   toc: true, // whether to show the table of contents
   // pager: true, // whether to show previous & next links in the footer
