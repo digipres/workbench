@@ -48,6 +48,6 @@ The [Combining Registries](./combine) page provides the details of how this is d
 There are three different analysis tools available for you to try.
 
 - [Comparing Registries](./compare), which explores ways of comparing the contents of different format registries.
-- [Format Diversity Estimation](./species), which uses the gaps between registries to estimate the total number of digital formats.
 - [Using Collection Profiles](./profiles), which shows how to use file-extension format profiles to compare digital collections against others, and against the full set of available format registries.
+- [Format Diversity Estimation](./species), which uses the gaps between registries to estimate the total number of digital formats.
 
