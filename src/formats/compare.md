@@ -31,8 +31,8 @@ At the simplest level, we can compare them based on the number of records and fi
 ```js
 Plot.plot({
     title: "Comparing Registries by Total Number of File Extensions",
-    y: {grid: true, label: null },
-    x: {grid: true, label: "Total Number of Distinct File Extensions in Format Registry Records" },
+    y: {grid: true, label: "Registry ID" },
+    x: {grid: true, label: "Total Number of File Extensions" },
     color: {legend: false, label: "Registry ID"},
     marginLeft: 70,
     marginRight: 70,
