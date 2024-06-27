@@ -20,9 +20,9 @@ export default {
         { name: "All About Formats", path: "/formats/"},
         { name: "About the Registries", path: "/formats/about"},
         { name: "Combining Registries", path: "/formats/combine"},
-        { name: "Using Collection Profiles", path: "/formats/profiles"},
         { name: "Comparing Registries", path: "/formats/compare"},
         { name: "Format Diversity Estimation", path: "/formats/species"},
+        { name: "Using Collection Profiles", path: "/formats/profiles"},
       ]
     },
     {
