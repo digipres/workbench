@@ -12,22 +12,40 @@ const db = FileAttachment("../data/registries.db").sqlite();
 ```
 
 ```js
-const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats GROUP BY registry_id, year;`;
+const date_options = [
+  {label: "Year Created", value: "created"},
+  {label: "Year Last Modified", value: "last_modified"},
+];
+
+const date_selection = view(Inputs.select(date_options, {
+    label: "Show Records By",
+    format: (t) => t.label,
+}));
+```
+
+
+```js
+const fr_query = `SELECT registry_id, CAST(STRFTIME("%Y", ${date_selection.value}) AS INT) AS year, COUNT(*) as count FROM formats GROUP BY registry_id, year;`;
+const fr = db.sql([`${fr_query}`]);
 ```
 
 <div class="card">
-${ resize((width) => Plot.plot({
-  title: "Registry Records By Year Of Creation",
-  subtitle: "Note that this does not reflect when records are updated",
+
+```js
+resize((width) => Plot.plot({
+  title: `Registry Records By ${date_selection.label}`,
+  subtitle: "Broken down by year and registry (not all registries are included yet!)",
   x: { tickFormat: (d) => d.toString() },
   color: { legend: true },
   width,
   marks: [
     Plot.barY(fr, {x: "year", y: "count", fill: "registry_id", tip: true })
   ] 
-})
-)}
+}))
+```
+
 </div>
+
 
 Note detailed analysis possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/workbench/main/src/data/registries.db#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id&_facet_array=genres&_facet_array=extensions&_facet_array=iana_media_types)
 
@@ -45,7 +63,9 @@ const pr = db.sql`SELECT genre.value as genre, CAST(STRFTIME("%Y", created) AS I
 ```
 
 <div class="card">
-${ resize((width) => Plot.plot({
+
+```js
+resize((width) => Plot.plot({
   title: "PRONOM Records By Year of Creation & Genre",
   subtitle: "Note that this does not reflect when records are updated",
   x: { tickFormat: (d) => d.toString() },
@@ -54,8 +74,9 @@ ${ resize((width) => Plot.plot({
   marks: [
     Plot.barY(pr, {x: "year", y: "count", fill: "genre", tip: true })
   ] 
-})
-)}
+}))
+```
+
 </div>
 
 
