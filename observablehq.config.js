@@ -19,7 +19,6 @@ export default {
       pages: [
         { name: "All About Formats", path: "/formats/"},
         { name: "About the Registries", path: "/formats/about"},
-        { name: "Combining Registries", path: "/formats/combine"},
         { name: "Comparing Registries", path: "/formats/compare"},
         { name: "Using Collection Profiles", path: "/formats/profiles"},
         { name: "Format Diversity Estimation", path: "/formats/species"},

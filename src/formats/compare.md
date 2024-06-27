@@ -39,7 +39,7 @@ Plot.plot({
     width,
     marks: [
         Plot.ruleX([0]),
-        Plot.rectX(exts, {x: "num_extensions", y: "reg_id", fill: "reg_id", sort: { y: "x" } }),
+        Plot.rectX(exts, {x: "num_extensions", y: "reg_id", fill: "reg_id", sort: { y: "x" }, tip: true }),
         Plot.text(exts, {x: "num_extensions", y: "reg_id", text: (d) => d.num_extensions, dx:2, textAnchor: "start"})
     ]
 })

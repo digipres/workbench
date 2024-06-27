@@ -14,7 +14,7 @@ This page provides interactive tools allowing you to do both of these things, ba
 
 A format profile for a collection simply lists all the formats there are, along with a count of how many distinct files or bitstreams appear to be in that format. For example, this is precisely what the [UK National Archives File Profiling Tool (DROID) does](https://www.nationalarchives.gov.uk/information-management/manage-information/policy-process/digital-continuity/file-profiling-tool-droid/). For the formats that PRONOM covers, this works very well, and the resulting profile can be analysed within DROID itself, or by using complementary tools like [Freud](https://github.com/digital-preservation/freud) or [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/).
 
-However, to compare against a wider range of sources, we need to boil things down to the simplest format signature: file extensions. This lets us combine multiple information sources, with [all of the benefits and limitations that implies](./combine#file-extensions).
+However, to compare against a wider range of sources, we need to boil things down to the simplest format signature: file extensions. This lets us combine multiple information sources, with [all of the benefits and limitations that implies](./#file-extensions).
 
 A number of institutions have already made suitable file extension collection profiles available, so you can use those to explore this idea. Note that this analysis discards any extensions that appear to be just numbers or contain spaces, but anything else is OK. If you want to look at the source CSV files, you can find them [here](https://github.com/digipres/workbench/tree/main/src/data/collection-profiles).
 
