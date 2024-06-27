@@ -1,6 +1,7 @@
 // See https://observablehq.com/framework/config for documentation.
 import MarkdownItFootnote from "markdown-it-footnote";
 
+const analytics = process.env.GITHUB_JOB == undefined ? '' : '<script defer src="https://cloud.umami.is/script.js" data-website-id="0ed0c854-0297-411f-b19c-4688ea996bdc"></script>';
 
 export default {
   // The project’s title; used in the sidebar and webpage titles.
@@ -77,6 +78,9 @@ export default {
       <a target="_blank" title="GitHub" href="https://github.com/digipres/workbench"><span>GitHub️</span></a>
     </span>
   </div>
-</div>`
+  </div>`,
+
+  // HTML head:
+  head: `${analytics}`
 
 };
