@@ -50,6 +50,7 @@ const source_profiles = [
     key: "yul",
     title: "Yale University Library DPS (unidentified files only) 2024-04-01",
     terms: "CC-BY - Yale University Library",
+    frequency_cutoff: 5, // Extensions with less than this many files are ignored.
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-identified-extensions-2024-04-01.csv").csv({typed: true})
   },
   {
