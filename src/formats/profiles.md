@@ -54,6 +54,13 @@ const source_profiles = [
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-identified-extensions-2024-04-01.csv").csv({typed: true})
   },
   {
+    key: "yul-nu",
+    title: "Yale University Library DPS (not uniquely identified files only) 2024-03-28",
+    terms: "CC-BY - Yale University Library",
+    frequency_cutoff: 5, // Extensions with less than this many files are ignored.
+    raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-uniquely-identified-extensions-2024-03-28.csv").csv({typed: true})
+  },
+  {
     key: "kb-edepot",
     title: "KB eDepot 2014-03",
     terms: "CC-BY - KB",
