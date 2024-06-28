@@ -7,7 +7,7 @@ As part of the [Registries of Good Practice project](https://github.com/digipres
 
 This page provides an initial proof-of-concept showing how analysis and visualisation tools can be applied to that database, and used to generate visualisations that help us understand and explore the data.  It runs in your browser, downloads the database, and generates graphs based on SQL queries.
 
-<div class="note">Note that at the current time, the index only contains the iPRES conference proceedings dataset.</div>
+<div class="warning">Note that at the current time, the index only contains the first version of the iPRES conference proceedings dataset. There may be some data quality issues due to how the data has been collected, which these visualisations may help to uncover!</div>
 
 ```js
 import {SQLiteDatabaseClient} from "npm:@observablehq/sqlite";

@@ -18,6 +18,7 @@ However, to compare against a wider range of sources, we need to boil things dow
 
 A number of institutions have already made suitable file extension collection profiles available, so you can use those to explore this idea. Note that this analysis discards any extensions that appear to be just numbers or contain spaces, but anything else is OK. If you want to look at the source CSV files, you can find them [here](https://github.com/digipres/workbench/tree/main/src/data/collection-profiles).
 
+<div class="warning">Unlike more formal format registries, collection profiles reflect the endlessly inventive chaos of real people doing real things in the real world. These file extensions cannot be trusted, but <a href="https://www.reddit.com/r/calvinandhobbes/comments/rmfnsc/theres_treasure_everywhere/">there's treasure everywhere.</a></div>
 
 ```js
 import { load_extension_data } from "./registries.js";
@@ -47,7 +48,7 @@ function make_link(ext, reg_id) {
 const source_profiles = [
   {
     key: "yul",
-    title: "Yale University Library (unidentified files only) 2024-04-01",
+    title: "Yale University Library DPS (unidentified files only) 2024-04-01",
     terms: "CC-BY - Yale University Library",
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-identified-extensions-2024-04-01.csv").csv({typed: true})
   },
@@ -736,8 +737,7 @@ const remainder_exts = Object.values(coverage.slice(-1)[0].remainder);
 view(generate_extension_table(remainder_exts, null));
 ```
 
-
-So far, it seems that it is not uncommon for any reasonably large collection to have a significant number of files with genuine format extensions that are not in any registry! 
+As this data comes from real collections, many of these will reflect the myriad ways file extensions are used and abused in the wild. Nevertheless, the findings so far seem to show that every reasonably large collection has a significant number of files with _genuine_ format extensions that are not in _any_ registry! 
 
 This distribution of formats is important for the wider community to analyse, in order to understand how best to address the format identification problem. So, please get in touch if you are able to share your collections format profiles!
 

@@ -5,7 +5,9 @@
 
 One of the most fundamental facets of preserving digital cultural materials is understanding the data formats they are in. Born-digital items are particularly challenging as, in comparison to the relatively constrained worlds of metadata and digitised materials, they come in a huge range of formats. This makes format identification a crucial step towards understanding the information and software dependencies we need to capture, to make future access possible.
 
-As part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), we have been indexing, analysing and comparing data from a wide range of format information sources (a.k.a. format registries) and format identification tools. This part of the DigiPres Workbench summarizes our findings so far and provides tools for you to explore further.
+As part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), we have been indexing, analysing and comparing data from a wide range of format information sources (a.k.a. format registries) and format identification tools. 
+
+In line with [our principles](https://github.com/digipres/registries-of-practice-project?tab=readme-ov-file#principles), our goal is to highlight and support all the great work being done in this field. We want to understand the ecosystem our registries are part of, and how we can make things better in an evidenced and targeted way.
 
 ## The Registries
 
