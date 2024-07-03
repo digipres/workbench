@@ -48,14 +48,14 @@ function make_link(ext, reg_id) {
 const source_profiles = [
   {
     key: "yul",
-    title: "Yale University Library DPS (unidentified files only) 2024-04-01",
+    title: "Yale University Library DPS (items not identified by DROID only) 2024-04-01",
     terms: "CC-BY - Yale University Library",
     frequency_cutoff: 5, // Extensions with less than this many files are ignored.
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-identified-extensions-2024-04-01.csv").csv({typed: true})
   },
   {
     key: "yul-nu",
-    title: "Yale University Library DPS (not uniquely identified files only) 2024-03-28",
+    title: "Yale University Library DPS (items not uniquely identified by DROID only) 2024-03-28",
     terms: "CC-BY - Yale University Library",
     frequency_cutoff: 5, // Extensions with less than this many files are ignored.
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-uniquely-identified-extensions-2024-03-28.csv").csv({typed: true})
@@ -267,6 +267,8 @@ Finally, note that if the same (canonical) extension appears multiple times, the
 | extension | file_count |
 | --------- | ---------- | 
 | *.pdf     |        62  |
+
+If your browser supports it, you can try generating an extension profile of some of your own files with the [DigiPres Workbench File System Scanner](../scanner/).
 
 If you have any problems, please [get in touch via the contact details on the homepage](../#contact).
 
@@ -666,9 +668,11 @@ initial_coverage['reg_id'] = '';
 
 const source_list = new Set(selector);
 // If PRONOM First: do that, and drop from the source_list:
-const pronom_coverage = get_next_best_reg(coverage[0], ['pronom'])[0];
-coverage.push(pronom_coverage);
-source_list.delete("pronom");
+if( always_pronom_first ) {
+    const pronom_coverage = get_next_best_reg(coverage[0], ['pronom'])[0];
+    coverage.push(pronom_coverage);
+    source_list.delete("pronom");
+}
 // Copy the list size as we're modifying the list:
 var source_num = source_list.size;
 // Loop through the rest, picking the best coverage each time:
