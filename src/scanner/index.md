@@ -133,7 +133,7 @@ async function saveExtensionProfile() {
     const writableStream = await newHandle.createWritable();
 
     // write our file
-    await writableStream.write("extension,file_count\n");
+    await writableStream.write("extension,count\n");
     for( const item of ext_data) {
         await writableStream.write(`${item.extension},${item.count}\n`);
     }

@@ -34,7 +34,7 @@ Plot.plot({
     y: {grid: true, label: "Registry ID" },
     x: {grid: true, label: "Total Number of File Extensions" },
     color: {legend: false, label: "Registry ID"},
-    marginLeft: 70,
+    marginLeft: 90,
     marginRight: 70,
     width,
     marks: [

@@ -109,9 +109,9 @@ function gen_profile_plot(profile, width) {
         marks: [
             Plot.ruleY([0]),
             Plot.barY(
-                profile.ok_data.filter( (d) => d.file_count >= file_count_threshold),
+                profile.ok_data.filter( (d) => d.count >= count_threshold),
                 { 
-                    y: "file_count", 
+                    y: "count", 
                     x: "extension", 
                     sort: { x: "-y" },
                     tip: true,
@@ -145,26 +145,26 @@ if( csvfile != null ) {
 function process_profile(profile) {
     profile['strange'] = [];
     profile['ok_data'] = [];
-    profile['total_ok_file_count'] = 0;
-    profile['total_strange_file_count'] = 0;
-    profile['total_file_count'] = 0;
+    profile['total_ok_count'] = 0;
+    profile['total_strange_count'] = 0;
+    profile['total_count'] = 0;
     const count_by_extension = {};
     profile.raw_data.forEach( function (raw_item, index) {
         // Clone original item for modification, keeping only needed bits:
         const item = {
             extension: raw_item.extension,
-            file_count: raw_item.file_count,
+            count: raw_item.count,
         };
         // Ensure the count is a count:
-        item.file_count = parseInt(item.file_count);
+        item.count = parseInt(item.count);
         // Check that worked, drop NaNs:
-        if( isNaN(item.file_count) ) {
+        if( isNaN(item.count) ) {
             // Nope:
             profile.strange.push(item);
             return;
         }
         // Add up the total:
-        profile.total_file_count += item.file_count;
+        profile.total_count += item.count;
         // Canonicalize the extension:
         if(  item.extension && typeof item.extension == "string" ) {
             // Start with a copy:
@@ -188,21 +188,21 @@ function process_profile(profile) {
             // Drop items that have space characters amid:
             if (ext.indexOf(" ") >= 0) {
                 profile.strange.push(item);
-                profile.total_strange_file_count += item.file_count;
+                profile.total_strange_count += item.count;
             } else {
                 // Check if the item is already in, and use that instead if so:
                 if( count_by_extension[item.extension]) {
-                    count_by_extension[item.extension].file_count += item.file_count;
+                    count_by_extension[item.extension].count += item.count;
                 } else {
                     count_by_extension[item.extension] = item;
                     profile.ok_data.push(item);
                 }
-                profile.total_ok_file_count += item.file_count;
+                profile.total_ok_count += item.count;
             }
         } else {
             // Drop items that are not strings, i.e. numeric
             profile.strange.push(item);
-            profile.total_strange_file_count += item.file_count;
+            profile.total_strange_count += item.count;
         }
     });
     return profile;
@@ -221,24 +221,24 @@ view(Inputs.table(profiles, {
     columns: [
         "title",
         "link",
-        "total_file_count",
-        "total_ok_file_count",
+        "total_count",
+        "total_ok_count",
     ],
     header: {
         title: "Title",
         terms: "Terms",
         link: "Link",
-        total_file_count: "Total Files",
-        total_ok_file_count: "Total 'OK' Files",
+        total_count: "Total Files",
+        total_ok_count: "Total 'OK' Files",
     },
     format: {
         link: (d) => html`<a href="${d}" target="_blank">[open]</a>`
     },
     width: {
         title: "50%",
-        total_ok_file_count: "15%",
+        total_ok_count: "15%",
     },
-    sort: "total_ok_file_count",
+    sort: "total_ok_count",
 }))
 ```
 
@@ -251,9 +251,9 @@ const csvfile = view(Inputs.file({label: "Use Your Own CSV Extension Profile", a
 <details class="card">
 <summary>How do I create a suitable Extension Profile in CSV format?</summary>
 
-Your file extension collection profile should have at least two columns, one called 'extension' and one called 'file_count'. Other columns will be ignored. This would look something like:
+Your file extension collection profile should have at least two columns, one called 'extension' and one called 'count'. Other columns will be ignored. This would look something like:
 
-| extension | file_count |
+| extension | count |
 | --------- | ---------- | 
 | PDF       |        50  |
 | DOCX      |       202  |
@@ -262,9 +262,13 @@ Your file extension collection profile should have at least two columns, one cal
 
 Note that extensions that are just numbers, or contain spaces, will be dropped. Note also that the system will attempt to convert the extensions into a canonical lower-case format, i.e. `*.pdf`, but you can just supply the extension e.g. `pdf` or `.pdf` and it should work it out.
 
+Note that the `count` should be supplied as a plain number, e.g. `1024` rather than formatted like e.g. `1,024`.
+
+If you want to include files with no extension, please use the special value `(no extension)` as the value for the `extension`. If there is a column with an empty string, it will be interpreted as `(no extension)`.
+
 Finally, note that if the same (canonical) extension appears multiple times, the total file count will be add together all occurrences. e.g. in the example above, you'd end up with:
 
-| extension | file_count |
+| extension | count |
 | --------- | ---------- | 
 | *.pdf     |        62  |
 
@@ -296,7 +300,7 @@ Then, there are some configuration options to consider.
 Firstly, it usually makes sense to ignore extremely rare file extensions. Often, these are simply errors, but also some collections are so large that dropping some of the 'long tail' of formats helps make the analysis a bit easier. You can see this by changing the value here, and observing how this affects the frequency plot below.
 
 ```js
-const file_count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "Ignore Extensions With A File Count Lower Than:" }));
+const count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "Ignore Extensions With A File Count Lower Than:" }));
 ```
 
 Secondly, it may be that whoever is generating the format profile is concerned that some personal data may leak out through the file extension, and so extensions are truncated so that there is a limit to how much information they can contain. Generally, this is not needed, but if you know that one of the collections you are interested in has truncated the file extensions, this configuration should be set to match, so that the comparison can be as accurate as possible.
@@ -344,20 +348,20 @@ const differences = [];
 var largest_percentage = 0.0;
 profile_1.ok_data.forEach((item, index) => {
     // Skip/filter:
-    if( item.file_count < file_count_threshold ) {
+    if( item.count < count_threshold ) {
         return;
     }
     // Look up matched item:
     const item_2 = profile_2.ok_data.find((i) => i.extension == item.extension);
     var item_2_count = 0;
     var relation = 'primary only'
-    if( item_2 && item_2.file_count > 0.0 ) {
-        item_2_count = item_2.file_count;
+    if( item_2 && item_2.count > 0.0 ) {
+        item_2_count = item_2.count;
         relation = 'in common'
     }
     // Calculate percentages:
-    const percentage_1 = 100.0 * item.file_count/profile_1.total_ok_file_count;
-    const percentage_2 = 100.0 * item_2_count/profile_2.total_ok_file_count;
+    const percentage_1 = 100.0 * item.count/profile_1.total_ok_count;
+    const percentage_2 = 100.0 * item_2_count/profile_2.total_ok_count;
     differences.push({
         extension: item.extension,
         percentage_1,
@@ -376,20 +380,20 @@ profile_1.ok_data.forEach((item, index) => {
 // Loop over profile_2, adding any uniques in:
 profile_2.ok_data.forEach((item, index) => {
     // Skip/filter:
-    if( item.file_count < file_count_threshold ) {
+    if( item.count < count_threshold ) {
         return;
     }
     // Look up matched item:
     const item_1 = profile_1.ok_data.find((i) => i.extension == item.extension);
     var item_1_count = 0;
     var relation = 'secondary only'
-    if( item_1 && item_1.file_count > 0.0 ) {
+    if( item_1 && item_1.count > 0.0 ) {
         // Already dealt with these on the first pass.
         return;
     }
     // Calculate percentages:
     const percentage_1 = 0.0;
-    const percentage_2 = 100.0 * item.file_count/profile_2.total_ok_file_count;
+    const percentage_2 = 100.0 * item.count/profile_2.total_ok_count;
     differences.push({
         extension: item.extension,
         percentage_1,
@@ -472,7 +476,7 @@ const initial_coverage = {
     remainder: ext_dict,
     total_unmatched_extensions: Object.keys(ext_dict).length,
     total_matched_extensions: 0,
-    total_unmatched_files: profile_1.total_ok_file_count,
+    total_unmatched_files: profile_1.total_ok_count,
     total_matched_files: 0
 }
 
@@ -491,7 +495,7 @@ function compare_with_reg(coverage, reg) {
     const profile_remains = {...coverage.remainder};
     overlap.forEach((extension) => {
         profile_matched[extension] = profile_remains[extension];
-        matched_files += profile_remains[extension].file_count;
+        matched_files += profile_remains[extension].count;
         delete profile_remains[extension];
     })
 
@@ -628,7 +632,7 @@ function generate_extension_table(extension_list, reg_id) {
         }
         // Add standard columns:
         entry.extension = m.extension;
-        entry.file_count = m.file_count;
+        entry.count = m.count;
         // Store:
         exts.push(entry);
     });
@@ -637,12 +641,12 @@ function generate_extension_table(extension_list, reg_id) {
         header: {
             reg_id: "Registry ID",
             extension: "Extension",
-            file_count: "File Count",
+            count: "File Count",
         },
         format: {
             extension: (d) => make_link(d, reg_id),
         },
-        sort: "file_count",
+        sort: "count",
         reverse: true
     })
 }
