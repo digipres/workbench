@@ -185,7 +185,7 @@ This type of diagram enumerates and ranks all the combinations of sets, and make
 
 const reg_selection = [ "pronom", "fdd", "wikidata" ]; // use registries to select all initially
 
-const selector = view(Inputs.checkbox(registries, {label: "Registries", value: reg_selection , format: (x) => x}));
+const selector = view(Inputs.checkbox(available_registries, {label: "Registries", value: reg_selection , format: (x) => x}));
 ```
 
 You can also add your own set of file extensions, if you like:
@@ -195,11 +195,16 @@ const csvfile = view(Inputs.file({label: "CSV File", accept: ".csv"}));
 ```
 
 ```js
+const available_registries = new Set();
+registries.forEach((item, index) => {
+ available_registries.add(item);
+});
 // FIXME Replace this with shared code to avoid pain:
 if( csvfile != null ) {
     const uploaded = await csvfile.csv();
     const uploaded_item = { reg_id: user_profile_key, extensions: [] };
     uploaded.forEach( function (item, index) {
+      // FIXME Re-use common extension canonicalisation code, support 'no extension' somehow sensible.
       if( item.extension ) {
         console.log(item);
         var ext = item.extension.trim();
@@ -207,9 +212,17 @@ if( csvfile != null ) {
         uploaded_item.extensions.push(ext);
       }
     });
-    exts.push(uploaded_item); 
-    registries.add(user_profile_key);
+
+    const current_item = exts.find((p) => p.reg_id == user_profile_key);
+    if( current_item ) {
+        current_item.extensions = uploaded_item.extensions;
+    } else {
+        exts.push(uploaded_item); 
+    };
+
+    available_registries.add(user_profile_key);
 }
+
 ```
 
 ```js
@@ -248,9 +261,9 @@ const selected_set = Mutable(null);
 
 function updateSelection(set) {
   selection = set;
-  var exts = " ";
+  var extstr = " ";
   if( set != null ) {
-    exts = set.name + " extensions: " + set.elems.reduce(function(acc, item, index) {
+    extstr = set.name + " extensions: " + set.elems.reduce(function(acc, item, index) {
       return acc + (index === 0 ? '' : ', ') + item.name;
     }, '');
     //d3.select("#upset_set").node().textContent = exts
