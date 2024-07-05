@@ -50,7 +50,7 @@ SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON
 ```
 
 ```js
-const auths = db.sql`SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY year, keyword.value HAVING COUNT(*) >= 3 ORDER BY year ASC, count DESC`; 
+const kwds = db.sql`SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY year, keyword.value HAVING COUNT(*) >= 3 ORDER BY year ASC, count DESC`; 
 // Similar JSON_EACH(publications.creators) creator, 
 ```
 
@@ -60,7 +60,7 @@ The data can then be visualised as an [ordinal scatterplot](https://observablehq
 
 <div class="grid grid-cols-1">${
 Plot.dot(
-  auths, {x: "year", y: "keyword", r: "count", tip: true }
+  kwds, {x: "year", y: "keyword", r: "count", fill: "lightgray", stroke: "black", tip: true }
 ).plot({ marginLeft: 200, x: { tickFormat: (d) => d.toString() } })
 }</div>
 
