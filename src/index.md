@@ -87,6 +87,7 @@ Here are some things you could try...
 
 The DigiPres Workbench was inspired by:
 
+- The [Wikidata for Digital Preservation portal](https://wikidp.org/) by [Katherine Thornton, Kenneth Seals-Nutt, Euan Cochrane & Carl Wilson](https://wikidp.org/about).
 - The [GLAM Workbench](https://glam-workbench.net/) by [Tim Sherratt](https://timsherratt.au/).
 - [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/) by [Ashley Blewer](https://ashleyblewer.com/).
 - [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/) and [Demystify-lite](https://ross-spencer.github.io/demystify-lite/) by [Ross Spencer](http://exponentialdecay.co.uk/).

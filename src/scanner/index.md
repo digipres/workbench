@@ -88,6 +88,15 @@ const scan_button = view(Inputs.button("Select Directory To Scan", {value: null,
   <pre id="output"></pre>
 </details>
 
+```
+
+Not Implemented Yet...
+
+const count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "Omit Extensions With A File Count Lower Than:" }));
+
+Also limit plot size!
+```
+
 ```js
 // Convert the dict/object into an array for plotting:
 const ext_data = [];

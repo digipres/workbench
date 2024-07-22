@@ -45,44 +45,73 @@ function make_link(ext, reg_id) {
 
 
 // Load collections profile data:
-const source_profiles = [
+const original_profiles = [
   {
     key: "yul",
-    title: "Yale University Library DPS (items not identified by DROID only) 2024-04-01",
-    terms: "CC-BY - Yale University Library",
+    title: "Yale University Library DPS (No ID) 2024-04-01",
+    link: "https://guides.library.yale.edu/digitalpreservationsystem",
+    terms: "CC-BY",
+    description: "Only includes extensions from items not identified by DROID.",
     frequency_cutoff: 5, // Extensions with less than this many files are ignored.
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-identified-extensions-2024-04-01.csv").csv({typed: true})
   },
   {
     key: "yul-nu",
-    title: "Yale University Library DPS (items not uniquely identified by DROID only) 2024-03-28",
-    terms: "CC-BY - Yale University Library",
+    title: "Yale University Library DPS (ID Not Unique) 2024-03-28",
+    link: "https://guides.library.yale.edu/digitalpreservationsystem",
+    terms: "CC-BY",
+    description: "Only includes extensions with no unique identification when using DROID, e.g. multiple format ID matches.",
     frequency_cutoff: 5, // Extensions with less than this many files are ignored.
     raw_data: await FileAttachment("../data/collection-profiles/yale/YUL-not-uniquely-identified-extensions-2024-03-28.csv").csv({typed: true})
   },
   {
     key: "kb-edepot",
     title: "KB eDepot 2014-03",
-    terms: "CC-BY - KB",
+    terms: "CC-BY",
     link: "https://www.bitsgalore.org/2015/04/29/top-50-file-formats-in-the-kb-e-depot",
     raw_data: await FileAttachment("../data/collection-profiles/kb/KB-eDepot-FExtensions-v3-2014-03.csv").csv({typed: true})
   },
-//  {
-//    key: "nara-era",
-//    title: "NARA ERA (extensions truncated to six characters) 2024-06-12",
-//    terms: "CC-0 NARA TBC",
-//    truncated_at: 6,
-//    raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
-//  },
+  {
+    key: "nara-era",
+    title: "NARA ERA (extensions truncated to six characters) 2024-06-12",
+    terms: "CC-0",
+    link: "https://github.com/usnationalarchives",
+    truncated_at: 6,
+    description: "Disclaimer...",
+    raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
+  },
   {
     key: "hl-drs",
     title: "Harvard Library DRS 2024-06-06",
-    terms: "CC-BY - Harvard University",
+    link: "https://preservation.library.harvard.edu/digital-preservation-repository",
+    terms: "CC-BY",
     raw_data: await FileAttachment("../data/collection-profiles/harvard/Harvard-Library-DRS-2024-06-06.csv").csv({typed: true})
+  },
+  {
+    key: "lc-2020",
+    title: "Library of Congress 2020",
+    terms: "CC-0",
+    raw_data: await FileAttachment("../data/collection-profiles/loc/LoC-2020.csv").csv({typed: true})
+  },
+  {
+    key: "lc-2022",
+    title: "Library of Congress 2022",
+    terms: "CC-0",
+    raw_data: await FileAttachment("../data/collection-profiles/loc/LoC-2022.csv").csv({typed: true})
+  },
+  {
+    key: "lc-2024",
+    title: "Library of Congress 2024",
+    terms: "CC-0",
+    raw_data: await FileAttachment("../data/collection-profiles/loc/LoC-2024.csv").csv({typed: true})
+  },
+  {
+    key: "cul-ts-2024",
+    title: "Cambridge University Library Transfer Service 2024-04",
+    link: "https://www.lib.cam.ac.uk/digitalpreservation/services/transfer-service",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../data/collection-profiles/cambridge/Transfer_Service_CUL_File_Extensions-2024-04.csv").csv({typed: true})
   }
-
-  
-
 ]
 
 const user_profile_key = 'your profile';
@@ -109,7 +138,7 @@ function gen_profile_plot(profile, width) {
         marks: [
             Plot.ruleY([0]),
             Plot.barY(
-                profile.ok_data.filter( (d) => d.count >= count_threshold),
+                profile.ok_data,
                 { 
                     y: "count", 
                     x: "extension", 
@@ -126,6 +155,12 @@ function gen_profile_plot(profile, width) {
 ```
 
 ```js
+// We make sure each 'iteration' of the profiles has a separate name.
+// This makes sure the Observable Framework knows which things to update.
+
+// Create the merged profile list
+const source_profiles = [];
+original_profiles.forEach((p) => source_profiles.push(p));
 
 if( csvfile != null ) {
     const uploaded = await csvfile.csv();
@@ -141,10 +176,18 @@ if( csvfile != null ) {
     };
 }
 
+
+// Go through the profiles:
+// n.b. best to create new top-level objects in blocks, rather than update existing ones, as that makes if easier for Observable Framework to keep track of block dependencies:
+const profiles = [];
+source_profiles.forEach((p) => profiles.push(process_profile(p)));
+
 // Clean up the data a bit:
 function process_profile(profile) {
     profile['strange'] = [];
     profile['ok_data'] = [];
+    profile['ok_data_threshold'] = [];
+    profile['ok_data_all'] = [];
     profile['total_ok_count'] = 0;
     profile['total_strange_count'] = 0;
     profile['total_count'] = 0;
@@ -156,7 +199,10 @@ function process_profile(profile) {
             count: raw_item.count,
         };
         // Ensure the count is a count:
-        item.count = parseInt(item.count);
+        if( typeof item.count === 'string' || item.count instanceof String ) {
+            // Is a string, might have commas in it...
+            item.count = parseInt(item.count.replace(/,/g, ''));
+        }
         // Check that worked, drop NaNs:
         if( isNaN(item.count) ) {
             // Nope:
@@ -195,7 +241,7 @@ function process_profile(profile) {
                     count_by_extension[item.extension].count += item.count;
                 } else {
                     count_by_extension[item.extension] = item;
-                    profile.ok_data.push(item);
+                    profile.ok_data_all.push(item);
                 }
                 profile.total_ok_count += item.count;
             }
@@ -205,44 +251,79 @@ function process_profile(profile) {
             profile.total_strange_count += item.count;
         }
     });
+    // Now go through the ok_data and keep only the:
+    // - count_threshold exceeding
+    // - top max_extension_count
+    // First sort the data by count (DESC)
+    profile.ok_data_all.sort((a, b) => a.count < b.count ? 1 : -1);
+    // Then slice:
+    profile.ok_data_all.forEach((item, i) => {
+        if( item.count >= count_threshold && i < max_extension_count ) {
+            profile.ok_data.push(item);
+        }
+        if( item.count >= count_threshold ) {
+            profile.ok_data_threshold.push(item);
+        }
+    });
     return profile;
 }
-
-// Go through the profiles:
-// n.b. best to create new top-level objects in blocks, rather than update existing ones, as that makes if easier for Observable Framework to keep track of block dependencies:
-const profiles = [];
-source_profiles.forEach((p) => profiles.push(process_profile(p)));
 ```
 
 ```js
 
 // output the table:
-view(Inputs.table(profiles, {
+const profile_overview = view(Inputs.table(source_profiles, {
     columns: [
         "title",
+        "terms",
         "link",
         "total_count",
-        "total_ok_count",
     ],
     header: {
         title: "Title",
         terms: "Terms",
         link: "Link",
         total_count: "Total Files",
-        total_ok_count: "Total 'OK' Files",
     },
     format: {
         link: (d) => html`<a href="${d}" target="_blank">[open]</a>`
     },
     width: {
         title: "50%",
-        total_ok_count: "15%",
+        terms: "10%",
+        total_count: "15%",
     },
-    sort: "total_ok_count",
-}))
+    sort: "title",
+    multiple: false,
+}));
+```
+```js
+if( profile_overview ) {
+    display(html`<div class="tip" label="${profile_overview.title}">
+    ${ profile_overview.description && html`<p>${profile_overview.description}</p>`}
+    <table class="table">
+    <tbody>
+    <tr><th>Total Extensions</th><td>${d3.format(",")(profile_overview.raw_data.length)}</td></tr>
+    <tr><th>Total Files</th><td>${d3.format(",")(profile_overview.total_count)}</td></tr>
+    <tr><th>Total Unique, Usable Extensions</th><td>${d3.format(",")(profile_overview.ok_data_all.length)}</td></tr>
+    <tr><th>Total Files With Usable Extensions</th><td>${d3.format(",")(profile_overview.total_ok_count)}</td></tr>
+    <tr><th>Total <abbr title="Total number of extensions that could not be used, e.g. contained spaces, or were just numbers.">Unusable</abbr> Extensions</th><td>${d3.format(",")(profile_overview.strange.length)}</td></tr>
+    <tr><th>Total Files With Unusable Extensions</th><td>${d3.format(",")(profile_overview.total_strange_count)}</td></tr>
+    <tr><th>Frequency Cutoff</th><td>${profile_overview.frequency_cutoff}</td></tr>
+    <tr><th>Truncated At</th><td>${profile_overview.truncated_at}</td></tr>
+    <tr><th>Terms</th><td>${profile_overview.terms}</td></tr>
+    <tr><th>Link</th><td>${ profile_overview.link && html`<a href="${profile_overview.link}">Click here for more information</a>` }</td></tr>
+    </tbody>
+    </table>
+    </div`);
+} else {
+    display(html`<div class="tip">Select a row from the table to find out more.</div>`);
+}
+
 ```
 
-However, you can also add your own profile to this page, and analyse it without uploading your data anywhere:
+
+You can also add your own profile to this page, and analyse it without uploading your data anywhere:
 
 ```js
 const csvfile = view(Inputs.file({label: "Use Your Own CSV Extension Profile", accept: ".csv"}));
@@ -278,6 +359,31 @@ If you have any problems, please [get in touch via the contact details on the ho
 
 </details>
 
+<details class="card">
+<summary>Configuration Options</summary>
+
+It usually makes sense to ignore extremely rare file extensions. Often, these are simply errors, but also some collections are so large that dropping some of the 'long tail' of formats helps make the analysis a bit easier. You can see this by changing the value here, and observing how this affects the frequency plot below.
+
+```js
+const count_threshold = view(Inputs.range([0, 10000], {step: 1, value: 1, label: "Ignore Extensions With A File Count Lower Than:" }));
+```
+
+It may be that whoever is generating the format profile is concerned that some personal data may leak out through the file extension, and so extensions are truncated so that there is a limit to how much information they can contain. Generally, this is not needed, but if you know that one of the collections you are interested in has truncated the file extensions, this configuration should be set to match, so that the comparison can be as accurate as possible.
+
+```js
+const extensions_truncated_at = view(Inputs.range([0, 100], {step: 1, value: 100, label: "Truncate Extensions Longer Than (Characters):" }));
+```
+
+Limit number of extensions included in the analysis, as otherwise the graphs and charts will be overwhelmed.
+
+```js
+const max_extension_count = view(Inputs.range([0, 500], {step: 10, value: 200, label: "Maximum number of extensions to include:" }));
+```
+
+</details>
+
+
+
 ## Select A Collection Profile
 
 First, we need to select 'our' profile, the primary collection profile we want to compare with other collections and registries:
@@ -285,31 +391,22 @@ First, we need to select 'our' profile, the primary collection profile we want t
 ```js
 
 // Select
-const profile_1 = view(
-  Inputs.select(profiles, {
+const profile_1_source = view(
+  Inputs.select(source_profiles, {
     label: "Primary Profile",
     format: (t) => t.title,
-    value: profiles.find((t) => t.key === default_1),
+    value: source_profiles.find((t) => t.key === default_1),
     width: "100%",
   })
 );
 ```
 
-Then, there are some configuration options to consider. 
-
-Firstly, it usually makes sense to ignore extremely rare file extensions. Often, these are simply errors, but also some collections are so large that dropping some of the 'long tail' of formats helps make the analysis a bit easier. You can see this by changing the value here, and observing how this affects the frequency plot below.
-
-```js
-const count_threshold = view(Inputs.range([0, 10000], {step: 5, value: 500, label: "Ignore Extensions With A File Count Lower Than:" }));
-```
-
-Secondly, it may be that whoever is generating the format profile is concerned that some personal data may leak out through the file extension, and so extensions are truncated so that there is a limit to how much information they can contain. Generally, this is not needed, but if you know that one of the collections you are interested in has truncated the file extensions, this configuration should be set to match, so that the comparison can be as accurate as possible.
-
-```js
-const extensions_truncated_at = view(Inputs.range([0, 100], {step: 1, value: 100, label: "Truncate Extensions Longer Than (Characters):" }));
-```
 
 ### Summary of Your Collection Profile
+
+```js
+const profile_1 = profiles.find((p) => p.key === profile_1_source.key );
+```
 
 This graph provides a summary of the selected format profile.
 
@@ -336,6 +433,17 @@ const profile_2 = view(
     width: "100%",
   })
 );
+
+const modes = [
+   { mode: "all", title: "All Extensions" },
+   { mode: "unique", title: "Unique Extensions Only" },
+   { mode: "common", title: "Common Extensions Only" },
+];
+
+const compare_mode = view(Inputs.select(modes, {
+    label: "Comparison Mode",
+    format: (t) => t.title
+}));
 ```
 
 Given this, we can now build up a comparison. We start by going through every file extension that is in either collection, and recording the percentage of the overall collection that represents, in terms of numbers of files. We do this because using percentages means we can compare collections of very different sizes.
@@ -347,17 +455,20 @@ These percentages can be plotted directly against each other for each file forma
 const differences = [];
 var largest_percentage = 0.0;
 profile_1.ok_data.forEach((item, index) => {
-    // Skip/filter:
-    if( item.count < count_threshold ) {
-        return;
-    }
-    // Look up matched item:
-    const item_2 = profile_2.ok_data.find((i) => i.extension == item.extension);
+    // Look up matched items, allowing the search to go into the non-truncated data to make sure we find things:
+    const item_2 = profile_2.ok_data_threshold.find((i) => i.extension == item.extension);
     var item_2_count = 0;
     var relation = 'primary only'
     if( item_2 && item_2.count > 0.0 ) {
         item_2_count = item_2.count;
         relation = 'in common'
+    }
+    // Drop depending on mode:
+    if( compare_mode.mode == "unique" && relation == 'in common') {
+        return;
+    }
+    if( compare_mode.mode == "common" && relation == 'primary only') {
+        return;
     }
     // Calculate percentages:
     const percentage_1 = 100.0 * item.count/profile_1.total_ok_count;
@@ -379,16 +490,16 @@ profile_1.ok_data.forEach((item, index) => {
 })
 // Loop over profile_2, adding any uniques in:
 profile_2.ok_data.forEach((item, index) => {
-    // Skip/filter:
-    if( item.count < count_threshold ) {
-        return;
-    }
-    // Look up matched item:
-    const item_1 = profile_1.ok_data.find((i) => i.extension == item.extension);
+    // Look up matched item, allowing the search to go into the non-truncated data to make sure we find things:
+    const item_1 = profile_1.ok_data_threshold.find((i) => i.extension == item.extension);
     var item_1_count = 0;
     var relation = 'secondary only'
     if( item_1 && item_1.count > 0.0 ) {
         // Already dealt with these on the first pass.
+        return;
+    }
+    // Drop depending on mode:
+    if( compare_mode.mode == "common") {
         return;
     }
     // Calculate percentages:
@@ -468,15 +579,17 @@ Here, we take your selected collection profile, and work out how much coverage o
 ```js
 
 const ext_dict = {}
-profile_1.ok_data.forEach( (item, i) => {
+var threshold_total = 0;
+profile_1.ok_data_threshold.forEach( (item, i) => {
     ext_dict[item.extension] = item;
+    threshold_total += item.count;
 });
 const initial_coverage = {
     matched: {},
     remainder: ext_dict,
     total_unmatched_extensions: Object.keys(ext_dict).length,
     total_matched_extensions: 0,
-    total_unmatched_files: profile_1.total_ok_count,
+    total_unmatched_files: threshold_total,
     total_matched_files: 0
 }
 
