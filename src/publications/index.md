@@ -41,6 +41,74 @@ ${ resize((width) => Plot.plot({
 )}
 </div>
 
+
+## iPRES Keyword Usage
+
+First we look at the number of publications for each keyword. The list is very long, so it's not practical to plot all the labels, but you can hover over to see each entry.
+
+```js
+const kwdsd = db.sql`SELECT keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY keyword.value ORDER BY count DESC`; 
+// Similar JSON_EACH(publications.creators) creator, 
+```
+
+```js
+Plot.plot({
+  y: {grid: true, type: 'sqrt'},
+  x: {grid: false, label: "keyword", tickRotate: -50 },
+  //marginBottom: 100,
+  color: {legend: false},
+  marks: [
+    Plot.rectY(kwdsd, {y: "count", x: "keyword", fill: "keyword", tip: true, sort: { x: "-y" }}),
+    Plot.axisX({ticks: []}),
+  ]
+})
+```
+
+We can analyse this a bit more closely by collecting the different terms together, by how often each one is used. So, entries on the left are used one or two times across the whole corpus, and entries on the right are the most commonly used keywords.
+
+
+```js
+Plot.plot({
+  y: {grid: true, type: 'sqrt'},
+  color: {legend: false},
+  marks: [
+    Plot.rectY(kwdsd, Plot.binX({y: "count"}, {x: "count", fill: "keyword", tip: true}))
+  ]
+})
+```
+
+This emphasises how the majority of keywords are only used a few times across the corpus. 
+
+If plot the number of authors that use a keyword versus the number of times it is used in total, the plot is less dominated by the keywords that are only used once, as these almost all overlap. This lets us look for broader trends.
+
+
+```js
+const kwdsa = db.sql`SELECT keyword, COUNT(author) as authors, SUM(count) as pubs FROM (
+SELECT keyword.value as keyword, creator.value as author, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword, JSON_EACH(publications.creators) creator GROUP BY keyword.value, creator.value ORDER BY keyword ASC, count DESC
+) GROUP BY keyword ORDER BY keyword ASC`;
+```
+
+```js
+Plot.plot({
+  x: {grid: true, type: 'sqrt'},
+  y: {grid: true, type: 'sqrt'},
+  color: {legend: false},
+  marks: [
+    Plot.dot(kwdsa, {y: "pubs", x: "authors", fill: "keyword", tip: true})
+  ]
+})
+```
+
+???
+
+Most publications are not classified using keywords that help locate the item???
+
+- Too general (used for loads).
+- Too specific (used one or twice).
+- Repeated from title or abstract.
+
+???
+
 ## iPRES Keywords Over Time
 
 Here we use a more complex query to unpack the array of keywords associated with each paper, and then count how often each keyword is used each year.  We then limit the result set to keywords that are used at least three times in a given year, to keep the size of the data set manageable and focussed.

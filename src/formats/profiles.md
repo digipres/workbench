@@ -18,7 +18,13 @@ However, to compare against a wider range of sources, we need to boil things dow
 
 A number of institutions have already made suitable file extension collection profiles available, so you can use those to explore this idea. Note that this analysis discards any extensions that appear to be just numbers or contain spaces, but anything else is OK. If you want to look at the source CSV files, you can find them [here](https://github.com/digipres/workbench/tree/main/src/data/collection-profiles).
 
-<div class="warning">Unlike more formal format registries, collection profiles reflect the endlessly inventive chaos of real people doing real things in the real world. These file extensions cannot be trusted, but <a href="https://www.reddit.com/r/calvinandhobbes/comments/rmfnsc/theres_treasure_everywhere/">there's treasure everywhere.</a></div>
+<div class="warning">
+<p>These profiles have been generously generated and shared on a best-effort basis. It's surprisingly difficult to generate this information, and these profiles should not be considered a complete and accurate reflection of all the different items an institution holds.
+</p>
+<p>
+Crucially, unlike more formal format registries, collection profiles reflect the endlessly inventive chaos of real people doing real things in the real world. These file extensions cannot be trusted, but <a href="https://www.reddit.com/r/calvinandhobbes/comments/rmfnsc/theres_treasure_everywhere/">there's treasure everywhere.</a>
+</p>
+</div>
 
 ```js
 import { load_extension_data } from "./registries.js";
@@ -77,7 +83,7 @@ const original_profiles = [
     terms: "CC-0",
     link: "https://github.com/usnationalarchives",
     truncated_at: 6,
-    description: "Disclaimer...",
+    description: "This file extension profile represents a subset of items and do not accurately represent NARA's full holdings.",
     raw_data: await FileAttachment("../data/collection-profiles/nara/NARA-ERA-Format-Profile-2024-06-12.csv").csv({typed: true})
   },
   {
@@ -91,18 +97,21 @@ const original_profiles = [
     key: "lc-2020",
     title: "Library of Congress 2020",
     terms: "CC-0",
+    description: "This file extension profile represents an extracted test set of items and do not accurately represent the full holdings of the Library of Congress.",
     raw_data: await FileAttachment("../data/collection-profiles/loc/LoC-2020.csv").csv({typed: true})
   },
   {
     key: "lc-2022",
     title: "Library of Congress 2022",
     terms: "CC-0",
+    description: "This file extension profile represents an extracted test set of items and do not accurately represent the full holdings of the Library of Congress.",
     raw_data: await FileAttachment("../data/collection-profiles/loc/LoC-2022.csv").csv({typed: true})
   },
   {
     key: "lc-2024",
     title: "Library of Congress 2024",
     terms: "CC-0",
+    description: "This file extension profile represents an extracted test set of items and do not accurately represent the full holdings of the Library of Congress.",
     raw_data: await FileAttachment("../data/collection-profiles/loc/LoC-2024.csv").csv({typed: true})
   },
   {
