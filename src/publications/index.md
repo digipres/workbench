@@ -41,8 +41,40 @@ ${ resize((width) => Plot.plot({
 )}
 </div>
 
+## iPRES Keywords Over Time
 
-## iPRES Keyword Usage
+Here we use a more complex query to unpack the array of keywords associated with each paper, and then count how often each keyword is used each year.  We then limit the result set to keywords that are used at least a few times in a given year, to keep the size of the data set manageable and focussed.
+
+```js
+const times = view(Inputs.range([1, 10], {label: "Minimum number of times a keyword appears in any year:", step: 1, value: 3}));
+```
+
+<!-- 
+
+```
+SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY year, keyword.value HAVING COUNT(*) >= ${times} ORDER BY year ASC, count DESC
+```
+
+-->
+
+```js
+const kwds = db.sql`SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY year, keyword.value HAVING COUNT(*) >= ${times} ORDER BY year ASC, count DESC`; 
+// Similar JSON_EACH(publications.creators) creator, 
+```
+
+The data can then be visualised as an [ordinal scatterplot](https://observablehq.com/@observablehq/plot-ordinal-scatterplot), where ongoing usage should show up as horizontal sequences of dots, with the dot size indicating the number of papers using that keyword in that year.
+
+<div class="tip">The text is quite small on this visualisation so you might find it needs a large screen.</div>
+
+<div class="grid grid-cols-1">${
+Plot.dot(
+  kwds, {x: "year", y: "keyword", r: "count", fill: "lightgray", stroke: "black", tip: true }
+).plot({ marginLeft: 200, x: { tickFormat: (d) => d.toString() } })
+}</div>
+
+This plot vividly illustrates that publication keywords have been used in different ways over the years.
+
+## iPRES Keyword Statistics
 
 First we look at the number of publications for each keyword. The list is very long, so it's not practical to plot all the labels, but you can hover over to see each entry.
 
@@ -109,31 +141,18 @@ Most publications are not classified using keywords that help locate the item???
 
 ???
 
-## iPRES Keywords Over Time
+## Temp
 
-Here we use a more complex query to unpack the array of keywords associated with each paper, and then count how often each keyword is used each year.  We then limit the result set to keywords that are used at least three times in a given year, to keep the size of the data set manageable and focussed.
-
-```
-SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY year, keyword.value HAVING COUNT(*) >= 3 ORDER BY year ASC, count DESC
+```sqlite
+SELECT keyword.value AS keyword, COUNT(*) AS count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY keyword.value ORDER BY keyword;
 ```
 
-```js
-const kwds = db.sql`SELECT year, keyword.value as keyword, COUNT(*) as count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY year, keyword.value HAVING COUNT(*) >= 3 ORDER BY year ASC, count DESC`; 
-// Similar JSON_EACH(publications.creators) creator, 
-```
 
-The data can then be visualised as an [ordinal scatterplot](https://observablehq.com/@observablehq/plot-ordinal-scatterplot), where ongoing usage should show up as horizontal sequences of dots, with the dot size indicating the number of papers using that keyword in that year.
+---
 
-<div class="tip">The text is quite small on this visualisation so you might find it needs a large screen.</div>
+---
 
-<div class="grid grid-cols-1">${
-Plot.dot(
-  kwds, {x: "year", y: "keyword", r: "count", fill: "lightgray", stroke: "black", tip: true }
-).plot({ marginLeft: 200, x: { tickFormat: (d) => d.toString() } })
-}</div>
-
-This plot vividly illustrates that publication keywords have been used in different ways over the years.
-
+---
 
 ## iPRES Author Network
 
@@ -141,7 +160,7 @@ We can also pull out the authors, and make a graph where the size of each node i
 
 This requires quite a lot of manipulation of the raw data, but the network can then be displayed using a slightly modified version of a [widely-used network visualisation method](https://observablehq.com/framework/lib/d3).
 
-<div class="warning">This isn't easy to interact with on a mobile device. Try using a laptop or desktop computer.</div>
+<div class="warning">This isn't easy to interact with if you are on a mobile device. Try using a laptop or desktop computer.</div>
 
 <div class="tip">Scroll down and press the <b>Go!</b> button to start the visualisation. When the network is visible, you can hover your mouse pointer over any node inside the dashed border and it will show the author's name and publication count.</div>
 
