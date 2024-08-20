@@ -19,9 +19,6 @@ const workbook = await FileAttachment("../data/format-sources.xlsx").xlsx();
 const sources = workbook.sheet(workbook.sheetNames[0], {headers: true});
 ```
 
-```js
-// Using a JavaScript approach so HTML can be emitted while looping over data:
-htl.html`
 <table>
 <thead>
     <tr><th>Key</th><th>Homepage</th><th>Description</th></tr>
@@ -29,8 +26,8 @@ htl.html`
 ${sources.map(
     d => htl.html`<tr><td id="source_${d.key}">${d.key}</td><td><a href="${d.homepage}">${d.short_name}</a></tf><td>${d.title}</td></tr>`
 )}
-</table>`
-```
+</table>
+
 You can find more information about the data sources on the [About the Registries](./about) page. 
 
 But to make this set of different datasets really useful, we need to find ways of combining and the data. One of the most useful ways has been to simply compare registries based on the file extensions found in their format records.
@@ -41,7 +38,6 @@ import { generate_exts_chart } from "./registries.js";
 <div class="card">
   ${ resize((width) => generate_exts_chart(width) ) }
 </div>
-
 
 The [Combining Format Registries](#combining-format-registries) section below provides the details of how this is done, and outlines the assumptions involved.
 

@@ -33,6 +33,7 @@ The results can then be presented as a stacked bar chart.
 <div class="grid grid-cols-1">
 ${ resize((width) => Plot.plot({
   x: { tickFormat: (d) => d.toString() },
+  color: { legend: true },
   width,
   marks: [
     Plot.barY(pubs, {x: "year", y: "count", fill: "type", tip: true })

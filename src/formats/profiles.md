@@ -123,6 +123,14 @@ const original_profiles = [
     link: "https://www.lib.cam.ac.uk/digitalpreservation/services/transfer-service",
     terms: "CC-BY",
     raw_data: await FileAttachment("../data/collection-profiles/cambridge/Transfer_Service_CUL_File_Extensions-2024-04.csv").csv({typed: true})
+  },
+  {
+    key: "frdr-2024",
+    title: "Digital Research Alliance of Canada FRDR 2024-03",
+    link: "https://www.frdr-dfdr.ca/repo/",
+    description: "The Digital Research Alliance of Canada's Federated Research Data Repository (FRDR).",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../data/collection-profiles/drac/Alliance-FRDR-2024-03.csv").csv({typed: true})
   }
 ]
 

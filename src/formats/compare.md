@@ -47,6 +47,20 @@ Plot.plot({
 
 </div>
 
+```js
+view(Inputs.table(exts, { 
+  select: false,
+  columns: [ 'reg_id', 'num_extensions', 'num_unique', 'percent_unique'],
+  header: {
+    reg_id: "Registry",
+    num_extensions: "Total Extensions",
+    num_unique: "Unique Extensions",
+    percent_unique: "Unique Extensions (%)",
+  },
+  sort: 'num_extensions',
+}));
+```
+
 This provides an overview, but doesn't indicate how good the coverage is across registries. For example, given how many entries are in _WikiData_, does this mean it covers everything in the other registries?
 
 
