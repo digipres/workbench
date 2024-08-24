@@ -27,7 +27,7 @@ Crucially, unlike more formal format registries, collection profiles reflect the
 </div>
 
 ```js
-import { load_extension_data } from "./registries.js";
+import { load_extension_data, make_link } from "./registries.js";
 import { extractCombinations, render } from 'npm:@upsetjs/bundle';
 
 // Load registry data:
@@ -38,16 +38,6 @@ exts.forEach( function (item, index) {
     // Store the registry IDs:
     registries.add(item.reg_id);
 });
-
-// Helper to make links to registry index:
-function make_link(ext, reg_id) {
-    if( reg_id ) {
-        return html`<a target="_blank" href="https://www.digipres.org/formats/extensions/#${ext}">${ext}</a>`;
-    } else {
-        return ext
-    }
-}
-
 
 
 // Load collections profile data:
@@ -373,7 +363,7 @@ Finally, note that if the same (canonical) extension appears multiple times, the
 | --------- | ---------- | 
 | *.pdf     |        62  |
 
-If your browser supports it, you can try generating an extension profile of some of your own files with the [DigiPres Workbench File System Scanner](../scanner/).
+If your browser supports it, you can try generating an extension profile of some of your own files with the [DigiPres Workbench File System Scanner](../tools/scanner/).
 
 If you have any problems, please [get in touch via the contact details on the homepage](../#contact).
 

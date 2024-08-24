@@ -1,6 +1,7 @@
 import {FileAttachment} from "npm:@observablehq/stdlib";
 import * as Plot from "npm:@observablehq/plot";
 import 'npm:core-js/actual/set';
+import {html} from "npm:htl";
 
 export const load_extension_data = async function() {
     // Load the data:
@@ -66,4 +67,13 @@ export const generate_exts_chart = async function(width) {
     });
 
     return exts_chart;
+}
+
+// Helper to make links to registry index:
+export function make_link(ext, reg_id) {
+    if( reg_id ) {
+        return html`<a target="_blank" href="https://www.digipres.org/formats/extensions/#${ext}">${ext}</a>`;
+    } else {
+        return ext
+    }
 }

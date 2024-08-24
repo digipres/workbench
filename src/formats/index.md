@@ -30,7 +30,7 @@ ${sources.map(
 
 You can find more information about the data sources on the [About the Registries](./about) page. 
 
-But to make this set of different datasets really useful, we need to find ways of combining and the data. One of the most useful ways has been to simply compare registries based on the file extensions found in their format records.
+But to make this set of different datasets really useful, we need to find ways to combine them. One of the most useful ways has been to simply compare registries based on the file extensions found in their format records.
 
 ```js
 import { generate_exts_chart } from "./registries.js";
@@ -56,19 +56,23 @@ There are three different analysis tools available for you to try.
 This section documents the assumptions and approximations that underlie the various analysis tools and reports in the <i>Formats</i> section of the DigiPres Workbench.
 </div>
 
-Different format registries use different levels of definitions of format for their records. Most work at the same broad format level of granularity as file extensions and [Internet Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml). Others are more fine-grained, and seek to identify individual format versions and/or profiles or format usage. This latter group includes PRONOM, which is the _de facto_ 'preservation grade' format registry and is integrated into many digital preservation tools and workflows.
+Different format registries use different levels of definitions of format for their records. Most work at the same broad format level of granularity as file extensions and [Internet Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml). Others are more fine-grained, and seek to identify individual format versions and/or profiles of format usage. This latter group includes PRONOM, which is the _de facto_ 'preservation grade' format registry and is integrated into many digital preservation tools and workflows.
 
-But to meaningfully combine and compare registries, we need to choose some level of granularity that allows us to align the different datasets.
+These differences mean that, to meaningfully combine and compare registries, we need to choose some level of granularity that allows us to align them.
+
+<div class="warning">
+These complex merged datasets are absolutely not authoritative and should not be used for automated format identification. They are only intended as aids for analysing, browsing and exploring the formats in the different registries.
+</div>
 
 ### File Extensions
 
-The simplest way to make this work is to discard the finer-grained information and just compare format registries based on the file extensions they refer to. But even in this case, different registries handle things in slightly different ways. Most just specify extensions as simple strings, where for example `xmpl` would mean any file that ended in `.xmpl` or indeed `.XMPL` or `.Xmpl`. In contract, Apache Tika's format registry is based on the [Shared MIME-info Database specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html) which uses the [glob syntax](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm45387609262192). i.e. like `*.xmpl`, but also like `*-gz`. Therefore, when comparing sets of extensions, we reduce them all to lower case and shift them to the `*.ext` glob syntax.
+The simplest way to make this work is to discard the finer-grained information and just compare format registries based on the file extensions they refer to. But even in this case, different registries handle things in slightly different ways. Most just specify extensions as simple strings, where for example `xmpl` would mean any file that ended in `.xmpl` or indeed `.XMPL` or `.Xmpl`. In contrast, Apache Tika's format registry is based on the [Shared MIME-info Database specification](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html) which uses the [glob syntax](https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm45387609262192). This covers simple extensions like `*.xmpl`, but also supports rarer forms like `*-gz`. Therefore, when comparing sets of extensions, we reduce them all to lower case and shift them to the `*.ext` glob syntax.
 
 This is a good way to get an idea of the overall size and coverage of different registry sources. Consequently, this approach is used in a number of different ways in the different pages of this site. However, there are some assumptions and issues here that should be kept in mind:
 
 - Some formats might not have file extensions associated with them.
 - Some _different_ formats may use the _same_ file extension.
-- Rarely, the _same_ format might use _different_ file extensions.
+- Sometimes, the _same_ format might use _different_ file extensions.
 
 Overall, extension-based analyses are likely to slightly underestimate the number of formats, and slightly overestimate the degree to which two different sets of formats overlap.
 
@@ -77,26 +81,23 @@ Note that this does not apply when the format extensions come from user-generate
 
 ### Media Types
 
-One alternative is to integrate all the different granularities into a consistent conformance hierarchy, using an extended Media Type syntax, as per [Talking About Formats](http://anjackson.net/keeping-codes/practice/talking-about-formats).
+One alternative is to integrate all the different granularities into a consistent conformance hierarchy, using an extended Media Type syntax, as described in [Talking About Formats](https://anjackson.net/keeping-codes/practice/talking-about-formats#extended-mime-types).
 
 This is has been implemented at <http://www.digipres.org/formats/mime-types/>, but requires more work to make things fully consistent. However, it does show how PRONOM-style fine-grained format identification can be integrated as Media Type parameters. e.g. versions:
 
-- application/pdf
-  - application/pdf; version="1.0"
+- `application/pdf`
+  - `application/pdf; version="1.0"`
   - ...
 
 Or ones with known 'super types' integrated with versions:
 
-- application/zip
-  - application/vnd.etsi.asic-e+zip
-    - application/vnd.etsi.asic-e+zip; version="2.x"
+- `application/zip`
+  - `application/vnd.etsi.asic-e+zip`
+    - `application/vnd.etsi.asic-e+zip; version="2.x"`
 
-Or even ones with additions intended tos make the hierarchy a bit more manageable:
+Or even ones with custom entries intended to make the hierarchy a bit more manageable:
 
-- application/zip
-  -  application/x-tika-ooxml (used by Apache Tika so it can route all OOXML to the same code)
-     - application/vnd.openxmlformats-officedocument.wordprocessingml.document 
-       - application/vnd.openxmlformats-officedocument.wordprocessingml.document; version="2007 onwards" 
-
-This complex merged hierarchy is absolutely not authoritative and should not be used for automated format identification. It is only intended as a navigational aid for browsing and exploring the formats in the different registries.
-
+- `application/zip`
+  -  `application/x-tika-ooxml` _(used by Apache Tika so it can route all OOXML to the same code)_
+     - `application/vnd.openxmlformats-officedocument.wordprocessingml.document`
+       - `application/vnd.openxmlformats-officedocument.wordprocessingml.document; version="2007 onwards"`

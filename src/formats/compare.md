@@ -7,7 +7,7 @@ While PRONOM is rightly considered the 'gold standard' in format identification 
 
 
 ```js
-import { load_extension_data } from "./registries.js";
+import { load_extension_data, make_link } from "./registries.js";
 import { extractCombinations, render } from 'npm:@upsetjs/bundle';
 
 const exts = await load_extension_data();
@@ -281,7 +281,19 @@ function updateSelection(set) {
       return acc + (index === 0 ? '' : ', ') + item.name;
     }, '');
     //d3.select("#upset_set").node().textContent = exts
-    d3.select("#upset_set").node().innerHTML = Inputs.table(selection.elems).outerHTML;
+    const results_table = Inputs.table(selection.elems,{
+        header: {
+            reg_id: "Registry ID",
+            extension: "Extension",
+            count: "File Count",
+        },
+        format: {
+            name: (d) => make_link(d, "this"),
+        },
+        sort: "count",
+        reverse: true
+    })
+    d3.select("#upset_set").node().innerHTML = results_table.outerHTML;
     
   }
   //console.log(set);
