@@ -1,4 +1,4 @@
-# Workshop: Find Your Formats!
+# Workshop: Find Formats!
 ## Part of the iPRES 2024 Workshop "Digital Preservation Registries: What We Have & What We Need"
 
 
