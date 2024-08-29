@@ -239,7 +239,12 @@ function process_profile(profile) {
             if( item.extension.indexOf("*") == -1 && item.extension != "(none)") {
                 item.extension = `*.${ext}`;
             } else {
-                item.extension = ext;
+                // Treat empty extensions as '(none)':
+                if( item.extension == "" ) {
+                    item.extension = "(none)"
+                } else {
+                    item.extension = ext;
+                }
             }
             // Drop items that have space characters amid:
             if (ext.indexOf(" ") >= 0) {
