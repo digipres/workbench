@@ -236,7 +236,7 @@ function process_profile(profile) {
             // truncate if needed:
             ext = ext.slice(0, extensions_truncated_at);
             // Add a '*.' prefix if none exists:
-            if( item.extension.indexOf("*") == -1) {
+            if( item.extension.indexOf("*") == -1 && item.extension != "(none)") {
                 item.extension = `*.${ext}`;
             } else {
                 item.extension = ext;
@@ -722,16 +722,14 @@ function generate_coverage_table(coverage_list) {
         "reg_id",
         "matched_extensions",
         "matched_files",
-        "total_matched_extensions",
-        "total_matched_files",
+        "total_unmatched_extensions",
         "total_unmatched_files",
     ],
     header: {
         reg_id: "Registry ID",
-        total_matched_extensions: "Total Matched Extensions",
-        total_matched_files: "Total Matched Files",
-        matched_extensions: "Matched Extensions",
         matched_files: "Matched Files",
+        matched_extensions: "Matched Extensions",
+        total_unmatched_extensions: "Total Unmatched Extensions",
         total_unmatched_files: "Total Unmatched Files",
     },
     multiple: false

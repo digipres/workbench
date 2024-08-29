@@ -7,7 +7,7 @@ This is a very early stage experimental prototype. It may fall over, or simple _
 
 </div>
 
-The [DigiPres Sandbox](https://github.com/digipres/sandbox) makes it possible to play with the tools supported by the [DigiPres Toolbox](https://github.com/digipres/toolbox), running it in the cloud so you can access it via your browser!
+The [DigiPres Sandbox](https://github.com/digipres/sandbox) makes it possible to play with [the tools supported by](https://github.com/digipres/toolbox?tab=readme-ov-file#supported-tools) the [DigiPres Toolbox](https://github.com/digipres/toolbox), running it in the cloud so you can access it via your browser!
 
 This works because it re-uses [the MyBinder Service](https://mybinder.org/), which is a cloud-hosted instance of [Binder](https://jupyter.org/binder). Binder was built to support reproducibility in scientific research, but can be used for all sorts of different things.[^1]
 
