@@ -8,14 +8,6 @@ toc: true
 
 Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
 
-<div class="caution" label="⚠️ Confound it all! ⚠️">You've found my 'secret' project! Feel free to look around, but please don't publicise this site or post about it until it's ready... The launch will be at <a href="https://ipres2024.pubpub.org/">iPRES 2024</a>, which isn't that far away. So until then... <br>
-<br>
-<img src="./kiskis.gif" width="100%" title="...keep it secret...keep it safe...">
-<br>
-<br>Thank you!
-<br>Andy
-</div>
-
 ```js
 const db = await FileAttachment("data/registries.db").sqlite();
 const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats WHERE registry_id == 'pronom' GROUP BY year ORDER BY year;`;
