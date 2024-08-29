@@ -3,8 +3,8 @@
 
 This is a list of tools for digital preservation that included as part of the DigiPres Workbench:
 
-- A browser-based [File System Scanner](scanner).
-- [The DigiPres Sandbox]() running in the cloud.
+- A browser-based [File System Scanner](scanner/).
+- [The DigiPres Sandbox](sandbox) running in the cloud.
 
 You can find a lot more tools for digital preservation via:
 
