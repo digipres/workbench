@@ -8,10 +8,12 @@ toc: true
 
 Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
 
+
 ```js
 const db = await FileAttachment("data/registries.db").sqlite();
 const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats WHERE registry_id == 'pronom' GROUP BY year ORDER BY year;`;
 ```
+
 
 ```js
 import { generate_exts_chart } from "./formats/registries.js";
@@ -53,6 +55,15 @@ resize((width) => Plot.plot({
 
 ---
 
+## Overview
+What the DigiPres Workbench is for, what we're doing now, and what we're planning for in the future.
+
+```js
+display(await FileAttachment("dpw-overview.svg").image({width:650}));
+```
+
+---
+
 ## Next steps
 
 Here are some things you could try...
@@ -68,7 +79,13 @@ Here are some things you could try...
     Read about how a <a href="./formats/species">ecological model of formats as different species</a> allows us to use the gaps between format registries to estimate the total number of data formats across the digital world.
   </div>
   <div class="card">
+    Use the <a href="./tools/sandbox">DigiPres Sandbox</a> to play with command-line DigiPres tools in the cloud without installing any software, or even leaving your browser.
+  </div>
+  <div class="card">
     Understand the <a href="./publications/">data behind the index of publications related to digital preservation</a>, and the networks beneath.
+  </div>
+  <div class="card">
+    Explore the <a href="./workshops/">Workshop Resources & Activities</a> that we're using to gather feedback on what's been built so far.
   </div>
 </div>
 
@@ -85,6 +102,8 @@ The DigiPres Workbench was inspired by:
 - [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/) by [Ashley Blewer](https://ashleyblewer.com/).
 - [Datasette](https://datasette.io/) and [Datasette-lite](https://lite.datasette.io/).
  by [Simon Willison](https://simonwillison.net/).
+- The [Virtual Preservation Environment for Research (ViPER)](https://viper.openpreservation.org/) by [The Open Preservation Foundation](https://openpreservation.org/) & [The Dutch Digital Heritage Network](https://netwerkdigitaalerfgoed.nl/en/).
+- The PLANETS Testbed ([briefing paper](https://www.dcc.ac.uk/guidance/briefing-papers/technology-watch-papers/planets-testbed), [article](https://journal.code4lib.org/articles/83))
  - The [Observable Framework](https://observablehq.com/framework/), which is the open source engine used to create and maintain this site.
 
 ---
