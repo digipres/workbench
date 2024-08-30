@@ -99,6 +99,7 @@ The DigiPres Workbench was inspired by:
 - The [Wikidata for Digital Preservation portal](https://wikidp.org/) by [Katherine Thornton, Kenneth Seals-Nutt, Euan Cochrane & Carl Wilson](https://wikidp.org/about).
 - The [GLAM Workbench](https://glam-workbench.net/) by [Tim Sherratt](https://timsherratt.au/).
 - [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/) and [Demystify-lite](https://ross-spencer.github.io/demystify-lite/) by [Ross Spencer](http://exponentialdecay.co.uk/).
+- The [Siegfried](https://www.itforarchivists.com/siegfried) format identification tool and [benchmark tests](https://www.itforarchivists.com/siegfried/benchmarks) by [Richard Lehane](https://www.itforarchivists.com/).
 - [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/) by [Ashley Blewer](https://ashleyblewer.com/).
 - [Datasette](https://datasette.io/) and [Datasette-lite](https://lite.datasette.io/).
  by [Simon Willison](https://simonwillison.net/).
