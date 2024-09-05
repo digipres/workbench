@@ -6,8 +6,23 @@ toc: true
 
 ## Tools, analysis and technical resources for practical digital preservation
 
-Here you'll find a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. You can use the menu on the left or the plots and links below to get started.
+<div class="caution" label="Project Status">
 
+This is an experimental prototype created as part of the [Registries of Good Practice project](https://github.com/digipres/registries-of-practice-project). Things may evolve and break over time! See the [Funding & Sustainability](#funding-%26-sustainability) section below for more details.
+
+</div>
+
+The DigiPres Workbench is a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. 
+
+Here's a high-level view of what this is for, what we're doing now, and what we're thinking of doing in the future (indicated by dashed and dotted boxes)...
+
+```js
+display(await FileAttachment("dpw-overview.svg").image({width:640}));
+```
+
+You can use the menu on the left or the plots and links below to get started.
+
+---
 
 ```js
 const db = await FileAttachment("data/registries.db").sqlite();
@@ -55,15 +70,6 @@ resize((width) => Plot.plot({
 
 ---
 
-## Overview
-What the DigiPres Workbench is for, what we're doing now, and what we're planning for in the future.
-
-```js
-display(await FileAttachment("dpw-overview.svg").image({width:650}));
-```
-
----
-
 ## Next steps
 
 Here are some things you could try...
@@ -101,10 +107,10 @@ The DigiPres Workbench was inspired by:
 - [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/) and [Demystify-lite](https://ross-spencer.github.io/demystify-lite/) by [Ross Spencer](http://exponentialdecay.co.uk/).
 - The [Siegfried](https://www.itforarchivists.com/siegfried) format identification tool and [benchmark tests](https://www.itforarchivists.com/siegfried/benchmarks) by [Richard Lehane](https://www.itforarchivists.com/).
 - [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/) by [Ashley Blewer](https://ashleyblewer.com/).
-- [Datasette](https://datasette.io/) and [Datasette-lite](https://lite.datasette.io/).
- by [Simon Willison](https://simonwillison.net/).
 - The [Virtual Preservation Environment for Research (ViPER)](https://viper.openpreservation.org/) by [The Open Preservation Foundation](https://openpreservation.org/) & [The Dutch Digital Heritage Network](https://netwerkdigitaalerfgoed.nl/en/).
 - The PLANETS Testbed ([briefing paper](https://www.dcc.ac.uk/guidance/briefing-papers/technology-watch-papers/planets-testbed), [article](https://journal.code4lib.org/articles/83))
+- [Datasette](https://datasette.io/) and [Datasette-lite](https://lite.datasette.io/).
+ by [Simon Willison](https://simonwillison.net/).
  - The [Observable Framework](https://observablehq.com/framework/), which is the open source engine used to create and maintain this site.
 
 ---
@@ -113,8 +119,15 @@ The DigiPres Workbench was inspired by:
 
 The initial development of this site was funded by Yale University Library and the Digital Preservation Coalition (DPC) as part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project).
 
-This site is designed with long-term sustainability in mind, and the DPC will endeavour to maintain and update this site in the future.
+<div class="warning">
 
+This site is designed with long-term sustainability in mind, and the DPC will endeavour to maintain and update this site in the future. 
+
+However, the purpose of these prototype is to help us explore what is _really_ needed and which approaches are more sustainable, so the content and function of this service may change radically over time. 
+
+We need your feedback in order to get this right, so please let use know what you think!
+
+</div>
 
 ---
 

@@ -37,7 +37,7 @@ export default {
       name: "Tools",
       open: true,
       pages: [
-        {name: "Introduction", path: "/tools/"},
+        {name: "All About Tools", path: "/tools/"},
         {name: "File System Scanner", path: "/tools/scanner/"},
         {name: "DigiPres Sandbox", path: "/tools/sandbox"}
       ]
@@ -46,9 +46,9 @@ export default {
       name: "Workshop Activities",
       open: false,
       pages: [
-        {name: "Introduction", path: "/workshops/"},
+        {name: "Workshops", path: "/workshops/"},
+        {name: "Welcome to the Workbench! 💾", path: "/workshops/workbench-intro"},
         {name: "Put iPRES In Context 🫶🏼", path: "/workshops/ipres-in-context"},
-        {name: "Find Formats 💾", path: "/workshops/find-formats"},
         {name: "Reveal Hidden Gems 💎", path: "/workshops/hidden-gems"}
       ]
     }
