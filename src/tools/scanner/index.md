@@ -22,12 +22,19 @@ If you want to run format identification in your browser, you could try [Siegfri
 
 </div>
 
+
+<details>
+  <summary>Configuration Options</summary>
+
 ```js
 const exclude_dot_files = view(Inputs.radio([true, false], {label: "Exclude hidden files? (i.e. names that start with a dot):", value: true}));
 const count_threshold = view(Inputs.range([1, 10000], {step: 1, value: 1, label: "Only include extensions with a file count of at least:" }));
 const truncate_threshold = view(Inputs.range([1, 10000], {step: 1, value: 10, label: "When saving, truncate extensions with a file count lower than:" }));
 const truncate_length = view(Inputs.range([1, 10000], {step: 1, value: 6, label: "When saving, low-frequency extensions to be no longer than:" }));
 ```
+
+</details>
+
 
 ```js
     const worker_link = FileAttachment("worker.js");
