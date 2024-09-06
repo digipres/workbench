@@ -132,6 +132,9 @@ Plot.plot({
 })
 ```
 
+
+<!--
+
 ???
 
 Most publications are not classified using keywords that help locate the item???
@@ -142,18 +145,7 @@ Most publications are not classified using keywords that help locate the item???
 
 ???
 
-## Temp
-
-```sqlite
-SELECT keyword.value AS keyword, COUNT(*) AS count FROM publications, JSON_EACH(publications.keywords) keyword GROUP BY keyword.value ORDER BY keyword;
-```
-
-
----
-
----
-
----
+-->
 
 ## iPRES Author Network
 

@@ -49,7 +49,7 @@ export default {
         {name: "Workshops", path: "/workshops/"},
         {name: "Welcome to the Workbench! 💾", path: "/workshops/workbench-intro"},
         {name: "Put iPRES In Context 🫶🏼", path: "/workshops/ipres-in-context"},
-        {name: "Reveal Hidden Gems 💎", path: "/workshops/hidden-gems"}
+        {name: "Share Hidden Gems 💎", path: "/workshops/hidden-gems"}
       ]
     }
   ],

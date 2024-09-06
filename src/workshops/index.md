@@ -11,4 +11,4 @@
 
 - [Welcome to the Workbench!](./workbench-intro)
 - [iPRES2024 In Context](./ipres-in-context)
-- [Reveal Hidden Gems](./hidden-gems)
+- [Share Hidden Gems](./hidden-gems)
