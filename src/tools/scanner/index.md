@@ -16,15 +16,15 @@ if ( window.showDirectoryPicker === undefined ) {
 
 This is a basic tool that runs in your web browser, scanning your local files without sending any data anywhere else.
 
-It just counts the number of different file extensions, building up a simple collection profiles that you can use to e.g. [compare your files against other collections and information sources](../../formats/profiles).
+It just counts the number of different file extensions[^1], building up a simple collection profiles that you can use to e.g. [compare your files against other collections and information sources](../../formats/profiles).
 
-If you want to run format identification in your browser, you could try [Siegfried.JS](https://siegfried-js.glitch.me/) for individual files, or [Demystify Lite](https://ross-spencer.github.io/demystify-lite/) to scan and report on sets of files.
+By default, to avoid exposing personal data, file extensions that occur less than ten times are truncated down to the first six characters after the dot. Similarly, 'hidden' files and folders (meaning those that start with a dot character) are excluded from the scanning process. These options can be changed using the configuration panel below.
 
 </div>
 
 
 <details>
-  <summary>Configuration Options</summary>
+  <summary>Configuration & Anonymization Options</summary>
 
 ```js
 const exclude_dot_files = view(Inputs.radio([true, false], {label: "Exclude hidden files? (i.e. names that start with a dot):", value: true}));
@@ -191,3 +191,4 @@ const scan_button = view(Inputs.button("Save Extension Profile", {value: null, r
 ```
 
 
+[^1]: If you want to run format identification in your browser, you could try [Siegfried.JS](https://siegfried-js.glitch.me/) for individual files, or [Demystify Lite](https://ross-spencer.github.io/demystify-lite/) to scan and report on sets of files.
