@@ -1,7 +1,7 @@
 # Tools
 ## Every Workbench Needs A Wrench
 
-This is a list of tools for digital preservation that included as part of the DigiPres Workbench:
+A handful of experimental tools are included as part of the DigiPres Workbench:
 
 - A browser-based [File System Scanner](scanner/) (extension profiling only at present, and needs Chrome/Edge to work).
 - [The DigiPres Sandbox](sandbox) running in the cloud.

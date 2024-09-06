@@ -9,7 +9,12 @@ This is a very early stage experimental prototype. It may fall over, or simple _
 
 The [DigiPres Sandbox](https://github.com/digipres/sandbox) makes it possible to play with [the tools supported by](https://github.com/digipres/toolbox?tab=readme-ov-file#supported-tools) the [DigiPres Toolbox](https://github.com/digipres/toolbox), running it in the cloud so you can access it via your browser!
 
-This works because it re-uses [the MyBinder Service](https://mybinder.org/), which is a cloud-hosted instance of [Binder](https://jupyter.org/binder). Binder was built to support reproducibility in scientific research, but can be used for all sorts of different things.[^1]
+This works because it re-uses [the MyBinder Service](https://mybinder.org/), which is a cloud-hosted instance of [Binder](https://jupyter.org/binder). Binder was built to support reproducibility in scientific research, but can be used for all sorts of different things:
+
+- It can provide a safe, isolated environment for people to practice new skills, e.g. [learning to use the command line](https://librarycarpentry.org/lc-shell/) with [Library Carpentry](https://librarycarpentry.org/).
+- It can be used to create and share real, concrete records of how to executed different processes and practices. Like [the GLAM Workbench](https://glam-workbench.net/using-binder/) does for researchers accessing digital collections.
+
+It can't keep any data around between sessions, and it's _not suitable for sensitive data that can't be shared openly_.  For that kind of thing, we recommend tying out [ViPER (from the Open Preservation Foundation)](https://viper.openpreservation.org/).
 
 <div class="caution">
 
@@ -17,7 +22,7 @@ Because it's running in the cloud, the _DigiPres Sandbox_ can't affect anything 
 
 Any files you upload to this cloud-hosted service _should_ remain private, but this _cannot_ be guaranteed. __Do not upload sensitive material!__
 
-Note also that this is an an ephemeral service designed for experimentation and your session will be __shut down and deleted__ if it appears not to be in use.[^3] For more detail about the behaviour and constraints of the MyBinder service, see [the official user guidelines](https://mybinder.readthedocs.io/en/latest/about/user-guidelines.html).
+Note also that this is an an ephemeral service designed for experimentation and your session will be __shut down and deleted__ if it appears not to be in use. For more detail about the behaviour and constraints of the MyBinder service, see [the official user guidelines](https://mybinder.readthedocs.io/en/latest/about/user-guidelines.html)
 
 </div>
 
@@ -25,18 +30,12 @@ Note also that this is an an ephemeral service designed for experimentation and 
 
 By clicking the button below, you can fire up a remote Linux session with a <a href="https://jupyter.org/">Jupyter Lab</a> interface, and start experimenting...
 
-<p style="text-align: center;">
+<div style="text-align: center;">
 <a href="https://mybinder.org/v2/gh/digipres/sandbox/master" target="_blank" rel="noopener"><img src="https://mybinder.org/badge_logo.svg" style="max-width: 100%; vertical-align: middle;"></a>
-</p>
+</div>
 
-Please be patient, as the service is sometimes heavily loaded[^2] it might take a minute or two to before things get started. Check the [MyBinder status page](https://mybinder.readthedocs.io/en/latest/about/status.html) for issues, and consider trying these direct links to specific services: [ovh](https://ovh.mybinder.org/v2/gh/digipres/sandbox/master), [gesis](https://notebooks.gesis.org/binder/v2/gh/digipres/sandbox/master), [curvenote](https://binder.curvenote.dev/v2/gh/digipres/sandbox/master).
+Please be patient, as the service is sometimes heavily loaded it might take a minute or two to before things get started. Check the [MyBinder status page](https://mybinder.readthedocs.io/en/latest/about/status.html) for issues, and consider trying these direct links to specific services: [ovh](https://ovh.mybinder.org/v2/gh/digipres/sandbox/master), [gesis](https://notebooks.gesis.org/binder/v2/gh/digipres/sandbox/master), [curvenote](https://binder.curvenote.dev/v2/gh/digipres/sandbox/master).
 
 Finally, please use the `File > Shutdown` menu option to close the session down when you've finished.
 
 </div>
-
-[^1]: Like [the GLAM Workbench](https://glam-workbench.net/using-binder/).
-
-[^2]: Note that the MyBinder service has been [operating with reduced funding since April 2023](https://blog.jupyter.org/mybinder-org-reducing-capacity-c93ccfc6413f) and is actively [seeking wider funding](https://mybinder.readthedocs.io/en/latest/about/support.html) and [donations](https://numfocus.org/donate-to-jupyter).
-
-[^3]: One way to avoid this is to use a set up and maintain a full virtual machine dedicated to this kind of thing.  If that sounds interesting to you, you should try out [ViPER from the Open Preservation Foundation](https://viper.openpreservation.org/).
