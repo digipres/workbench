@@ -1,12 +1,11 @@
 # Share Hidden Gems
 ## For iPRES 2024 & Beyond...
 
-<div style="width: 45%; float: right; text-align: right; font-size: small; margin: 0 1em; border: 1px solid #888; padding: 0.25em">
+<div style="width: 45%; float: right; text-align: right; font-size: small; margin: 0 0.5em; border: 1px solid #888; padding: 0.25em">
 <a href="https://www.flickr.com/photos/jeff-o-matic/1933553299">
 <img src="./uncut-diamond.jpg" width="100%" style="" ><br>
 An uncut diamond, photographed by jeff-o-matic.</a>
 </div>
-
 
 
 ## Goal

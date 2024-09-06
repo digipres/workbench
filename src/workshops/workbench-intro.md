@@ -1,7 +1,7 @@
 # Welcome to the Workbench!
 ## Part of the iPRES 2024 Workshop "Digital Preservation Registries: What We Have & What We Need"
 
-<a href="https://digipres.org/workbench/" title="Screenshot of the  Workbench, on the Workbench."><img src="./dp-workbench-homepage.png" width="45%" style="border: 1px solid #888; float: right;"></a>
+<a href="https://digipres.org/workbench/" title="Screenshot of the  Workbench, on the Workbench."><img src="./dp-workbench-homepage.png" width="45%" style="border: 1px solid #888; float: right; margin: 0 0.5em;"></a>
 
 ## Goal
 
