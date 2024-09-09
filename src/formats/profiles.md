@@ -29,6 +29,7 @@ Crucially, unlike more formal format registries, collection profiles reflect the
 ```js
 import { load_extension_data, make_link } from "./registries.js";
 import { extractCombinations, render } from 'npm:@upsetjs/bundle';
+import { save_dataset } from "./csv_helper.js";
 
 // Load registry data:
 const exts = await load_extension_data();
@@ -316,9 +317,8 @@ const profile_overview = view(Inputs.table(source_profiles, {
 ```
 
 ```js
-import { save_dataset } from "./csv_helper.js";
 
-const profiles_save_button = view(Inputs.button("Save All As CSV...", {value: { data: source_profiles, columns: ['title', 'terms', 'link', 'total_count' ], name: "collection-profiles" }, reduce: save_dataset }));
+//view(Inputs.button("Save All As CSV...", {value: { data: source_profiles, columns: ['title', 'terms', 'link', 'total_count' ], name: "collection-profiles" }, reduce: save_dataset }));
 ```
 
 ```js
