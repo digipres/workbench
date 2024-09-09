@@ -1,5 +1,5 @@
 # Tools
-## Every Workbench Needs A Wrench
+## Every workbench needs a wrench or two
 
 A handful of experimental tools are included as part of the DigiPres Workbench:
 
