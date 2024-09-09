@@ -280,8 +280,9 @@ function updateSelection(set) {
     extstr = set.name + " extensions: " + set.elems.reduce(function(acc, item, index) {
       return acc + (index === 0 ? '' : ', ') + item.name;
     }, '');
-    // Note that a downside of how this is implemented is the auto-updating doesn't work, so instead we just allow a LOT of rows.
     //d3.select("#upset_set").node().textContent = exts
+    //
+    // Note that a downside of how this is implemented is the auto-updating doesn't work, so instead we just allow a LOT of rows.
     const results_table = Inputs.table(selection.elems,{
         header: {
             reg_id: "Registry ID",
@@ -345,3 +346,6 @@ If you select one the sets or combinations above, the list of extensions (up to 
 </div>
 
 <div id="upset_set"></div>
+
+
+

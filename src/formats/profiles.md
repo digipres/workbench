@@ -284,8 +284,10 @@ function process_profile(profile) {
 }
 ```
 
-```js
 
+
+
+```js
 // output the table:
 const profile_overview = view(Inputs.table(source_profiles, {
     columns: [
@@ -312,6 +314,13 @@ const profile_overview = view(Inputs.table(source_profiles, {
     multiple: false,
 }));
 ```
+
+```js
+import { save_dataset } from "./csv_helper.js";
+
+const profiles_save_button = view(Inputs.button("Save All As CSV...", {value: { data: source_profiles, columns: ['title', 'terms', 'link', 'total_count' ], name: "collection-profiles" }, reduce: save_dataset }));
+```
+
 ```js
 if( profile_overview ) {
     display(html`<div class="tip" label="${profile_overview.title}">
@@ -336,6 +345,8 @@ if( profile_overview ) {
 }
 
 ```
+
+
 
 
 You can also add your own profile to this page, and analyse it without uploading your data anywhere:
@@ -579,6 +590,16 @@ Plot.plot({
 </div>
 </div>
 
+### Download Comparison Data
+
+The comparison data used to generate the above plots can be downloaded here:
+
+```js
+const comparison_save_button = view(Inputs.button("Save comparison data as a CSV file...", {value: { data: differences, columns: ['relation', 'extension', 'percentage_1', 'percentage_2', 'percentage_diff' ], name: "profile-comparison" }, reduce: save_dataset }));
+```
+
+Take care to note which collection is the primary and which is the secondary.
+
 
 ## Tool & Registry Coverage
 
@@ -780,11 +801,14 @@ function generate_extension_table(extension_list, reg_id) {
 if( selection ) {
     display(html`<h4>Extensions matched by ${selection.reg_id}</h4>`);
     view(generate_extension_table(Object.values(selection.matched), selection.reg_id));
+
+    view(Inputs.button("Save this table as CSV...", {value: { data: Object.values(selection.matched), columns: ['extension', 'count' ], name: `matched-by-${selection.reg_id}` }, reduce: save_dataset }));
 } else {
     display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats.</div>`);
 }
 
 ```
+
 
 ## Using All The Registries
 
@@ -818,12 +842,16 @@ const cover_selection = view(generate_coverage_table(coverage));
 ```js
 if( cover_selection ) {
     display(html`<h4>Extensions matched by ${cover_selection.reg_id}</h4>`);
+
     view(generate_extension_table(Object.values(cover_selection.matched), cover_selection.reg_id));
+
+    view(Inputs.button("Save this table as CSV...", {value: { data: Object.values(cover_selection.matched), columns: ['extension', 'count' ], name: `combined-matched-by-${cover_selection.reg_id}`  }, reduce: save_dataset }));
+
 } else {
     display(html`<div class="tip">Select a row from the table above to see more detail about the matched formats.</div>`);
 }
-
 ```
+
 
 Plotting that as a graph, we can see the overall benefit each tool brings.
 
@@ -877,6 +905,10 @@ Finally, we can look at the unique extensions: those that are in your collection
 ```js
 const remainder_exts = Object.values(coverage.slice(-1)[0].remainder);
 view(generate_extension_table(remainder_exts, null));
+```
+
+```js
+const uniques_save_button = view(Inputs.button("Save this as a CSV file...", {value: { data: remainder_exts, columns: ['extension', 'count' ], name: `unique-extensions`  }, reduce: save_dataset }));
 ```
 
 As this data comes from real collections, many of these will reflect the myriad ways file extensions are used and abused in the wild. Nevertheless, the findings so far seem to show that every reasonably large collection has a significant number of files with _genuine_ format extensions that are not in _any_ registry! 
