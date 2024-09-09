@@ -590,12 +590,25 @@ Plot.plot({
 </div>
 </div>
 
-### Download Comparison Data
+### Comparison Data
 
-The comparison data used to generate the above plots can be downloaded here:
+The comparison data used to generate the above plots can be viewed and downloaded here:
 
 ```js
-const comparison_save_button = view(Inputs.button("Save comparison data as a CSV file...", {value: { data: differences, columns: ['relation', 'extension', 'percentage_1', 'percentage_2', 'percentage_diff' ], name: "profile-comparison" }, reduce: save_dataset }));
+
+    view(Inputs.table(differences, {
+    header: {
+        extension: "Extension",
+        percentage_1: "Primary %",
+        percentage_2: "Secondary %",
+        percentage_diff: "Δ%",
+        relation: "Relation",
+    },
+    sort: 'percentage_diff',
+    select: false
+    }));
+
+view(Inputs.button("Save as CSV...", {value: { data: differences, columns: ['relation', 'extension', 'percentage_1', 'percentage_2', 'percentage_diff' ], name: "profile-comparison" }, reduce: save_dataset }));
 ```
 
 Take care to note which collection is the primary and which is the secondary.
