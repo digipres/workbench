@@ -121,9 +121,9 @@ The initial development of this site was funded by Yale University Library and t
 
 <div class="warning">
 
-This site is designed with long-term sustainability in mind, and the DPC will endeavour to maintain and update this site in the future. 
+These experiments are being designed with long-term sustainability in mind, and the DPC will endeavour to maintain and update this site in the future. 
 
-However, the purpose of these prototype is to help us explore what is _really_ needed and which approaches are more sustainable, so the content and function of this service may change radically over time. 
+However, the purpose of these prototypes is to help us explore what is _really_ needed and which approaches are more sustainable, so the content and function of this service may change radically over time. 
 
 We need your feedback in order to get this right, so please let use know what you think!
 

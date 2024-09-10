@@ -43,10 +43,10 @@ export default {
       ]
     },
     {
-      name: "Workshop Activities",
+      name: "Workshop Resources",
       open: false,
       pages: [
-        {name: "Workshops", path: "/workshops/"},
+        {name: "Workshop Materials", path: "/workshops/"},
         {name: "Welcome to the Workbench! 💾", path: "/workshops/workbench-intro"},
         {name: "Put iPRES In Context 🫶🏼", path: "/workshops/ipres-in-context"},
         {name: "Share Hidden Gems 💎", path: "/workshops/hidden-gems"}
