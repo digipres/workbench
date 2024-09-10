@@ -24,8 +24,9 @@ resize((width) => Plot.plot({
   x: { tickFormat: (d) => d.toString() },
   color: { legend: true },
   width,
+  marginLeft: 80,
   marks: [
-    Plot.barY(fr_tots, {x: "registry_id", y: "count", fill: "registry_id", tip: true })
+    Plot.barX(fr_tots, {x: "count", y: "registry_id", fill: "registry_id", tip: true })
   ] 
 }))
 ```
@@ -35,8 +36,13 @@ resize((width) => Plot.plot({
 
 ```js
 const lines = db.sql`SELECT * FROM formats`;
-view(Inputs.table((await lines)));
+const formats_search = view(Inputs.search((await lines), {placeholder: "Search format registry data…"}));
 ```
+
+```js
+view(Inputs.table(formats_search, { select: false, rows: 20 }));
+```
+
 
 ```js
 const date_options = [
