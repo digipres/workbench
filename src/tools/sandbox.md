@@ -9,7 +9,7 @@ This is a very early stage experimental prototype. It may fall over, or simple _
 
 The [DigiPres Sandbox](https://github.com/digipres/sandbox) makes it possible to play with [the tools supported by](https://github.com/digipres/toolbox?tab=readme-ov-file#supported-tools) the [DigiPres Toolbox](https://github.com/digipres/toolbox), running it in the cloud so you can access it via your browser!
 
-This works because it re-uses [the MyBinder Service](https://mybinder.org/), which is a cloud-hosted instance of [Binder](https://jupyter.org/binder). Binder was built to support reproducibility in scientific research, but can be used for all sorts of different things:
+This works because it re-uses [the MyBinder Service](https://mybinder.org/), which is a cloud-hosted instance of [Binder](https://jupyter.org/binder)[^binder]. Binder was built to support reproducibility in scientific research, but can be used for all sorts of different things:
 
 - It can provide a safe, isolated environment for people to practice new skills, e.g. [learning to use the command line](https://librarycarpentry.org/lc-shell/) with [Library Carpentry](https://librarycarpentry.org/).
 - It can be used to create and share real, concrete records of how to executed different processes and practices. Like [the GLAM Workbench](https://glam-workbench.net/using-binder/) does for researchers accessing digital collections.
@@ -39,3 +39,5 @@ Please be patient, as the service is sometimes heavily loaded it might take a mi
 Finally, please use the `File > Shutdown` menu option to close the session down when you've finished.
 
 </div>
+
+[^binder]: Not [that Binder](https://github.com/artefactual/binder?tab=readme-ov-file#binder).
