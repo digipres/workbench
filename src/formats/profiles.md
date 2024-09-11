@@ -122,6 +122,14 @@ const original_profiles = [
     description: "The Digital Research Alliance of Canada's Federated Research Data Repository (FRDR).",
     terms: "CC-BY",
     raw_data: await FileAttachment("../data/collection-profiles/drac/Alliance-FRDR-2024-03.csv").csv({typed: true})
+  },
+  {
+    key: "anz-2024",
+    title: "Archives New Zealand 2024-09",
+    link: "https://www.archives.govt.nz/",
+    description: "",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../data/collection-profiles/anz/ANZ_extensions_2024-09.csv").csv({typed: true})
   }
 ]
 
