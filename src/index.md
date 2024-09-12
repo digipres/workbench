@@ -76,7 +76,7 @@ Here are some things you could try...
 
 <div class="grid grid-cols-4">
   <div class="card">
-    <a href="./registries/">Read about the different types of 'registries' were looking at</a>, in order to help us understand what we really need.
+    <a href="./registries/">Read about the different types of 'registries' we've been looking at in order to help us understand what we really need.</a>
   </div>
   <div class="card">
     <a href="./formats/">Analyse and compare different data format registries</a>, to find out which ones might help you understand your digital collections.
