@@ -294,8 +294,6 @@ function process_profile(profile) {
 ```
 
 
-
-
 ```js
 // output the table:
 const profile_overview = view(Inputs.table(source_profiles, {
@@ -321,6 +319,7 @@ const profile_overview = view(Inputs.table(source_profiles, {
     },
     sort: "title",
     multiple: false,
+    rows: 20,
 }));
 ```
 
