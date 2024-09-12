@@ -22,6 +22,7 @@ export default {
         { name: "Comparing Registries", path: "/formats/compare"},
         { name: "Using Collection Profiles", path: "/formats/profiles"},
         { name: "Format Diversity Estimation", path: "/formats/species"},
+        { name: "The Format Index (ALPHA)", path: "/formats/format-index"},
       ]
     },
     {

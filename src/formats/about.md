@@ -7,81 +7,6 @@ This page is under development and has major gaps at present.
 
 ## Introduction
 
-```js
-const db = FileAttachment("../data/registries.db").sqlite();
-```
-
-```js
-const fr_tots = db.sql([`SELECT registry_id, COUNT(*) as count FROM formats GROUP BY registry_id;`]);
-```
-
-<div class="card">
-
-```js
-resize((width) => Plot.plot({
-  title: `Registry Records`,
-  subtitle: "Broken down by registry (not all registries are included yet!)",
-  x: { tickFormat: (d) => d.toString() },
-  color: { legend: true },
-  width,
-  marginLeft: 80,
-  marks: [
-    Plot.barX(fr_tots, {x: "count", y: "registry_id", fill: "registry_id", tip: true })
-  ] 
-}))
-```
-
-</div>
-
-
-```js
-const lines = db.sql`SELECT * FROM formats`;
-const formats_search = view(Inputs.search((await lines), {placeholder: "Search format registry data…"}));
-```
-
-```js
-view(Inputs.table(formats_search, { select: false, rows: 20 }));
-```
-
-
-```js
-const date_options = [
-  {label: "Year Created", value: "created"},
-  {label: "Year Last Modified", value: "last_modified"},
-];
-
-const date_selection = view(Inputs.select(date_options, {
-    label: "Show Records By",
-    format: (t) => t.label,
-}));
-```
-
-
-```js
-const fr_query = `SELECT registry_id, CAST(STRFTIME("%Y", ${date_selection.value}) AS INT) AS year, COUNT(*) as count FROM formats WHERE ${date_selection.value} != '' GROUP BY registry_id, year;`;
-const fr = db.sql([`${fr_query}`]);
-```
-
-
-<div class="card">
-
-```js
-resize((width) => Plot.plot({
-  title: `Registry Records By ${date_selection.label}`,
-  subtitle: "Broken down by year and registry (not all registries are included yet!)",
-  x: { tickFormat: (d) => d.toString() },
-  color: { legend: true },
-  width,
-  marks: [
-    Plot.barY(fr, {x: "year", y: "count", fill: "registry_id", tip: true })
-  ] 
-}))
-```
-
-</div>
-
-
-Note detailed analysis possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/workbench/main/src/data/registries.db#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id&_facet_array=genres&_facet_array=extensions&_facet_array=iana_media_types)
 
 ## PRONOM
 
@@ -91,27 +16,6 @@ Note detailed analysis possible [using Datasette Lite](https://lite.datasette.io
 * [https://api.pronom.ffdev.info/docs](https://api.pronom.ffdev.info/docs#/)
 * https://preservica.com/resources/blogs-and-news/updating-preservica-following-a-pronom-update
 * https://exponentialdecay.co.uk/blog/pronom-release-statistics/
-
-```js
-const pr = db.sql`SELECT genre.value as genre, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats, JSON_EACH(formats.genres) genre WHERE registry_id == 'pronom' GROUP BY genre.value, year ORDER BY year;`;
-```
-
-<div class="card">
-
-```js
-resize((width) => Plot.plot({
-  title: "PRONOM Records By Year of Creation & Genre",
-  subtitle: "Note that this does not reflect when records are updated",
-  x: { tickFormat: (d) => d.toString() },
-  color: { legend: true },
-  width,
-  marks: [
-    Plot.barY(pr, {x: "year", y: "count", fill: "genre", tip: true })
-  ] 
-}))
-```
-
-</div>
 
 
 ## Nature???
