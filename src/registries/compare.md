@@ -1,4 +1,4 @@
-# Comparing Registries
+# Comparing Format Registries
 ## Ways of exploring what formats are where...
 
 ## Introduction
@@ -7,7 +7,7 @@ While PRONOM is rightly considered the 'gold standard' in format identification 
 
 
 ```js
-import { load_extension_data, make_link } from "./registries.js";
+import { load_extension_data, make_link } from "../formats/registries.js";
 import { extractCombinations, render } from 'npm:@upsetjs/bundle';
 
 const exts = await load_extension_data();

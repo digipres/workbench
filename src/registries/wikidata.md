@@ -1,36 +1,10 @@
-# About the Registries
-## Where does the format data come from?
+# WikiData
 
 <div class="warning">
 This page is under development and has major gaps at present.
 </div>
 
-## Introduction
 
-
-## PRONOM
-
-* https://www.nationalarchives.gov.uk/aboutapps/pronom/release-notes.xml
-* [https://www.nationalarchives.gov.uk/aboutapps/fileformat/pdf/pronom\_4\_info\_model.pdf](https://www.nationalarchives.gov.uk/aboutapps/fileformat/pdf/pronom\_4\_info\_model.pdf)
-* https://github.com/digital-preservation/PRONOM\_Research
-* [https://api.pronom.ffdev.info/docs](https://api.pronom.ffdev.info/docs#/)
-* https://preservica.com/resources/blogs-and-news/updating-preservica-following-a-pronom-update
-* https://exponentialdecay.co.uk/blog/pronom-release-statistics/
-
-
-## Nature???
-
-This goes deep and prolly don't belong here.
-
-TRiD probabilistic, binary only , PRONOM weakly validating, DROID vs SF? 
-
-GHL: 
-> Most languages are detected by their file extension defined in [`languages.yml`](https://github.com/github-linguist/linguist/blob/39fd5e93de98de3434cb3e857c5b1972c418f8c5/lib/linguist/languages.yml). For disambiguating between files with common extensions, Linguist applies some [heuristics](https://github.com/github-linguist/linguist/blob/39fd5e93de98de3434cb3e857c5b1972c418f8c5/lib/linguist/heuristics.rb) and a [statistical classifier](https://github.com/github-linguist/linguist/blob/39fd5e93de98de3434cb3e857c5b1972c418f8c5/lib/linguist/classifier.rb).
-
-PDF Trailer issue:
-https://openpreservation.org/blogs/when-pdf-not-pdf-format-identification-focus/
-
-## WikiData
 
 ```sparql
 select distinct ?uri ?uriLabel ?puid ?extension ?mimetype ?encodingLabel ?referenceLabel ?date ?relativityLabel ?offset ?sig

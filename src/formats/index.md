@@ -28,8 +28,6 @@ ${sources.map(
 )}
 </table>
 
-You can find more information about the data sources on the [About the Registries](./about) page. 
-
 But to make this set of different datasets really useful, we need to find ways to combine them. One of the most useful ways has been to simply compare registries based on the file extensions found in their format records.
 
 ```js
@@ -45,9 +43,9 @@ The [Combining Format Registries](#combining-format-registries) section below pr
 
 There are three different analysis tools available for you to try.
 
-- [Comparing Registries](./compare), which explores ways of comparing the contents of different format registries.
 - [Using Collection Profiles](./profiles), which shows how to use file-extension format profiles to compare digital collections against others, and against the full set of available format registries.
 - [Format Diversity Estimation](./species), which uses the gaps between registries to estimate the total number of digital formats.
+- [The Format Index (ALPHA)](./format-index), which is an early prototype of a new format registry index for looking up format information.
 
 
 ## Combining Format Registries

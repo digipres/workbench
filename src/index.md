@@ -55,7 +55,7 @@ resize((width) => Plot.plot({
 }))
 ```
 
-  <p style="text-align: center"><a href="./formats/about">Click here for more statistics from format registries...</a></p>
+  <p style="text-align: center"><a href="./formats/format-index">Click here for more statistics from format registries...</a></p>
   </div>
   <div class="card">
 
@@ -75,6 +75,9 @@ resize((width) => Plot.plot({
 Here are some things you could try...
 
 <div class="grid grid-cols-4">
+  <div class="card">
+    <a href="./registries/">Read about the different types of 'registries' were looking at</a>, in order to help us understand what we really need.
+  </div>
   <div class="card">
     <a href="./formats/">Analyse and compare different data format registries</a>, to find out which ones might help you understand your digital collections.
   </div>

@@ -18,11 +18,19 @@ export default {
       open: true,
       pages: [
         { name: "All About Formats", path: "/formats/"},
-        { name: "About the Registries", path: "/formats/about"},
-        { name: "Comparing Registries", path: "/formats/compare"},
         { name: "Using Collection Profiles", path: "/formats/profiles"},
         { name: "Format Diversity Estimation", path: "/formats/species"},
         { name: "The Format Index (ALPHA)", path: "/formats/format-index"},
+      ]
+    },
+    {
+      name: "Registries",
+      open: true,
+      pages: [
+        {name: "All About Registries", path: "/registries/"},
+        { name: "Comparing Format Registries", path: "/registries/compare"},
+        //{name: "Dashboard", path: "/example-dashboard"},
+        //{name: "Report", path: "/example-report"}
       ]
     },
     {
