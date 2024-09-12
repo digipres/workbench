@@ -135,9 +135,6 @@ const original_profiles = [
 
 const user_profile_key = 'your profile';
 
-// Define defaults:
-var default_1 = "yul";
-var default_2 = "kb-edepot";
 
 ```
 
@@ -245,7 +242,7 @@ function process_profile(profile) {
             // truncate if needed:
             ext = ext.slice(0, extensions_truncated_at);
             // Add a '*.' prefix if none exists:
-            if( item.extension.indexOf("*") == -1 && item.extension != "(none)") {
+            if( item.extension.indexOf("*") == -1 && item.extension != "(none)" && item.extension != "NULL" ) {
                 item.extension = `*.${ext}`;
             } else {
                 // Treat empty extensions as '(none)':
@@ -329,7 +326,15 @@ const profile_overview = view(Inputs.table(source_profiles, {
 ```
 
 ```js
+// Define defaults:
+var default_1 = "yul";
+var default_2 = "kb-edepot";
+
 if( profile_overview ) {
+    // Override default:
+    display(profile_overview);
+    default_1 = profile_overview.key;
+    // And display:
     display(html`<div class="tip" label="${profile_overview.title}">
     <p>${profile_overview.description}</p>
     <table class="table">
@@ -612,6 +617,7 @@ The comparison data used to generate the above plots can be viewed and downloade
         relation: "Relation",
     },
     sort: 'percentage_diff',
+    reverse: true,
     select: false
     }));
 

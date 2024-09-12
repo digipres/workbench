@@ -1,5 +1,5 @@
 # The Format Index (ALPHA)
-## A format registry aggregation for analysis and exploration.
+## A index across format registry for analysis and exploration.
 
 <div class="warning">
 
