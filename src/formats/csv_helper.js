@@ -1,4 +1,10 @@
+import { showSaveFilePicker } from 'npm:file-system-access'
+
 export async function save_dataset(dataset) {
+
+    // FIXME Need a Firefox-compatible workaround:
+
+
     // Get the data and the columns:
     const {data, columns, name} = dataset;
     console.log(name);
@@ -12,9 +18,10 @@ export async function save_dataset(dataset) {
             accept: { "text/csv": [".csv"] },
           },
         ],
-        suggestedName: name,
+        suggestedName: `${name}.csv`,
+        _preferPolyfill: false,
       };
-      const newHandle = await window.showSaveFilePicker(opts);
+      const newHandle = await showSaveFilePicker(opts);
   
       // create a FileSystemWritableFileStream to write to
       const writableStream = await newHandle.createWritable();
