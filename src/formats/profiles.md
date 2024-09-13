@@ -332,7 +332,6 @@ var default_2 = "kb-edepot";
 
 if( profile_overview ) {
     // Override default:
-    display(profile_overview);
     default_1 = profile_overview.key;
     // And display:
     display(html`<div class="tip" label="${profile_overview.title}">
