@@ -18,7 +18,10 @@ This is a basic tool that runs in your web browser, scanning your local files wi
 
 It just counts the number of different file extensions[^1], building up a simple collection profiles that you can use to e.g. [compare your files against other collections and information sources](../../formats/profiles).
 
-By default, to avoid exposing personal data, file extensions that occur less than ten times are truncated down to the first six characters after the dot. Similarly, 'hidden' files and folders (meaning those that start with a dot character) are excluded from the scanning process. These options can be changed using the configuration panel below.
+</div>
+<div class="warning">
+
+By default, to avoid exposing personal data, file extensions that occur less than ten times are truncated down to the first six characters after the dot. Similarly, 'hidden' files and folders (meaning those that start with a dot character) are excluded from the scanning process. These options can be changed using the configuration options panel below.
 
 </div>
 
