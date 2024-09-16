@@ -20,12 +20,12 @@ We'll work together to find relevant papers from the twenty-year history of iPRE
 
 ## Process
 
-- Use the coordination spreadsheet below to find a paper you'd like to work with. Leave some unique identifier (like your initials, or your favourite colour/color/biscuit/musician/beverage/utensil/parent/child etc.) in one of the two _Working On It_ columns. That way we will know when at least two people have looked at each paper.
+- Use the coordination spreadsheet below to find a paper you'd like to work with. Leave some unique identifier (like your initials, or your favourite colour/color/biscuit/musician/beverage/utensil/parent/child etc.) in the _Working On It_ columns. That way we can avoid duplicating effort.
 
 
 <div class="card">
 <h2>Who Goes There?!</h2>
-<h3>Use this Google Sheet to coordinate our efforts by putting any unique marker in the cells marked <i>Working On It...</i></h3>
+<h3>Use this Google Sheet to coordinate our efforts by putting any unique marker in the cell marked <i>Working On It...</i></h3>
 <iframe src="https://docs.google.com/spreadsheets/d/1NxfOfl-4tPiZQlVp5AWYr075lZx8-iF8q0fHPW5dyUk/edit?gid=0#gid=0" style="width: 100%; height: 400px; border: 1px solid black;">
 </iframe>
 
@@ -40,6 +40,8 @@ We'll work together to find relevant papers from the twenty-year history of iPRE
 - If you find something interesting, use the _iPRES 2024_ commenting system to add a note linking to the related paper(s) and describing how they are connected.
   - Please don't just put a link in with no explanation.
   - If you have some personal connection to the linked work, please make that clear!
+  - Maybe try looking for other papers by the authors, or variations on the keywords.
+  - Take your marker out of the Google Sheet when you move on.
 - If you have any difficulties, let us know!
 - If you have any feedback, let us know! The [Feedback section](#feedback) below provides some more detail on feedback we'd like and a way to pass feedback to us anonymously if you prefer.
 

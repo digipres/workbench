@@ -130,6 +130,14 @@ const original_profiles = [
     description: "",
     terms: "CC-BY",
     raw_data: await FileAttachment("../data/collection-profiles/anz/ANZ_extensions_2024-09.csv").csv({typed: true})
+  },
+  {
+    key: "bac-lac-2024",
+    title: "Library and Archives Canada 2024-09",
+    link: "https://library-archives.canada.ca/",
+    description: "",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../data/collection-profiles/bac-lac/20240905_LAC_DPFiles_byExtensionFileCount.csv").csv({typed: true})
   }
 ]
 

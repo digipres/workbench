@@ -55,7 +55,7 @@ view(Inputs.table(exts, {
     reg_id: "Registry",
     num_extensions: "Total Extensions",
     num_unique: "Unique Extensions",
-    percent_unique: "Unique Extensions (%)",
+    percent_unique: "% Unique Extensions",
   },
   sort: 'num_extensions',
 }));
