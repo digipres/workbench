@@ -138,6 +138,14 @@ const original_profiles = [
     description: "",
     terms: "CC-BY",
     raw_data: await FileAttachment("../data/collection-profiles/bac-lac/20240905_LAC_DPFiles_byExtensionFileCount.csv").csv({typed: true})
+  },
+  {
+    key: "nln-2024",
+    title: "The National Library of Norway 2024-10",
+    link: "https://digitalpreservation-blog.nb.no/",
+    description: "",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../data/collection-profiles/nln/2024-10-03-NLN-extensions.csv").csv({typed: true})
   }
 ]
 
