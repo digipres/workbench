@@ -1,0 +1,332 @@
+﻿File Format ,Version,PRONOM PUID,count,extension
+3GPP Audio/Video File,,fmt/357,1,3gp|3gpp
+Acrobat Catalog Cat File,       ,fmt/452,19,cat
+Acrobat Language definition file,       ,x-fmt/427,1,Ing
+Acrobat PDF 1.0 - Portable Document Format,1,fmt/14,260,pdf
+Acrobat PDF 1.1 - Portable Document Format,1.1,fmt/15,1435,pdf
+Acrobat PDF 1.2 - Portable Document Format,1.2,fmt/16,7592,pdf
+Acrobat PDF 1.3 - Portable Document Format,1.3,fmt/17,70500,pdf
+Acrobat PDF 1.4 - Portable Document Format,1.4,fmt/18,1417158,pdf
+Acrobat PDF 1.5 - Portable Document Format,1.5,fmt/19,24651,pdf
+Acrobat PDF 1.6 - Portable Document Format,1.6,fmt/20,24752,pdf
+Acrobat PDF 1.7 - Portable Document Format,1.7,fmt/276,729,pdf
+Acrobat PDF/A - Portable Document Format,1a,fmt/95,36934,pdf
+Acrobat PDF/A - Portable Document Format,1b,fmt/354,333,pdf
+Acrobat PDF/A - Portable Document Format,2b,fmt/477,3,pdf
+Acrobat PDF/A - Portable Document Format,2u,fmt/478,2,pdf
+Acrobat PDF/X - Portable Document Format - Exchange 1a:2001,       ,fmt/157,4,pdf
+Acrobat PDF/X - Portable Document Format - Exchange 3:2002,       ,fmt/158,1,pdf
+Acrobat PDF/X - Portable Document Format - Exchange PDF/X-4,       ,fmt/488,3,pdf
+Active Server Page,       ,x-fmt/138,859,asp
+Adobe After Effects,       ,fmt/796,1,aep
+Adobe Flash,8,fmt/505,3,swf
+Adobe Flash,9,fmt/506,3,swf
+Adobe Font List,       ,fmt/526,28,lst
+Adobe Illustrator,6,fmt/422,120,ai|pdf
+Adobe Illustrator,12,fmt/561,36,ai|pdf
+Adobe Illustrator,8,fmt/557,32,ai|pdf
+Adobe Illustrator,3.0 / 3.2,fmt/418,8,ai
+Adobe Illustrator,10,fmt/559,5,ai|pdf
+Adobe Illustrator,9,fmt/558,2,ai|pdf
+Adobe Illustrator,7,fmt/423,1,ai|pdf
+Adobe Illustrator,11,fmt/560,1,ai|pdf
+Adobe Illustrator,1.0 / 1.1,x-fmt/20,1,ai
+Adobe InDesign Document,CS2,fmt/548,5,ind|indd
+Adobe InDesign Document,Generic,x-fmt/450,1,ind|indd
+Adobe Multiple Master Metrics font file,       ,fmt/521,2,mmm
+Adobe PDF Doc,,,18754,pdf
+Adobe Photoshop,       ,x-fmt/92,364,psd
+Adobe Portable Document Catalog Index File,2,fmt/446,3,pdx
+Adobe PostScript Font Metrics file,       ,fmt/509,30,pfm|afm
+Adobe Printer Font Binary,       ,fmt/525,30,pfb
+Advanced Forensic Format,       ,fmt/844,2,aff
+Advanced Systems Format,       ,fmt/131,9,asf
+AMI Professional Document,       ,x-fmt/191,29,sam|lwp
+Apple Disk Image,       ,fmt/1071,5,dmg
+Apple Icon Image Format,       ,fmt/1185,1,icns
+Apple Partition Map Disk Image,,fmt/1740,3,
+Apple QuickTime Movie,,x-fmt/384,21249,mov
+AppleDouble Resource Fork,2,fmt/503,105,
+Applet Effect Factory Config File,,fmt/1715,2,
+AppleWorks Word Processor,6,fmt/749,46,cwk
+Applixware Spreadsheet,       ,x-fmt/220,25,as
+Audio Interchange File Format,1.2,fmt/414,71,aiff|aif
+Audio Interchange File Format (compressed),       ,x-fmt/136,76,aifc|aiff|aif
+Audio Video Interleaved,,fmt/5,2105,avi
+Audio/Video Interleaved Format,       ,fmt/5,147,avi
+AutoCAD Design Web Format,6,x-fmt/49,6,dwf
+AutoCAD Drawing,R14,fmt/34,2,dwg
+Autorun Configuration File,       ,fmt/331,38,autorun.inf
+AXD HTTP Handler File,       ,fmt/884,1,axd
+Back Up File,       ,fmt/941,6,bak|old|sb|bck
+BASIC File,       ,fmt/885,2,bas
+Batch file (executable),       ,x-fmt/413,37,bat|cmd|btm
+Binary File,       ,fmt/208,8,bin
+BinHex Binary Text,       ,x-fmt/416,1,hqx
+Bink Video Format,2,fmt/732,1,bik2|bk2
+Broadcast WAVE,1 PCM Encoding,fmt/704,40,wav
+C/C++ Header File,,fmt/1735,20,h|hpp|hxx
+C++ Source Code,,fmt/1769,10,
+Cascading Style Sheet,       ,x-fmt/224,250,css
+Comma Separated Values,         ,x-fmt/18,977,csv
+Compound WordPerfect for Windows Document,6 onwards,fmt/892,1,wpd|wp6|wp|w60|doc
+CorelDraw Drawing,9,x-fmt/374,7,cdr
+dBASE Database,III,x-fmt/9,186,dbf|db3
+Digital Negative Format (DNG),1.4,fmt/730,45643,dng
+Digital Negative Format (DNG),1,fmt/436,9804,dng
+Digital Negative Format (DNG),1.1,fmt/152,15630,dng
+Digital Picture eXchange,,fmt/541,2506,dpx
+Document Type Definition,       ,x-fmt/315,12,dtd
+Dreamweaver Lock File,       ,fmt/335,14,lck|lock
+DS_store file (MAC),       ,fmt/394,4,DS_STORE
+DVD data file and backup data file,       ,x-fmt/419,40,bup|ifo
+Embedded OpenType (EOT) File Format,0x00020002,fmt/1384,1,eot
+Encapsulated PostScript File Format,3,fmt/124,101,eps
+ERDAS Hierarchical File Architecture Format,       ,fmt/1215,37,img|ovr|rrd|aux|aoi|cff|fft|gcc|sig|sml
+ESRI Arc/Info Export File,       ,x-fmt/226,24,e00
+ESRI Arc/View Project,3.x,fmt/332,46,apr|def
+ESRI Arc/View ShapeFile,       ,x-fmt/235,112,shp
+ESRI Arc/View Shapefile Index,       ,fmt/277,112,shx
+ESRI ArcMap Document,,fmt/916,2,mxd|mxt
+ESRI Shapefile Projection (Well-Known Text) Format,       ,fmt/320,72,prj
+ESRI Spatial Index File,       ,fmt/319,128,sbx|sbn
+Exchangeable Image File Format (Compressed),2.1,x-fmt/390,9763,jpg|jpeg
+Exchangeable Image File Format (Compressed),2.2,x-fmt/391,9642,jpg|jpeg
+Exchangeable Image File Format (Compressed),2.2.1,fmt/645,1628,jpg|jpeg
+Exchangeable Image File Format (Compressed),2,x-fmt/398,16,jpg|jpeg
+Exchangeable Image File Format (Uncompressed),2.1,x-fmt/388,31475,tif|tiff
+Exchangeable Image File Format (Uncompressed),2,x-fmt/399,1494,tiff
+Exchangeable Image File Format (Uncompressed),2.2,x-fmt/387,718,tif|tiff
+Executable and Linkable Format,32bit Little Endian,fmt/688,1,o|elf
+Extensible Hypertext Markup Language,1,fmt/102,67066,xhtm|xhtml
+Extensible Hypertext Markup Language,1.1,fmt/103,1566,xhtm|xhtml
+Extensible Markup Language,1,fmt/101,1392237,xml
+Extensible Markup Language,,fmt/101,41773,xml
+Extensible Stylesheet Language,       ,x-fmt/281,78,xsl|xslt
+FileMaker Pro Database,7+,fmt/194,1,fp7
+FL Studio project file (FLP),,fmt/733,5,flp
+Folio Definition File,       ,fmt/1163,1,def
+Freelance File,1.0-2.1,x-fmt/89,1,pre
+Graphics Interchange Format,89a,fmt/4,11488,gif
+Graphics Interchange Format,87a,fmt/3,5694,gif
+GZIP Format,       ,x-fmt/266,11,gz|tgz
+Harvard Graphics Presentation,01-Mar,fmt/1491,1,prs|pr4
+Hewlett Packard Graphics Language,2,fmt/1174,12,hpgl
+Hierarchical File System,       ,fmt/1105,1,img|hfs
+HP TRIM Outlook Saved Message File,,fmt/1423,108006,vmbx|mbx
+Hypertext Markup Language,,fmt/96,273586,htm|html
+Hypertext Markup Language,4.01,fmt/100,38695,htm|html
+Hypertext Markup Language,4,fmt/99,820,htm|html
+Hypertext Markup Language,3.2,fmt/98,147,htm|html
+Hypertext Markup Language,5,fmt/471,11,htm|html
+Hypertext Markup Language,2,fmt/97,1,htm|html
+Icon file format,,x-fmt/418,12,ico
+Information or Setup File,       ,fmt/212,18,info
+Inspiration Software File,,fmt/1647,1,isf
+Internet Data Query File,       ,fmt/358,4,idq
+Internet Message Format,       ,fmt/278,4,eml
+Java Archive Format,       ,x-fmt/412,335,jar
+Java Compiled Object Code,       ,x-fmt/415,33,class
+Java language source code file,       ,x-fmt/422,1793,java
+JavaScript file,       ,x-fmt/423,234,js
+JPEG 2000 MXF,,,45113,mxf
+JPEG File Interchange Format,1.01,fmt/43,129338,jpg|jpeg
+JPEG File Interchange Format,1.02,fmt/44,55017,jpg|jpeg
+JPEG File Interchange Format,1,fmt/42,937,jpg|jpeg
+LEADToolsCompressed Image,       ,fmt/1337,3,cmp
+License file,       ,x-fmt/426,2,lic
+Log File,       ,x-fmt/62,1242,log
+Lotus 1-2-3 Spreadsheet Formatting File,2.3-2.4,x-fmt/331,1,fm1|fmt
+Lotus 1-2-3 Worksheet,04-May,x-fmt/116,50,wk4
+Lotus 1-2-3 Worksheet,97,fmt/1452,253,
+Lotus Freelance Show,       ,fmt/1216,10,prz
+Lotus Notes Database,4,x-fmt/338,6,nsf|ns4
+Lotus WordPro Document,97/Millennium,fmt/340,198,lwp
+Macintosh PICT Image,2,fmt/341,120,pct|pict|pic
+Macro enabled Microsoft Word Document OOXML,2007 Onwards,fmt/523,23,docm
+Macromedia (Adobe) Director Compressed Resource file,       ,fmt/486,2,dcr
+Macromedia Director,Macintosh,fmt/317,126,dir
+Macromedia Director,PC,x-fmt/341,100,dir
+Macromedia Flash,5,fmt/108,515,swf
+Macromedia Flash,4,fmt/107,143,swf
+Macromedia Flash,6,fmt/109,38,swf
+Macromedia Flash,7,fmt/110,11,swf
+Macromedia Flash,3,fmt/106,4,swf
+Macromedia Flash,1,fmt/104,2,swf
+MapInfo Workspace File,       ,fmt/1256,3,wor
+Mapsforge Binary Map File Format,       ,fmt/915,85,map
+Maya IFF Image File,       ,fmt/1169,1,iff|ico
+MHTML,,x-fmt/429,59,mht|mhtml
+Microsoft Access Database,2000,x-fmt/240,54,mdb
+Microsoft Access Database,97,x-fmt/239,13,mdb
+Microsoft Access Database,95,x-fmt/238,8,mdb
+Microsoft Access Database,2,x-fmt/66,3,mdb
+Microsoft Access Database,2002,x-fmt/241,1,mdb
+Microsoft Compiled HTML Help,,fmt/634,4,chm
+Microsoft Document Imaging File Format,       ,fmt/881,2,mdi
+Microsoft Excel 4.0 Workbook (xls),4W,fmt/58,1,xlw
+Microsoft Excel 4.0 Worksheet (xls),4S,fmt/57,2,xls
+Microsoft Excel 5.0/95 Workbook (xls),May-95,fmt/59,570,xls
+Microsoft Excel 97 Workbook (xls),8,fmt/61,7209,xls
+Microsoft Excel for Windows,2007 onwards,fmt/214,520,xlsx
+Microsoft Excel Macro-Enabled,2007,fmt/445,23,xlsm
+Microsoft Excel Non-XML Binary Workbook,2007 onwards,fmt/595,5,xlsb
+Microsoft Excel ODBC Query,       ,x-fmt/46,2,dqy
+Microsoft Excel Template,97-2003,x-fmt/17,3,xlt
+Microsoft FoxPro Database,2.6,x-fmt/242,12,dbf
+Microsoft Front Page Binary Tree Index,       ,fmt/359,14,btr
+Microsoft Front Page Server Extension Configuration,       ,fmt/288,6901,frontpg.ini|frontpg.cnf
+Microsoft Help Contents File,,fmt/1656,2,
+Microsoft Internet Shortcut,       ,x-fmt/454,16,url
+Microsoft Office Encrypted Document,2007 Onwards,fmt/494,3,xlsx|pptx|docx
+Microsoft Office Owner File,,fmt/473,1,doc|docx
+Microsoft Outlook Email Message,97-2003,x-fmt/430,1746,msg|oft
+Microsoft Outlook Personal Folders (ANSI),1997-2002,x-fmt/248,12,pst
+Microsoft Powerpoint for Windows,2007 onwards,fmt/215,30,pptx
+Microsoft Powerpoint Presentation,97-2003,fmt/126,436,ppt
+Microsoft Powerpoint Presentation,95,fmt/125,4,ppt
+Microsoft PowerPoint Show,2007,fmt/629,2,ppsx
+Microsoft Project,2000-2003,x-fmt/247,11,mpp
+Microsoft Project,98,x-fmt/245,6,mpp
+Microsoft Publisher,2002,x-fmt/257,3,pub
+Microsoft Publisher,2003,fmt/1512,3,pub
+Microsoft Shell Scrap Object File,       ,fmt/1303,1,shs
+Microsoft Symbolic Link (SYLK) File,       ,x-fmt/106,5,slk
+Microsoft Visio Drawing,2000,x-fmt/258,42,vsd
+Microsoft Visio Drawing,2003-2010,fmt/443,25,vsd
+Microsoft Visual FoxPro Report,       ,fmt/377,2,frx
+Microsoft Windows Cursor,       ,fmt/385,1,cur
+Microsoft Windows Shortcut,       ,x-fmt/428,26,lnk
+Microsoft Word (Generic),6.0-2003,fmt/609,38,doc
+Microsoft Word Document,97-2003,fmt/40,35845,doc|dot
+Microsoft Word Document,6.0/95,fmt/39,2436,doc|dot
+Microsoft Word Document (Password Protected),97-2003,fmt/754,6,wbk|doc
+Microsoft Word Document Template,97-2003,x-fmt/45,1178,dot
+Microsoft Word for Macintosh Document,5,x-fmt/65,38,doc
+Microsoft Word for Macintosh Document,4,x-fmt/64,6,mcw
+Microsoft Word for MS-DOS Document,5,x-fmt/275,1,doc
+Microsoft Word for Windows,2007 onwards,fmt/412,4098,docx
+Microsoft Word for Windows Document,2,fmt/38,16,doc
+Microsoft Works for Windows,4,x-fmt/120,1,wps
+Microsoft Works Spreadsheet,06-Sep,fmt/901,1,xlr
+MIDI Audio,       ,x-fmt/230,1,mid|midi
+MIME Email,1,fmt/950,214,eml
+MiniCAD/VectorWorks,8,fmt/1138,2,mcd
+Mork,,fmt/612,54,mab|mdf|dat
+MPEG 1/2 Audio Layer 3,       ,fmt/134,296,mp3|x-mp3|mpeg3|mpeg|x-mpeg3|mpg|x-mpg|x-mpegaudio
+"MPEG Audio Stream, Layer III",,fmt/134,25,mp3
+MPEG-1 Elementary Stream,       ,fmt/649,26,m1v|mp3
+MPEG-1 Program Stream,       ,x-fmt/385,159,mpg|mpeg|mp1|mp2|mp3|m1v|m1a|m2a|mpa|mpv
+MPEG-2 MXF,,,5737,mxf
+MPEG-2 Video,,x-fmt/386,302,mpg|mpeg|mpeg2|mpv|mp2t|mp1s|mp2p|x-mpg|x-pn-mpg|x-mpeg|x-mpeg2a
+MPEG4,,fmt/199,10,mp4
+MPEG-4 Media File,,fmt/199,30,mp4|mpa
+MS DOS Compression format,       ,fmt/462,51,
+Multipage Zsoft Paintbrush Bitmap Graphics,       ,x-fmt/348,3,dcx
+MySQL Table Definition Format,       ,fmt/868,2,frm
+NCH Dictation Audio File,       ,fmt/1280,1,dct
+Netscape Bookmark File Format,       ,fmt/1132,2,htm|html
+Notes id file,,TSS-fmt/19,87,
+Novell Address Book,,fmt/1486,2,
+Obsidium Project File,       ,fmt/207,2,opf
+OLE2 Compound Document Format,       ,fmt/111,200,ole|ole2
+Open XML Paper Specification,       ,fmt/657,2,oxps
+OpenDocument Graphics,1,fmt/139,8,odg|fodg
+OpenDocument Spreadsheet,1,fmt/137,12,ods|fods|ots
+OpenDocument Text,1,fmt/136,9,odt|fodt|ott
+OpenType Font File,       ,fmt/520,18,otf|ttf
+OrgPlus File,,fmt/1457,2,opx|opxt|ops
+Pagemaker Document (Generic),       ,fmt/876,2,pmd|pmt
+Paint Shop Pro Image,3,x-fmt/233,1,psp
+PaintShop Pro Browser Cache File,       ,fmt/217,1,jbf
+PCM Waveform Audio,,fmt/141,193060,wav
+PCX,4,fmt/89,1901,pcx|pcc
+PCX,5,fmt/90,328,pcx|pcc
+Perl Script,       ,fmt/870,5,pl
+Persuasion Presentation Interchange File,,fmt/1709,6,
+PHP Script Page,       ,x-fmt/169,3,php
+Plain Text File,       ,x-fmt/111,9618,Plain_Text|txt|text|asc|rte
+Portable Network Graphics,1,fmt/11,1418,png
+Portable Network Graphics,1.1,fmt/12,72,png
+Portable Network Graphics,1.2,fmt/13,53,png
+PostScript,3,x-fmt/408,2,ps
+Preferred Executable Format,       ,fmt/1070,314,exe(?)
+QuarkXPress Document,4,fmt/1319,2,qxd
+Quicktime,       ,x-fmt/384,826,mov
+Raw Bitmap,       ,x-fmt/185,138,raw|rgb|yuv
+Raw JPEG Stream,       ,fmt/41,1556,jpg|jpeg
+RealMedia,       ,x-fmt/190,25,rm|rmf
+reStructuredText,,fmt/1565,2,
+Rich Text Format,1.9,fmt/355,1623,rtf
+Rich Text Format,1.5-1.6,fmt/50,1341,rtf
+Rich Text Format,1.7,fmt/52,160,rtf
+Rich Text Format,1.8,fmt/53,102,rtf
+Rich Text Format,1.0-1.4,fmt/45,43,rtf
+RPM Package Manager file,3,fmt/795,24,rpm|src.rpm
+SGML/XML Entity File,,fmt/1618,19,ent
+SNAP Main Data File,       ,fmt/1056,3,mdf
+Software602 Printer Configuration File,1,fmt/1711,2,
+Sonic Scenarist Closed Caption Format,       ,fmt/1274,4,scc
+Sony SFK File,       ,fmt/1207,1,sfk
+Speller Custom Dictionary,       ,x-fmt/132,2,dct|dic
+Stuffit Archive File,,fmt/639,121,sit
+Sun Raster Image,         ,x-fmt/184,1,sun|ras|sunras|rs|sr|scr|im1|im8|im24|im32
+SureThing Project File,       ,fmt/1276,1,std
+Tab-separated values,       ,x-fmt/13,2,tab|tsv
+Tagged Image File Format,       ,fmt/353,"49,205,220",tif|tiff
+Tape Archive Format,       ,x-fmt/265,1,tar
+TCR eBook,       ,fmt/1099,14,tcr
+Text Configuration file,       ,x-fmt/421,118,ini|conf|cnf|cfg|cf|config
+Thumbs DB file,XP,fmt/682,4,db
+TIFF Image Sequence,,,1,tar
+TRIM Context Reference File,,fmt/1085,16,txt|tr5
+TrueType Font,       ,x-fmt/453,13,ttf
+Truevision TGA Bitmap,2,fmt/402,11,tga|icb|vda|vst
+Type Library,Type 1,fmt/1601,2,
+Type Library,Type 2,fmt/1602,1,
+Variant Call Format,2.x,fmt/906,3,vcf
+vCard,       ,fmt/395,3,vcf|vcard
+Vector Markup Language,       ,fmt/583,316,htm|html
+Verity Collection Document Dataset Descriptor Style Set,       ,fmt/457,3,ddd
+Verity Collection Document Index Descriptor Style Set,       ,fmt/458,3,did
+Verity Collection Index About File,       ,fmt/454,11,abt
+Verity Collection Index Descriptor File,       ,fmt/461,18,pdd|ddd|did|wld
+Verity Collection Index Pending Transaction File,       ,fmt/455,3,trn
+Verity Collection Index Style Policy,       ,fmt/456,3,plc
+Verity Collection Partition Definition Descriptor Style Set,       ,fmt/460,3,pdd
+Verity Collection Stop List,       ,fmt/453,4,stp
+Verity Collection Word List Descriptor Style Set,       ,fmt/459,3,wld
+Video Object (VOB),,fmt/441,2,vob
+Video Object File (MPEG-2 subset),       ,fmt/425,33,vob
+Virtual Reality Modeling Language,2,fmt/94,3,wrl|wrz|wrl.gz
+Visual Basic Project File,01-Jun,fmt/1573,1,
+Visual Basic Project Workspace File,01-Jun,fmt/1574,2,
+Visual Basics MAK File,3 or earlier,fmt/1548,1,
+Waveform Audio,       ,fmt/6,33,wav
+Waveform Audio (PCMWAVEFORMAT),       ,fmt/141,85,wav
+Waveform Audio (WAVEFORMATEX),,fmt/142,310,wav
+Web Open Font Format,1,fmt/616,1,woff
+Windows Bitmap,3,fmt/116,1121,bmp
+Windows Bitmap,2,fmt/115,9,bmp
+Windows Bitmap,1,fmt/114,4,bmp
+Windows Bitmap,3.0 NT,fmt/117,2,bmp
+Windows Cabinet File,       ,x-fmt/414,4,cab
+Windows Help File,       ,fmt/474,16,hlp
+Windows Media Audio,       ,fmt/132,49,wma
+Windows Media Metafile,       ,fmt/584,19,asx|wax|wxv
+Windows Media Video,       ,fmt/133,156,wmv
+Windows Media Video,,fmt/133,9,wmv
+Windows Media Video 9 Advanced Profile (WVC1),9 Advanced Profile (WVC1),fmt/441,26,wmv
+Windows Metafile Image,       ,x-fmt/119,25,wmf
+Windows New Executable,       ,x-fmt/410,85,exe|dll|cpl|drv|scr
+Windows Portable Executable,32 bit,fmt/899,742,pe|exe|dll|cpl|efi|ocx|scr|sys
+Windows Portable Executable,       ,x-fmt/411,1,exe|dll|sys
+Windows Setup File,       ,x-fmt/420,1,inf
+Wordcraft Chapter Files,,fmt/1723,6,
+WordPerfect for MS-DOS/Windows Document,5.1,x-fmt/394,16,wpd|wp5|wp|w51|doc
+WordPerfect for MS-DOS/Windows Document,6,x-fmt/44,2,wpd|wp6|wp|w60|w61|w62|doc
+Write for Windows Document,3,x-fmt/12,2,wri
+XML Property List,       ,fmt/979,1,plist
+XML Schema Definition,       ,x-fmt/280,109,xsd
+ZIP Format,       ,x-fmt/263,1433,zip
+Zoomify Image Format,       ,fmt/898,113,zif

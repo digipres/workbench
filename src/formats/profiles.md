@@ -146,6 +146,14 @@ const original_profiles = [
     description: "",
     terms: "CC-BY",
     raw_data: await FileAttachment("../data/collection-profiles/nln/2024-10-03-NLN-extensions.csv").csv({typed: true})
+  },
+  {
+    key: "naa-2024",
+    title: "The National Archives of Australia 2024",
+    link: "https://naa.gov.au",
+    description: "",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../data/collection-profiles/naa/naa-profile-2024.csv").csv({typed: true})
   }
 ]
 
@@ -217,6 +225,7 @@ source_profiles.forEach((p) => profiles.push(process_profile(p)));
 // Clean up the data a bit:
 function process_profile(profile) {
     profile['strange'] = [];
+    profile['strange_extensions'] = [];
     profile['ok_data'] = [];
     profile['ok_data_threshold'] = [];
     profile['ok_data_all'] = [];
@@ -239,15 +248,23 @@ function process_profile(profile) {
         if( isNaN(item.count) ) {
             // Nope:
             profile.strange.push(item);
+            profile.strange_extensions.push(item.extension);
             return;
         }
         // Add up the total:
         profile.total_count += item.count;
         // Canonicalize the extension:
+        if( item.extension == "" || item.extension == null ) {
+            item.extension = "(none)";
+        }
         if(  item.extension && typeof item.extension == "string" ) {
             // Start with a copy:
             var ext = item.extension;
-            // Split NARA format:
+            // Deal with special values:
+            if( ext  == "(no extension)" ) {
+                ext = "(none)";
+            }
+            // Split "bar-separated extensions" and take the first one:
             if( ext.indexOf('|') > -1 ) {
                 ext = ext.slice(0, ext.indexOf('|'));
             }
@@ -269,8 +286,9 @@ function process_profile(profile) {
                 }
             }
             // Drop items that have space characters amid:
-            if (ext.indexOf(" ") >= 0) {
+            if (item.extension.indexOf(" ") >= 0) {
                 profile.strange.push(item);
+                profile.strange_extensions.push(item.extension);
                 profile.total_strange_count += item.count;
             } else {
                 // Check if the item is already in, and use that instead if so:
@@ -286,6 +304,7 @@ function process_profile(profile) {
             // Drop items that are not strings, i.e. numeric
             profile.strange.push(item);
             profile.total_strange_count += item.count;
+            profile.strange_extensions.push(item.extension);
         }
     });
     // Now go through the ok_data and keep only the:
@@ -358,7 +377,7 @@ if( profile_overview ) {
     <tr><th>Total Files</th><td>${d3.format(",")(profile_overview.total_count)}</td></tr>
     <tr><th>Total Unique, Usable Extensions</th><td>${d3.format(",")(profile_overview.ok_data_all.length)}</td></tr>
     <tr><th>Total Files With Usable Extensions</th><td>${d3.format(",")(profile_overview.total_ok_count)}</td></tr>
-    <tr><th>Total <abbr title="Total number of extensions that could not be used, e.g. contained spaces, or were just numbers.">Unusable</abbr> Extensions</th><td>${d3.format(",")(profile_overview.strange.length)}</td></tr>
+    <tr><th>Total <abbr title="Total number of extensions that could not be used, e.g. contained spaces, or were just numbers.">Unusable</abbr> Extensions</th><td><abbr title="${profile_overview.strange_extensions}">${d3.format(",")(profile_overview.strange.length)}</abbr></td></tr>
     <tr><th>Total Files With Unusable Extensions</th><td>${d3.format(",")(profile_overview.total_strange_count)}</td></tr>
     <tr><th>Frequency Cutoff</th><td>${profile_overview.frequency_cutoff}</td></tr>
     <tr><th>Truncated At</th><td>${profile_overview.truncated_at}</td></tr>
