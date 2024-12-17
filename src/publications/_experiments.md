@@ -6,6 +6,38 @@ import {SQLiteDatabaseClient} from "npm:@observablehq/sqlite";
 const db = SQLiteDatabaseClient.open("https://raw.githubusercontent.com/digipres/digipres-practice-index/main/releases/practice.db");
 ```
 
+## iPRES New Words This Year
+
+```js
+const words_by_year = db.sql`SELECT year, group_concat(abstract, " ") as text FROM publications GROUP BY year;`;
+```
+
+```js
+var prior_words = new Set();
+var new_words = new Set();
+const target_year = 2024;
+
+words_by_year.map( words => {
+  var unique_words = new Set();
+  words.text.split(" ").forEach( word => {
+    unique_words.add(word.toLowerCase().replace(/[^\w\s\']|_/g, "").replace(/\s+/g, ""));
+  });
+  words.unique = unique_words;
+  // Accumulate:
+  if ( words.year < target_year ) {
+    prior_words = prior_words.union(unique_words);
+  } else if ( words.year == target_year ) {
+    new_words = unique_words;
+  }
+});
+// Remove!
+new_words = new_words.difference(prior_words);
+
+display(words_by_year);
+display(prior_words);
+display(new_words);
+```
+
 ## iPRES Words Over Time
 
 This is an attempt to do trend analysis based on word frequency in abstracts. It's interesting enough to keep here as the visualisations etc. may become more useful if the data can be improved.  But as things are, the quality of the results is poor. It seems likely that the abstracts are not enough to identify trends, at least without more sophisticated language analysis to cluster concepts that use different words.  Basing it on full-texts might also help. Also, the trends in the field may be weak.

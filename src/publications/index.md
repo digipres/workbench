@@ -153,6 +153,8 @@ We can also pull out the authors, and make a graph where the size of each node i
 
 This requires quite a lot of manipulation of the raw data, but the network can then be displayed using a slightly modified version of a [widely-used network visualisation method](https://observablehq.com/framework/lib/d3).
 
+There's also a three-dimensional version of this visualisation you can explore, via [this blog post](https://anjackson.net/2024/10/21/constellations/).
+
 <div class="warning">This isn't easy to interact with if you are on a mobile device. Try using a laptop or desktop computer.</div>
 
 <div class="tip">Scroll down and press the <b>Go!</b> button to start the visualisation. When the network is visible, you can hover your mouse pointer over any node inside the dashed border and it will show the author's name and publication count.</div>
