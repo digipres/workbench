@@ -25,12 +25,11 @@ workflows:
   events:
   - type: start
     source: data@internet
-    color: "#ff0000"
+    color: "#000"
   - name: "Deposit"
     type: move
     source: data@internet
     target: data@workspace
-    color: "#ff0000"
   - type: space
   - name: Mint-API-ID
     label: "Mint\nAIP ID"
@@ -42,13 +41,14 @@ workflows:
     shiftCoords: [0, 1]
     markerShiftCoords: [0,1]
   - type: space
-  - name: "Create AIP"
+  - name: "Rename\nas AIP"
     type: rename
     source: data@workspace
     target: aip@workspace
     marker: interchange
     markerShiftCoords: [0,0.5]
     markerPos: "N"
+    color: "#ff0000"
   - name: "Record\nAIP ID"
     type: move
     source: aip-id@workspace
@@ -61,19 +61,19 @@ workflows:
     type: copy
     source: aip@workspace
     target: replica_1@tape1
-    color: "#666"
+    color: "#ff0000"
   - name: "Copy to tape robot 2"
     type: copy
     source: aip@workspace
     target: replica_2@tape2
     markerAt: 0.72
-    color: "#444"
+    color: "#ff0000"
   - type: space
   - name: "Copy to\ntape 3"
     type: derive
     source: replica_2@tape2
     target: replica_3@tape2
-    color: "#000"
+    color: "#aa0000"
     shiftCoords: [0, -1]
     markerShiftCoords: [0,-1]
     markerPos: "S"
@@ -90,9 +90,8 @@ workflows:
     target: dip@workspace
     color: "#008800"
     shiftCoords: [0, 1]
-    marker: interchange
     markerPos: "N"
-    markerShiftCoords: [0,0.5]
+    markerShiftCoords: [0,1]
   - name: Copy DIP
     type: copy
     source: dip@workspace
