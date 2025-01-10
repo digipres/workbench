@@ -103,7 +103,7 @@ const lines = {};
 // Loop through the events:
 var time = 0;
 const dt = 5;
-const ds = 6;
+const ds = -6; // Negative so the order matches what's in the source
 
 // Loop through the events:
 wf.events.forEach( event => {

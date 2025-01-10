@@ -1,25 +1,25 @@
 ---
 title: BFI Workflows
 places:
-- id: vault
-  name: Tape Vault
-- id: tape2
-  name: Tape Robot 2
-- id: tape1
-  name: Tape Robot 1
+- id: internet
+  name: "Internet"
+- id: bt-net
+  name: "BT Connection"
+- id: cdi
+  name: Collections Information Database
+  details: Axiell Collections
+- id: access
+  name: "Access Storage"
 - id: workspace
   name: "Working Storage"
   detail: "QNAP etc."
   people: "Who"
-- id: bt-net
-  name: "BT Connection"
-- id: access
-  name: "Access Storage"
-- id: cdi
-  name: Collections Information Database
-  details: Axiell Collections
-- id: internet
-  name: "Internet"
+- id: tape1
+  name: Tape Robot 1
+- id: tape2
+  name: Tape Robot 2
+- id: vault
+  name: Tape Vault
 workflows:
 - name: BFI Ingest Workflow
   initialZoom: 0.7
