@@ -239,7 +239,15 @@ import { tubeMap } from "npm:d3-tube-map";
 var width = 1000;
 var height = 500;
 
-const div = html`<div style="height: 500px; width: 100%; font-family: 'Hammersmith One', sans-serif; fill: #001919; font-size: 14px; font-weight: normal;" /><style>.label text {cursor: pointer}</style>`;
+const div = html`<div style="height: 500px; width: 100%; font-family: 'Hammersmith One', sans-serif; fill: #001919; font-size: 14px; font-weight: normal;" />
+<style>
+svg {
+  overflow: visible;
+}
+.label text {
+  cursor: pointer
+}
+</style>`;
 
 const container = d3.select(div);
 
@@ -282,6 +290,7 @@ function zoomed(event) {
 }
 ```
 <details>
+<summary>Debug Info</summary>
 
 ```js
 display(data);
@@ -322,107 +331,3 @@ async function saveHtml(value) {
 
 const scan_button = view(Inputs.button("Save as HTML", {value: container.node().outerHTML, reduce: saveHtml, disabled: false }));
 ```
-
-```
-js
-const svg = view(html`<svg id="df" width="800" height="400"></svg>`);
-```
-
-```
-js
-import Snap from 'npm:snapsvg';
-const s = new Snap("#df");
-```
-
-```
-js
-
-// Parser:
-function parseItemInPlace( itemInPlace ) {
-    const [item, place] = itemInPlace.split('@');
-    const index = df.places.findIndex( (p) => p.id == place );
-    return { item: item, place: place, index: index };
-}
-
-// Clear the existing SVG:
-s.clear();
-
-// Loop through the events:
-var time = 0;
-const dt = 20;
-const ds = 40;
-const ir = 4;
-const l_style = {
-                stroke: '#000',
-                strokeWidth: 2
-            };
-// Loop through the events:
-wf.events.forEach( event => {
-    //display(event);
-    if( event.type == "copy" && event.source ) {
-        const source = parseItemInPlace(event.source);
-        var targets = [];
-        if( event.target ) {
-            targets.push(parseItemInPlace(event.target));
-        } else {
-            targets = event.targets.map( (t) => parseItemInPlace(t) );
-        }
-        display(targets);
-        targets.forEach( (target ) => {
-            if( target.index < 0 ) return;
-            display({ source: source, target: target });
-            
-            var arrow = s.polygon([0, 10, 4, 10, 2, 0, 0, 10]).attr({ fill: '#323232' }).transform('r90');
-            var marker = arrow.marker(0, 0, 10, 10, 5, 5);
-
-            const sx = source.index*ds;
-            const sy = time*dt;
-            const tx = target.index*ds;
-            const ty = (time + 1)*dt;
-            const tl = s.line( sx, sy, tx, ty );
-            const sl = s.line( sx, sy, sx, ty );
-            [tl].forEach( (l) => l.attr( l_style ));
-            tl.attr({'markerEnd': marker});
-            const tc = s.circle( tx, ty, ir );
-
-            // Add on to list of items in each place:
-            const place = df.places[target.index];
-            place.items = place.items || {};
-            place.items[target.item] = (place.items[target.item] || 0) + 1
-            display(place)
-        });
-    }
-    time = time + 1;
-});
-```
-
-```
-var bigCircle = s.circle(150, 150, 100);
-// By default its black, lets change its attributes
-bigCircle.attr({
-    fill: "#bada55",
-    stroke: "#000",
-    strokeWidth: 5
-});
-// Now lets create another small circle:
-var smallCircle = s.circle(100, 150, 30);
-// Lets put this small circle and another one into a group:
-var discs = s.group(smallCircle, s.circle(200, 150, 70));
-// Now we can change attributes for the whole group
-discs.attr({
-    fill: "#fff"
-});
-// Now more interesting stuff
-// Lets assign this group as a mask for our big circle
-bigCircle.attr({
-    mask: discs
-});
-// Despite our small circle now is a part of a group
-// and a part of a mask we could still access it:
-smallCircle.animate({r: 50}, 1000);
-// We don’t have reference for second small circle,
-// but we could easily grab it with CSS selectors:
-discs.select("circle:nth-child(2)").animate({r: 50}, 1000);
-
-```
-
