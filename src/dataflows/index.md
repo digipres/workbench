@@ -8,9 +8,9 @@
 />
 
 ```js
-const dataa = await FileAttachment("pubs.json").json();
+const data_pubs = await FileAttachment("pubs.json").json();
 
-display(dataa)
+//display(data_pubs)
 ```
 
 ```js
@@ -20,7 +20,8 @@ import yaml from "npm:js-yaml@4.1.0";
 const dfs_txt = await FileAttachment("bfi.md").text();
 var dfs = [];
 yaml.loadAll(dfs_txt, function (doc) { if(doc) dfs.push(doc) });
-display(dfs)
+
+//display(dfs)
 
 const df = dfs[0];
 const wf = df.workflows[0];
@@ -117,19 +118,21 @@ wf.events.forEach( event => {
         targets.forEach( (target ) => {
             const y1 = source.index*ds;
             const y2 = target.index*ds;
-            // Default to making a copy:
-            var item = target.item;
-            if( event.type == "move") {
-                item = source.item;
+            // Default to doing a move:
+            var item = source.item;
+            // If it's a move, update the source item instead:
+            if( event.type == "copy") {
+                item = target.item;
+                // Pass the colour through by default:
+                event.color = event.color || lines[source.item].color;
             } 
             setupEntitiesForEvent(lines, stations, item, event );
             pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
             // But if it's a move, rename the line to match the new location:
             if( event.type == "move") {
                 lines[target.item] = lines[item];
-                lines[item].name = `${source.itemId}@${target.place.id}`;
+                lines[target.item].name = `${source.itemId}@${target.place.id}`;
                 delete lines[event.source];
-                display(lines);
             }
         });
     } else if( event.type == "derive" || event.type == "rename" ) {
@@ -151,7 +154,6 @@ wf.events.forEach( event => {
                 lines[source.item].nodes.push({
                   "coords": [0.5*(t1+t2),y2],
                 });
-                display(lines);
             }
         });
     } else if( event.type == "start" ) {
@@ -195,7 +197,6 @@ wf.events.forEach( event => {
             const target = lines[item];
             if( target.terminated != undefined ) return;
             const source = parseItemInPlace(target.name);
-            display(source);
             const source_event = {
                 'name': source.place.name,
                 'label': source.place.name,
@@ -228,8 +229,6 @@ const data = {
     "lines": Object.values(lines)
 }
 
-display(data);
-
 ```
 
 
@@ -238,9 +237,9 @@ display(data);
 import { tubeMap } from "npm:d3-tube-map";
 
 var width = 1000;
-var height = 800;
+var height = 500;
 
-const div = html`<div style="height: 800px; width: 100%; font-family: 'Hammersmith One', sans-serif; fill: #001919; font-size: 14px; cursor: pointer; font-weight: normal;" />`;
+const div = html`<div style="height: 500px; width: 100%; font-family: 'Hammersmith One', sans-serif; fill: #001919; font-size: 14px; font-weight: normal;" /><style>.label text {cursor: pointer}</style>`;
 
 const container = d3.select(div);
 
@@ -259,7 +258,6 @@ const map = tubeMap()
 
 container.datum(data).call(map);
 
-
 display(div);
 
 var svg = container.select("svg");
@@ -267,22 +265,28 @@ var svg = container.select("svg");
 const zoom = d3.zoom().scaleExtent([0.1, 6]).on("zoom", zoomed);
 
 var zoomContainer = svg.call(zoom);
-var initialScale = 0.7;
-var initialTranslate = [0, 0];
+var initialScale = wf.initialZoom || 0.75;
+var initialTranslate = wf.initialOffset || undefined; // e.g. [100,10] etc.
 
 zoom.scaleTo(zoomContainer, initialScale);
-/*
-zoom.translateTo(
-    zoomContainer,
-    initialTranslate[0],
-    initialTranslate[1]
-);
-*/
+if( initialTranslate ) {
+    zoom.translateTo(
+        zoomContainer,
+        initialTranslate[0],
+        initialTranslate[1]
+    );
+}
 
 function zoomed(event) {
     svg.select("g").attr("transform", event.transform.toString());
 }
 ```
+<details>
+
+```js
+display(data);
+```
+</details>
 
 ```js
 import { showSaveFilePicker } from 'npm:file-system-access';
@@ -318,7 +322,6 @@ async function saveHtml(value) {
 
 const scan_button = view(Inputs.button("Save as HTML", {value: container.node().outerHTML, reduce: saveHtml, disabled: false }));
 ```
-
 
 ```
 js

@@ -22,6 +22,8 @@ places:
   name: "Internet"
 workflows:
 - name: BFI Ingest Workflow
+  initialZoom: 0.7
+  initialOffset:
   events:
   - type: start
     source: data@internet
@@ -81,7 +83,6 @@ workflows:
     type: move
     source: replica_3@tape2
     target: replica_3@vault
-    color: "#000"
     shiftCoords: [0, -1]
     markerPos: "E"
   - name: "Create DIP"
@@ -96,7 +97,6 @@ workflows:
     type: copy
     source: dip@workspace
     target: dip@access
-    color: "#008800"
     shiftCoords: [0, 1]
   - name: Delete Working Copies
     type: delete
