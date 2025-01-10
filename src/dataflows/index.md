@@ -24,37 +24,45 @@ display(dfs)
 
 const df = dfs[0];
 const wf = df.workflows[0];
+```
 
-// Parser:
+```js
+// Parser an item string, pulling out the place
+// The final item includes the place
 function parseItemInPlace( itemInPlace ) {
-    const [item, place] = itemInPlace.split('@');
+    const [id, place] = itemInPlace.split('@');
     const index = df.places.findIndex( (p) => p.id == place );
     if ( index >= 0 ) {
-        return { item: item, place: place, index: index };
+        return { item: itemInPlace, itemId: id, place: df.places[index], index: index };
     } else {
         // Add a default place for this one:
         df.places.push({
             'id': place,
             'name': place
         });
-        return { item: item, place: place, index: df.places.length - 1 };
+        return { item: itemInPlace, itemId: place, place: df.places.at(-1), index: df.places.length - 1 };
     }
 }
 
+
+function setupEntitiesForEvent( lines, stations, item, event ) {
+    lines[item] = lines[item] || {
+        "name": item,
+        "color": event.color || "#aaa",
+        "shiftCoords": event.shiftCoords || [0,0],
+        "nodes": []
+    };
+    //
+    stations[event.name] = stations[event.name] || { "label": event.label || event.name };
+}
+
 // Push into place:
-function pushEvent(lines, stations, item, event, sx, sy, tx, ty){
-        lines[item] = lines[item] || {
-            "name": item,
-            "color": event.color || "#aaa",
-            "shiftCoords": event.shiftCoords || [0,0],
-            "nodes": []
-        };
+function pushCopyEvent(lines, stations, item, event, sx, sy, tx, ty){
         const markerAt = event.markerAt || 0.5;
         const markerPos = event.markerPos || "W";
         const dir = Math.sign(ty-sy);
         lines[item].nodes.push({
-                "coords": [sx,sy],
-                "marker": "interchange"
+                "coords": [sx+1,sy]
             },
             {
                 "coords": [tx-2,sy]
@@ -73,13 +81,23 @@ function pushEvent(lines, stations, item, event, sx, sy, tx, ty){
             {
             "coords": [tx, ty]
         });
-        //
-        stations[event.name] = stations[event.name] || { "label": event.name };
 }
+
+function getTargets(event) {
+    var targets = [];
+    if( event.target ) {
+        targets.push(parseItemInPlace(event.target));
+    } else {
+        targets = event.targets.map( (t) => parseItemInPlace(t) );
+    }
+    return targets;    
+}
+```
+
+```js
 
 const stations = {};
 const lines = {};
-
 
 // Loop through the events:
 var time = 0;
@@ -88,29 +106,116 @@ const ds = 6;
 
 // Loop through the events:
 wf.events.forEach( event => {
+    //display(event);
     // Current time window
     const t1 = time*dt;
     const t2 = (time + 1)*dt;
-    display(event);
     // Add new lines if there has been a copy event.
-    if( event.type == "copy" && event.source ) {
+    if( event.type == "copy" || event.type == "move" ) {
         const source = parseItemInPlace(event.source);
-        var targets = [];
-        if( event.target ) {
-            targets.push(parseItemInPlace(event.target));
-        } else {
-            targets = event.targets.map( (t) => parseItemInPlace(t) );
-        }
+        var targets = getTargets(event);
         targets.forEach( (target ) => {
             const y1 = source.index*ds;
             const y2 = target.index*ds;
-            pushEvent(lines, stations, target.item, event, t1, y1, t2, y2 )
+            // Default to making a copy:
+            var item = target.item;
+            if( event.type == "move") {
+                item = source.item;
+            } 
+            setupEntitiesForEvent(lines, stations, item, event );
+            pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
+            // But if it's a move, rename the line to match the new location:
+            if( event.type == "move") {
+                lines[target.item] = lines[item];
+                lines[item].name = `${source.itemId}@${target.place.id}`;
+                delete lines[event.source];
+                display(lines);
+            }
+        });
+    } else if( event.type == "derive" || event.type == "rename" ) {
+        const source = parseItemInPlace(event.source);
+        var targets = getTargets(event);
+        targets.forEach( (target ) => {
+            var item = target.item;
+            const y2 = target.index*ds;
+            setupEntitiesForEvent(lines, stations, item, event );
+            lines[item].nodes.push({
+                "coords": [0.5*(t1+t2),y2],
+                "name": event.name,
+                "labelPos": event.markerPos || "S",
+                "marker": event.marker || undefined,
+                "shiftCoords": event.markerShiftCoords || [0,0]
+            });
+            if( event.type == "rename") {
+                lines[source.item].terminated = t2;
+                lines[source.item].nodes.push({
+                  "coords": [0.5*(t1+t2),y2],
+                });
+                display(lines);
+            }
+        });
+    } else if( event.type == "start" ) {
+        const source = parseItemInPlace(event.source);
+        const item = source.item;
+        const source_event = {
+            'name': source.place.name,
+            'label': source.place.name,
+            'color': event.color
+        }
+        setupEntitiesForEvent(lines, stations, item, source_event );
+        const y = source.index * ds;
+        lines[source.item].nodes.push({
+            "coords": [t1,y],
+            "name": source.place.name,
+            "labelPos": "W"
+        },{
+            "coords": [t2,y]
+        });
+        // End this item as these are just start-point markers
+        lines[source.item].terminated = 0;
+    } else if( event.type == "delete" ) {
+        const targets = getTargets(event);
+        targets.forEach( (target) => {
+            var item = target.item;
+            const y2 = target.index*ds;
+            setupEntitiesForEvent(lines, stations, item, event );
+            if (lines[item]) {
+                lines[item].terminated = t2;
+            }
+            lines[item].nodes.push({
+                "coords": [0.5*(t1+t2),y2],
+                "name": event.name,
+                "labelPos": event.markerPos || "S",
+                "marker": event.marker || undefined,
+                "shiftCoords": event.markerShiftCoords || [0,0]
+            })
+        });
+    } else if( event.type == "end" ) {
+        Object.keys(lines).forEach( (item) => {
+            const target = lines[item];
+            if( target.terminated != undefined ) return;
+            const source = parseItemInPlace(target.name);
+            display(source);
+            const source_event = {
+                'name': source.place.name,
+                'label': source.place.name,
+                'color': event.color
+            }
+            setupEntitiesForEvent(lines, stations, item, source_event );
+            const y = target.nodes.at(-1)['coords'][1];
+            target.nodes.push({
+                "coords": [t2,y],
+                "name": source.place.name,
+                "labelPos": "E"
+            });
+            // End this item as these are just start-point markers
+            target.terminated = 0;
         });
     }
     // Extend all active lines to t2 as needed:
     Object.keys(lines).forEach( (item ) => {
       const prev = lines[item].nodes.at(-1);
-      if( prev.coords[0] < t2 ) {
+      if( prev.coords && prev.coords[0] < t2 && lines[item].terminated == undefined ) {
         lines[item].nodes.push( {"coords": [t2, prev.coords[1]]} );
       }
     });
@@ -162,7 +267,7 @@ var svg = container.select("svg");
 const zoom = d3.zoom().scaleExtent([0.1, 6]).on("zoom", zoomed);
 
 var zoomContainer = svg.call(zoom);
-var initialScale = 0.5;
+var initialScale = 0.7;
 var initialTranslate = [0, 0];
 
 zoom.scaleTo(zoomContainer, initialScale);
