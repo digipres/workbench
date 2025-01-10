@@ -1,0 +1,261 @@
+{
+    "stations": {
+      "create-aip": {
+        "label": "Create AIP"
+      },
+      "record-aip": {
+        "label": "Record AIP ID"
+      },
+      "keep-md": {
+        "label": "Metadata\n[Collections Information Database]"
+      },
+      "gen-aip-1": {
+        "label": "Copy to \ntape #1"
+      },
+      "gen-aip-2": {
+        "label": "Copy to \ntape #2"
+      },
+      "gen-aip-3": {
+        "label": "Copy to \ntape #3"
+      },
+      "mv-aip-3": {
+        "label": "Transfer tape #3 to vault"
+      },
+      "keep-aip-1": {
+        "label": "AIP on tape\n[Spectra T950]"
+      },
+      "keep-aip-2": {
+        "label": "AIP on tape\n[Tape Silo ???]"
+      },
+      "keep-aip-3": {
+        "label": "AIP on tape\n[Remote Vault]"
+      },
+      "gen-dip": {
+        "label": "Generate DIP"
+      },
+      "copy-dip": {
+        "label": "Copy DIP"
+      },
+      "keep-dip": {
+        "label": "DIP\n[???]"
+      },
+      "delete-ingest": {
+        "label": "Delete Ingest Copies\n[QNAP]"
+      }
+    },
+    "lines": [
+      {
+        "name": "Original AIP",
+        "color": "#FF0000",
+        "shiftCoords": [0, 0],
+        "nodes": [
+          {
+            "coords": [15, -4],
+            "name": "create-aip",
+            "marker": "interchange",
+            "canonical": true,
+            "shiftCoords": [0, 0.5],
+            "labelShiftCoords": [0, 0],
+            "labelPos": "S"
+          },
+          {
+            "coords": [80, -4],
+            "name": "delete-ingest",
+            "marker": "interchange",
+            "shiftCoords": [0,0.5],
+            "labelShiftCoords": [0.5,1.5],
+            "labelPos": "E"
+          }
+        ]
+      },      {
+        "name": "AIP ID",
+        "color": "#0000dd",
+        "shiftCoords": [0, 1],
+        "nodes": [
+          {
+            "coords": [15, -4],
+            "name": "create-aip"
+          },
+          {
+            "coords": [25, -4]
+          },
+          {
+            "coords": [26, -3]
+          },
+          {
+            "coords": [26, 2],
+            "name": "record-aip",
+            "labelPos": "W"
+          },
+          {
+            "coords": [26, 7]
+          },
+          {
+            "coords": [27, 8]
+          },
+          {
+            "coords": [100, 8],
+            "name": "keep-md",
+            "labelShiftCoords": [0.5,2],
+            "labelPos": "E"
+          }
+        ]
+      },
+      {
+        "name": "AIP Replica 1",
+        "color": "#FF0000",
+        "shiftCoords": [0, 0],
+        "nodes": [
+          {
+            "coords": [15, -4],
+            "name": "create-aip",
+            "labelPos": "N"
+          },
+          {
+            "coords": [28, -4]
+          },
+          {
+            "coords": [30, -4]
+          },
+          {
+            "coords": [31, -5]
+          },
+          {
+            "coords": [31, -7],
+            "name": "gen-aip-1",
+            "labelPos": "W"
+          },
+          {
+            "coords": [31, -9]
+          },
+          {
+            "coords": [32, -10]
+          },
+          {
+            "coords": [100, -10],
+            "name": "keep-aip-1",
+            "labelShiftCoords": [0.5,1.5],
+            "labelPos": "E"
+          }
+        ]
+      },
+      {
+        "name": "AIP Replica 2",
+        "color": "#FF0000",
+        "shiftCoords": [0, 0],
+        "nodes": [
+          {
+            "coords": [15, -4],
+            "name": "create-aip"
+          },
+          {
+            "coords": [30, -4]
+          },
+          {
+            "coords": [31, -5]
+          },
+          {
+            "coords": [31, -13],
+            "name": "gen-aip-2",
+            "labelPos": "W"
+          },
+          {
+            "coords": [31, -15]
+          },
+          {
+            "coords": [32, -16]
+          },
+          {
+            "coords": [100, -16],
+            "name": "keep-aip-2",
+            "labelShiftCoords": [0.5,1.5],
+            "labelPos": "E"
+          }
+        ]
+      },
+      {
+        "name": "AIP Replica 3",
+        "color": "#aa0000",
+        "shiftCoords": [0, -1],
+        "nodes": [
+          {
+            "coords": [39, -16],
+            "name": "gen-aip-3",
+            "labelPos": "S"
+          },
+          {
+            "coords": [44, -16]
+          },
+          {
+            "coords": [45, -18],
+            "name": "mv-aip-3",
+            "labelPos": "E"
+          },
+          {
+            "coords": [45, -20]
+          },
+          {
+            "coords": [46, -21]
+          },
+          {
+            "coords": [100, -21],
+            "name": "keep-aip-3",
+            "labelShiftCoords": [0.5,0.5],
+            "labelPos": "E"
+          }
+        ]
+      },
+      {
+        "name": "DIP",
+        "color": "#00aa00",
+        "shiftCoords": [0, 1],
+        "nodes": [
+          {
+            "coords": [45, -4],
+            "name": "gen-dip",
+            "marker": "interchange",
+            "shiftCoords": [0,0.5],
+            "labelPos": "S"
+          },
+          {
+            "coords": [80, -4],
+            "name": "delete-ingest"
+          }
+        ]
+      },
+      {
+        "name": "DIP",
+        "color": "#00aa00",
+        "shiftCoords": [0, 1],
+        "nodes": [
+          {
+            "coords": [45, -4],
+            "name": "gen-dip"
+          },
+          {
+            "coords": [60, -4]
+          },
+          {
+            "coords": [61, -3]
+          },
+          {
+            "coords": [61, -1],
+            "name": "copy-dip",
+            "labelPos": "W"
+          },
+          {
+            "coords": [61, 1]
+          },
+          {
+            "coords": [62, 2]
+          },
+          {
+            "coords": [100, 2],
+            "name": "keep-dip",
+            "labelShiftCoords": [0.5,2.0],
+            "labelPos": "E"
+          }
+        ]
+      }
+    ]
+  }

@@ -87,6 +87,7 @@ export default {
   markdownIt: (md) => md.use(MarkdownItFootnote),
 
   // Page header, based on Observable Frameworks one:
+  /*
   header: `<div style="display: flex; align-items: center; gap: 0.5rem; height: 2.2rem; margin: -1.5rem -2rem 2rem -2rem; padding: 0.5rem 2rem; border-bottom: solid 1px var(--theme-foreground); font: 500 16px var(--sans-serif); --theme-foreground-focus: #000;">
   <a href="/" target="_self" rel="" style="display: flex; align-items: center;">
     <svg width="22" height="22" viewBox="0 0 21.92930030822754 22.68549919128418" fill="currentColor">
@@ -106,7 +107,7 @@ export default {
       <a target="_blank" title="GitHub" href="https://github.com/digipres/workbench"><span>GitHub️</span></a>
     </span>
   </div>
-  </div>`,
+  </div>`,*/
 
   // HTML head:
   head: `${analytics}`
