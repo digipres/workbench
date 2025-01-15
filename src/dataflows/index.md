@@ -17,7 +17,7 @@ const data_pubs = await FileAttachment("pubs.json").json();
 import yaml from "npm:js-yaml@4.1.0";
 
 // Load the first YAML doc, i.e. the frontmatter:
-const dfs_txt = await FileAttachment("bfi.md").text();
+const dfs_txt = await FileAttachment("ffaa.md").text();
 var dfs = [];
 yaml.loadAll(dfs_txt, function (doc) { if(doc) dfs.push(doc) });
 
@@ -46,11 +46,11 @@ function parseItemInPlace( itemInPlace ) {
 }
 
 
-function setupEntitiesForEvent( lines, stations, item, event ) {
+function setupEntitiesForEvent( lines, stations, item, event, parentShiftCoords ) {
     lines[item] = lines[item] || {
         "name": item,
         "color": event.color || "#aaa",
-        "shiftCoords": event.shiftCoords || [0,0],
+        "shiftCoords": event.shiftCoords || parentShiftCoords || [0,0], 
         "nodes": []
     };
     //
@@ -93,6 +93,15 @@ function getTargets(event) {
     }
     return targets;    
 }
+function getSources(event) {
+    var sources = [];
+    if( event.source ) {
+        sources.push(parseItemInPlace(event.source));
+    } else {
+        sources = event.sources.map( (s) => parseItemInPlace(s) );
+    }
+    return sources;    
+}
 ```
 
 ```js
@@ -103,7 +112,7 @@ const lines = {};
 // Loop through the events:
 var time = 0;
 const dt = 5;
-const ds = -6; // Negative so the order matches what's in the source
+const ds = -8; // Negative so the order matches what's in the source
 
 // Loop through the events:
 wf.events.forEach( event => {
@@ -123,8 +132,9 @@ wf.events.forEach( event => {
             // If it's a move, update the source item instead:
             if( event.type == "copy") {
                 item = target.item;
-                // Pass the colour through by default:
+                // Pass properties through by default:
                 event.color = event.color || lines[source.item].color;
+                event.shiftCoords = event.shiftCoords || lines[source.item].shiftCoords;
             } 
             setupEntitiesForEvent(lines, stations, item, event );
             pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
@@ -132,6 +142,7 @@ wf.events.forEach( event => {
             if( event.type == "move") {
                 lines[target.item] = lines[item];
                 lines[target.item].name = `${source.itemId}@${target.place.id}`;
+                delete lines[target.item].terminated;
                 delete lines[event.source];
             }
         });
@@ -141,13 +152,15 @@ wf.events.forEach( event => {
         targets.forEach( (target ) => {
             var item = target.item;
             const y2 = target.index*ds;
-            setupEntitiesForEvent(lines, stations, item, event );
+            var parentShiftCoords = null;
+            if( lines[source.item] ) parentShiftCoords = lines[source.item].shiftCoords;
+            setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
             lines[item].nodes.push({
                 "coords": [0.5*(t1+t2),y2],
                 "name": event.name,
                 "labelPos": event.markerPos || "S",
                 "marker": event.marker || undefined,
-                "shiftCoords": event.markerShiftCoords || [0,0]
+                "shiftCoords": event.markerShiftCoords || event.shiftCoords|| lines[source.item].shiftCoords || [0,0]
             });
             if( event.type == "rename") {
                 lines[source.item].terminated = t2;
@@ -157,24 +170,28 @@ wf.events.forEach( event => {
             }
         });
     } else if( event.type == "start" ) {
-        const source = parseItemInPlace(event.source);
-        const item = source.item;
-        const source_event = {
-            'name': source.place.name,
-            'label': source.place.name,
-            'color': event.color
-        }
-        setupEntitiesForEvent(lines, stations, item, source_event );
-        const y = source.index * ds;
-        lines[source.item].nodes.push({
-            "coords": [t1,y],
-            "name": source.place.name,
-            "labelPos": "W"
-        },{
-            "coords": [t2,y]
+        var sources = getSources(event);
+        sources.forEach( ( source ) => {
+            const item = source.item;
+            const source_event = {
+                'name': source.place.name,
+                'label': source.place.name,
+                'color': event.color
+            }
+            setupEntitiesForEvent(lines, stations, item, source_event );
+            const y = source.index * ds;
+            lines[source.item].nodes.push({
+                "coords": [t1,y],
+                "name": source.place.name,
+                "labelPos": "W"
+            },{
+                "coords": [t1+1,y]
+            });
+            // End this item as these are just start-point markers
+            //lines[source.item].terminated = t1;
+            // Note that start point is marked:
+            lines[source.item].markedAtStart = true;
         });
-        // End this item as these are just start-point markers
-        lines[source.item].terminated = 0;
     } else if( event.type == "delete" ) {
         const targets = getTargets(event);
         targets.forEach( (target) => {
@@ -182,6 +199,7 @@ wf.events.forEach( event => {
             const y2 = target.index*ds;
             setupEntitiesForEvent(lines, stations, item, event );
             if (lines[item]) {
+                console.log(item)
                 lines[item].terminated = t2;
             }
             lines[item].nodes.push({
@@ -196,9 +214,11 @@ wf.events.forEach( event => {
         Object.keys(lines).forEach( (item) => {
             const target = lines[item];
             if( target.terminated != undefined ) return;
+            if( target.markedAtStart ) return;
             const source = parseItemInPlace(target.name);
+            const endpoint_name = source.place.name+'_END';
             const source_event = {
-                'name': source.place.name,
+                'name': endpoint_name,
                 'label': source.place.name,
                 'color': event.color
             }
@@ -206,17 +226,15 @@ wf.events.forEach( event => {
             const y = target.nodes.at(-1)['coords'][1];
             target.nodes.push({
                 "coords": [t2,y],
-                "name": source.place.name,
+                "name": endpoint_name,
                 "labelPos": "E"
             });
-            // End this item as these are just start-point markers
-            target.terminated = 0;
         });
     }
     // Extend all active lines to t2 as needed:
     Object.keys(lines).forEach( (item ) => {
       const prev = lines[item].nodes.at(-1);
-      if( prev.coords && prev.coords[0] < t2 && lines[item].terminated == undefined ) {
+      if( prev && prev.coords && prev.coords[0] < t2 && lines[item].terminated == undefined ) {
         lines[item].nodes.push( {"coords": [t2, prev.coords[1]]} );
       }
     });

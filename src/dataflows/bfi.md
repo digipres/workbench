@@ -25,6 +25,9 @@ workflows:
   initialZoom: 0.7
   initialOffset:
   events:
+  # ------------------------------
+  # Getting the SIP
+  # ------------------------------
   - type: start
     source: data@internet
     color: "#000"
@@ -33,6 +36,9 @@ workflows:
     source: data@internet
     target: data@workspace
   - type: space
+  # ------------------------------
+  # Building the AIP
+  # ------------------------------
   - name: Mint-API-ID
     label: "Mint\nAIP ID"
     type: derive
@@ -43,41 +49,39 @@ workflows:
     shiftCoords: [0, 1]
     markerShiftCoords: [0,1]
   - type: space
-  - name: "Rename\nas AIP"
-    type: rename
+  - name: "Generate\nthe AIP"
+    type: derive
     source: data@workspace
     target: aip@workspace
     marker: interchange
-    markerShiftCoords: [0,0.5]
+    markerShiftCoords: [0,0]
     markerPos: "N"
     color: "#ff0000"
+    shiftCoords: [0, -1]
   - name: "Record\nAIP ID"
     type: move
     source: aip-id@workspace
     target: record@cdi
-    color: "#0000aa"
-    shiftCoords: [0, 1]
-    markerShiftCoords: [0,1]
-  - type: space
-  - name: "Copy to tape robot 1"
+    markerAt: 0.7
+  # ------------------------------
+  # AIP Storage & Replication...
+  # ------------------------------
+  - name: "Copy to\ntapes 1 & 2"
     type: copy
     source: aip@workspace
-    target: replica_1@tape1
-    color: "#ff0000"
-  - name: "Copy to tape robot 2"
-    type: copy
-    source: aip@workspace
-    target: replica_2@tape2
-    markerAt: 0.72
-    color: "#ff0000"
-  - type: space
+    targets:
+    - replica_1@tape1
+    - replica_2@tape2
+    markerAt: 0.3
+    shiftCoords: [0, -1]
+    markerShiftCoords: [0,-1]
   - name: "Copy to\ntape 3"
     type: derive
     source: replica_2@tape2
     target: replica_3@tape2
-    color: "#aa0000"
-    shiftCoords: [0, -1]
-    markerShiftCoords: [0,-1]
+    color: "#bb0000"
+    shiftCoords: [0, -2]
+    markerShiftCoords: [0,-2]
     markerPos: "S"
   - name: "Transfer tape 3 to vault"
     type: move
@@ -85,6 +89,9 @@ workflows:
     target: replica_3@vault
     shiftCoords: [0, -1]
     markerPos: "E"
+  # ------------------------------
+  # Building the DIP
+  # ------------------------------
   - name: "Create DIP"
     type: derive
     source: aip@workspace
@@ -101,11 +108,12 @@ workflows:
   - name: Delete Working Copies
     type: delete
     targets:
+    - data@workspace
     - aip@workspace
     - dip@workspace
     marker: interchange
     markerPos: "E"
-    markerShiftCoords: [0,0.5]
+    markerShiftCoords: [0,0]
   - name: Ingest Complete
     type: status
   - type: end
