@@ -13,7 +13,7 @@ places:
   name: "Archival System"
 workflows:
 - name: Accessible Archives
-  initialZoom: 0.7
+  initialZoom: 0.9
   events:
   - type: start
     sources: 

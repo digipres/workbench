@@ -1,5 +1,30 @@
 # Dataflows
 
+This is a dataflow diagram, designed to show how data moves between different systems over time.  The different places where data can be stored are laid out from top to bottom, and the sequence of events the data can go through are plotted from left to right. 
+
+As an example, here is what it looks like for a simplified version of how the Open Archival Information System describes the flow of data through an archive:
+
+```{dataflow}
+domain ar "The Archive"
+domain dc "Designated Community"
+place store.ar "Archival Storage"
+place producer.dc "Producer"
+place consumer.dc "Consumer"
+data sip "Submission Information Package"
+data aip "Archival Information Package"
+data dip "Dissemination Information Package"
+# Ingest
+move sip@producer.dc aip@store.ar
+# Access
+copy aip@store.ar dip@consumer.dc
+```
+
+The lines of the 'tube map' layout show how the data moves overall, but you can also click/press on the event 'stations' to get more information about what is happening at each stage.
+
+Add more complex version  in separate page?
+ https://commons.wikimedia.org/wiki/File:OAIS_Functional_Model_(en).svg 
+ 
+
 <!-- Add in the font for that London Look -->
 <link
     href="https://fonts.googleapis.com/css?family=Hammersmith+One"
