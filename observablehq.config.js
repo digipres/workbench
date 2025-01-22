@@ -38,7 +38,7 @@ export default {
       open: true,
       pages: [
         {name: "Publication Statistics", path: "/publications/"},
-        {name: "Dataflows", path: "/dataflows/"},
+        //{name: "Dataflows", path: "/dataflows/"},
         //{name: "Dashboard", path: "/example-dashboard"},
         //{name: "Report", path: "/example-report"}
       ]
