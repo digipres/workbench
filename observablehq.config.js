@@ -38,6 +38,7 @@ export default {
       open: true,
       pages: [
         {name: "Publication Statistics", path: "/publications/"},
+        {name: "Dataflows", path: "/dataflows/"},
         //{name: "Dashboard", path: "/example-dashboard"},
         //{name: "Report", path: "/example-report"}
       ]
@@ -64,7 +65,7 @@ export default {
   ],
 
   // Content to add to the head of the page, e.g. for a favicon:
-  head: '<link rel="icon" href="observable.png" type="image/png" sizes="32x32">',
+  head: `${analytics}<link rel="icon" href="observable.png" type="image/png" sizes="32x32"><!-- Add in the font for that London Look --><link href="https://fonts.googleapis.com/css?family=Hammersmith+One" rel="stylesheet" type="text/css"/>`,
 
   // The path to the source root.
   root: "src",
@@ -73,7 +74,7 @@ export default {
   //theme: "light", // try "light", "dark", "slate", etc.
   // header: "", // what to show in the header (HTML)
   // footer: "Built with Observable.", // what to show in the footer (HTML)
-  footer: ({path}) => `<a href="https://github.com/digipres/workbench/blob/main/src${path}.md?plain=1">View/edit the source for this page</a>.`,
+  footer: ({path}) => `<a href="https://github.com/digipres/workbench/blob/main/src${path}.md?plain=1">View/edit the source for this page</a>.<script src="https://unpkg.com/@popperjs/core@2"></script><script src="https://unpkg.com/tippy.js@6"></script>`,
   // sidebar: true, // whether to show the sidebar
   toc: true, // whether to show the table of contents
   // pager: true, // whether to show previous & next links in the footer
@@ -108,8 +109,5 @@ export default {
     </span>
   </div>
   </div>`,*/
-
-  // HTML head:
-  head: `${analytics}`
 
 };

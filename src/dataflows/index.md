@@ -1,4 +1,7 @@
 # Dataflows
+## Mapping out how data flows from place to place
+
+## Introduction
 
 This is a dataflow diagram, designed to show how data moves between different systems over time.  The different places where data can be stored are laid out from top to bottom, and the sequence of events the data can go through are plotted from left to right. 
 
@@ -25,14 +28,6 @@ Add more complex version  in separate page?
  https://commons.wikimedia.org/wiki/File:OAIS_Functional_Model_(en).svg 
  
 
-<!-- Add in the font for that London Look -->
-<link
-    href="https://fonts.googleapis.com/css?family=Hammersmith+One"
-    rel="stylesheet"
-    type="text/css"
-/>
-<!-- CSS for popovers -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 
 ```js
@@ -322,23 +317,23 @@ const map = tubeMap()
 container.datum(data).call(map);
 container
     .selectAll(".label")
-    .attr("data-bs-toggle", "popover")
+    .attr("data-bs-toggle", "popo0ver")
     .attr("data-bs-container", "body")
     .attr("data-bs-html", "true")
     .attr("data-bs-title", function (d) {
     return d.label;
     })
-    .attr("data-bs-content", function (d) {
+    .attr("data-tippy-content", function (d) {
         //console.log(data.lines);
         const index = df.places.findIndex( (p) => p.name == d.name);
         const itemList = Array.from(d.items).reduce((joined, el) => joined + "<br>" + el);
+        // Look up the place and add info from there
         if( d.description ) {
-            return d.description +"<br><br>" + itemList;
+            return `<b>${d.label}</b><br>${d.description}<br><br>${itemList}`;
         } else {
-            return itemList;
+            return `<b>${d.label}</b><br><br>${itemList}`;
         }
     })
-    .attr("data-bs-trigger", "focus")
     .attr("tabindex", 0);
 
 display(div);
@@ -362,28 +357,21 @@ if( initialTranslate ) {
 
 function zoomed(event) {
     svg.select("g").attr("transform", event.transform.toString());
-    // Update popovers:
-    const popoverList = document.querySelectorAll('[data-bs-toggle="popover"]');
-    [...popoverList].map(p => {
-        var popover = bootstrap.Popover.getInstance(p);
-        // If active/exists:
-        if( popover ) {
-            popover.update();
-        }
-    });
 }
+
+// Enable tool tips:
+tippy('[data-tippy-content]',{
+    allowHTML: true,
+    sticky: true,
+});
 ```
+
+
 <details>
 <summary>Debug Info</summary>
 
 ```js
 display(data);
-
-// Enable popovers:
-const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-
-
 ```
 </details>
 
