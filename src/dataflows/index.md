@@ -81,8 +81,14 @@ function setupEntitiesForEvent( lines, stations, item, event, parentShiftCoords 
         "shiftCoords": event.shiftCoords || parentShiftCoords || [0,0], 
         "nodes": []
     };
-    //
-    stations[event.name] = stations[event.name] || { "label": event.label || event.name };
+    // Set up the station:
+    stations[event.name] = stations[event.name] || {
+        "label": event.label || event.name,
+        "description": event.description,
+        "items": new Set()
+    };
+    // Remember the lines that meet this station:
+    stations[event.name].items.add(item);
 }
 
 // Push into place:
@@ -318,11 +324,19 @@ container
     .selectAll(".label")
     .attr("data-bs-toggle", "popover")
     .attr("data-bs-container", "body")
+    .attr("data-bs-html", "true")
     .attr("data-bs-title", function (d) {
     return d.label;
     })
     .attr("data-bs-content", function (d) {
-    return d.description || d.name;
+        //console.log(data.lines);
+        const index = df.places.findIndex( (p) => p.name == d.name);
+        const itemList = Array.from(d.items).reduce((joined, el) => joined + "<br>" + el);
+        if( d.description ) {
+            return d.description +"<br><br>" + itemList;
+        } else {
+            return itemList;
+        }
     })
     .attr("data-bs-trigger", "focus")
     .attr("tabindex", 0);

@@ -85,6 +85,7 @@ workflows:
     marker: interchange
     color: "black"
     markerPos: "N"
+    description: "Detailed description"
   - type: space
   - type: derive
     name: "Create\nLifeboat"
