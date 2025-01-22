@@ -31,6 +31,9 @@ Add more complex version  in separate page?
     rel="stylesheet"
     type="text/css"
 />
+<!-- CSS for popovers -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 
 ```js
 const data_pubs = await FileAttachment("pubs.json").json();
@@ -278,6 +281,9 @@ const data = {
  
 ```js
 import { tubeMap } from "npm:d3-tube-map";
+import * as bootstrap from 'npm:bootstrap'
+import * as Popper from "npm:@popperjs/core"
+
 
 var width = 1000;
 var height = 500;
@@ -308,6 +314,18 @@ const map = tubeMap()
     });
 
 container.datum(data).call(map);
+container
+    .selectAll(".label")
+    .attr("data-bs-toggle", "popover")
+    .attr("data-bs-container", "body")
+    .attr("data-bs-title", function (d) {
+    return d.label;
+    })
+    .attr("data-bs-content", function (d) {
+    return d.description || d.name;
+    })
+    .attr("data-bs-trigger", "focus")
+    .attr("tabindex", 0);
 
 display(div);
 
@@ -330,6 +348,15 @@ if( initialTranslate ) {
 
 function zoomed(event) {
     svg.select("g").attr("transform", event.transform.toString());
+    // Update popovers:
+    const popoverList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    [...popoverList].map(p => {
+        var popover = bootstrap.Popover.getInstance(p);
+        // If active/exists:
+        if( popover ) {
+            popover.update();
+        }
+    });
 }
 ```
 <details>
@@ -337,6 +364,12 @@ function zoomed(event) {
 
 ```js
 display(data);
+
+// Enable popovers:
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+
 ```
 </details>
 
