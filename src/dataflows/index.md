@@ -55,7 +55,7 @@ const data = generateTubeMapData(df, wf);
 var width = 1000;
 var height = 500;
 
-const div = html`<div style="height: ${height}px; width: 100%; font-family: 'Hammersmith One', sans-serif; fill: #001919; font-size: 14px; font-weight: normal;" />
+const div = html`<div style="height: ${height}px; width: 100%;" />
 <style>
 svg {
   overflow: visible;
@@ -83,12 +83,7 @@ const map = tubeMap()
 container.datum(data).call(map);
 container
     .selectAll(".label")
-    .attr("data-bs-toggle", "popo0ver")
-    .attr("data-bs-container", "body")
-    .attr("data-bs-html", "true")
-    .attr("data-bs-title", function (d) {
-    return d.label;
-    })
+    .attr("font-family", "Hammersmith One")
     .attr("data-tippy-content", function (d) {
         //console.log(data.lines);
         const index = df.places.findIndex( (p) => p.name == d.name);
@@ -115,9 +110,20 @@ tippy('[data-tippy-content]',{
     appendTo: document.body
 });
 
-// Set up zoom:
+// Work with the SVG:
 var svg = container.select("svg");
 
+// Make SVG size match initial size:
+svg.attr('height', height);
+svg.attr('width', width);
+
+// Add reference to get the font:
+svg.append('defs')
+            .append('style')
+            .attr('type', 'text/css')
+            .text("@import url('https://fonts.googleapis.com/css?family=Hammersmith+One');");
+
+// Set up zoom:
 const zoom = d3.zoom().scaleExtent([0.1, 6]).on("zoom", zoomed);
 
 var zoomContainer = svg.call(zoom);
@@ -151,17 +157,90 @@ display(data);
 ```js
 import { showSaveFilePicker } from 'npm:file-system-access';
 
-async function saveHtml(value) {
+async function saveSvg(value) {
   try {
     // create a new handle
     const opts = {
       types: [
         {
-          description: "HTML",
-          accept: { "text/html": [".html"] },
+          description: "SVG",
+          accept: { "image/svg": [".svg"] },
         },
       ],
-      suggestedName: 'export.html',
+      suggestedName: 'dataflow.svg',
+      _preferPolyfill: false,
+    };
+    const newHandle = await showSaveFilePicker(opts);
+
+    // create a FileSystemWritableFileStream to write to
+    const writableStream = await newHandle.createWritable();
+
+    // write our file
+    await writableStream.write(value);
+
+    // close the file and write the contents to disk.
+    await writableStream.close();
+  } catch (err) {
+    console.error(err.name, err.message);
+  }
+}
+
+const xmlns = "http://www.w3.org/2000/xmlns/";
+const xlinkns = "http://www.w3.org/1999/xlink";
+const svgns = "http://www.w3.org/2000/svg";
+
+function serialize(svg) {
+    svg = svg.cloneNode(true);
+    const fragment = window.location.href + "#";
+    const walker = document.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT);
+    while (walker.nextNode()) {
+      for (const attr of walker.currentNode.attributes) {
+        if (attr.value.includes(fragment)) {
+          attr.value = attr.value.replace(fragment, "#");
+        }
+      }
+    }
+    svg.setAttributeNS(xmlns, "xmlns", svgns);
+    svg.setAttributeNS(xmlns, "xmlns:xlink", xlinkns);
+    const serializer = new window.XMLSerializer;
+    const string = serializer.serializeToString(svg);
+    return new Blob([string], {type: "image/svg+xml"});
+}
+
+
+const save_button = view(Inputs.button("Save as SVG", {value: serialize(svg.node()), reduce: saveSvg, disabled: false }));
+```
+
+```js
+function rasterize(svg) {
+  let resolve, reject;
+  const promise = new Promise((y, n) => (resolve = y, reject = n));
+  const image = new Image;
+  image.onerror = reject;
+  image.onload = () => {
+    const rect = svg.getBoundingClientRect();
+    const canvas = document.createElement('canvas');
+    canvas.width = 3*svg.clientWidth;
+    canvas.height = 3*svg.clientHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(image, 0, 0, 3*canvas.width, 3*canvas.height);
+    context.canvas.toBlob(resolve);
+  };
+  image.src = URL.createObjectURL(serialize(svg));
+  return promise;
+}
+
+async function saveImage(value) {
+  try {
+    // create a new handle
+    const opts = {
+      types: [
+        {
+          description: "PNG",
+          accept: { "image/png": [".png"] },
+        },
+      ],
+      suggestedName: 'dataflow.png',
       _preferPolyfill: false,
     };
     const newHandle = await showSaveFilePicker(opts);
@@ -180,5 +259,5 @@ async function saveHtml(value) {
 }
 
 
-const scan_button = view(Inputs.button("Save as HTML", {value: container.node().outerHTML, reduce: saveHtml, disabled: false }));
+const save_png_button = view(Inputs.button("Save as PNG", {value: await rasterize(svg.node()), reduce: saveImage, disabled: false }));
 ```
