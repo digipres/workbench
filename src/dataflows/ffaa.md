@@ -85,8 +85,10 @@ workflows:
     marker: interchange
     color: "black"
     markerPos: "N"
-    description: "Detailed description"
+    description: "Metadata being added, modified and enhanced by Flickr users."
+
   - type: space
+  
   - type: derive
     name: "Create\nLifeboat"
     source: annotations@flickr

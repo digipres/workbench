@@ -28,11 +28,13 @@ function setupEntitiesForEvent( lines, stations, item, event, parentShiftCoords 
     // Set up the station:
     stations[event.name] = stations[event.name] || {
         "label": event.label || event.name,
-        "description": event.description,
-        "items": new Set()
+        "items": new Set(),
+        "events": new Set()
     };
     // Remember the lines that meet this station:
     stations[event.name].items.add(item);
+    // Remeber the events associated with this station:
+    stations[event.name].events.add(event);
 }
 
 // Push into place:
@@ -152,9 +154,11 @@ export function generateTubeMapData(df, wf) {
             sources.forEach( ( source ) => {
                 const item = source.item;
                 const source_event = {
+                    'type': 'start',
                     'name': source.place.name,
                     'label': source.place.name,
-                    'color': event.color
+                    'color': event.color,
+                    'item': source
                 }
                 setupEntitiesForEvent(lines, stations, item, source_event );
                 const y = source.index * ds;
@@ -196,8 +200,10 @@ export function generateTubeMapData(df, wf) {
                 const source = parseItemInPlace(df, target.name);
                 const endpoint_name = source.place.name+'_END';
                 const source_event = {
+                    'type': "end",
                     'name': endpoint_name,
                     'label': source.place.name,
+                    'item': source,
                     'color': event.color
                 }
                 setupEntitiesForEvent(lines, stations, item, source_event );

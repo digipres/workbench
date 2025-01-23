@@ -57,9 +57,6 @@ var height = 500;
 
 const div = html`<div style="height: ${height}px; width: 100%;" />
 <style>
-svg {
-  overflow: visible;
-}
 .label text {
   cursor: pointer
 }
@@ -80,20 +77,39 @@ const map = tubeMap()
         console.log(name);
     });
 
+function getPlaceByName(df, name) {
+        const index = df.places.findIndex( (p) => p.name == name);
+        return df.places[index];
+}
+
+function formatEvent(e) {
+    if( e.type == "derive" ) {
+        return `<i>Derive ${e.target} from ${e.source}</i>.<br>${e.description || ''}`;
+    } else if( e.type == "copy") {
+        return `<i>Copy ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+    } else if( e.type == "move") {
+        return `<i>Move ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+    } else if( e.type == "delete") {
+        return `<i>Delete ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
+    } else if( e.type == "start") {
+        return `<i>Start with ${e.item.item}</i>.<br>${e.description || ''}`;
+    } else if( e.type == "end") {
+        return `<i>End with ${e.item.item}</i>.<br>${e.description || ''}`;
+    } else {
+        return JSON.stringify(e, null, 2);
+    }
+}
+
 container.datum(data).call(map);
 container
     .selectAll(".label")
     .attr("font-family", "Hammersmith One")
     .attr("data-tippy-content", function (d) {
         //console.log(data.lines);
-        const index = df.places.findIndex( (p) => p.name == d.name);
-        const itemList = Array.from(d.items).reduce((joined, el) => joined + "<br>" + el);
-        // Look up the place and add info from there
-        if( d.description ) {
-            return `<b>${d.label}</b><br>${d.description}<br><br>${itemList}`;
-        } else {
-            return `<b>${d.label}</b><br><br>${itemList}`;
-        }
+        console.log(d);
+        const eventList = Array.from(d.events).map(formatEvent).join(" ");
+        // Format the whole thing:
+        return `<b>${d.label}</b><br>${eventList}`;
     })
     .attr("tabindex", 0);
 
