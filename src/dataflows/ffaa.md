@@ -36,10 +36,10 @@ workflows:
     target: scanned@workstation
     color: "red"
     shiftCoords: [0,-1]
-  - type: move
+  - type: merge
     name: "Return"
     source: toScan@workstation
-    target: toScan@collection
+    target: all@collection
   - type: space
   - type: derive
     name: "Describe\n(baseline)"

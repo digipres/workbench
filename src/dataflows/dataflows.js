@@ -126,6 +126,19 @@ export function generateTubeMapData(df, wf) {
                     delete lines[event.source];
                 }
             });
+        } else if( event.type == "merge" ) {
+            const source = parseItemInPlace(df, event.source);
+            var targets = getTargets(df, event);
+            targets.forEach( (target ) => {
+                const y1 = source.index*ds;
+                const y2 = target.index*ds;
+                // Where we start from:
+                var item = source.item;
+                setupEntitiesForEvent(lines, stations, item, event );
+                pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
+                // Record as a merge:
+                lines[item].name = `${target.itemId}@${target.place.id}`;
+            });
         } else if( event.type == "derive" || event.type == "rename" ) {
             const source = parseItemInPlace(df, event.source);
             var targets = getTargets(df, event);

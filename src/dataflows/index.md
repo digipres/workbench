@@ -89,12 +89,14 @@ function formatEvent(e) {
         return `<i>Copy ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
     } else if( e.type == "move") {
         return `<i>Move ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+    } else if( e.type == "merge") {
+        return `<i>Merge ${e.source} into ${e.target}</i>.<br>${e.description || ''}`;
     } else if( e.type == "delete") {
         return `<i>Delete ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
     } else if( e.type == "start") {
-        return `<i>Start with ${e.item.item}</i>.<br>${e.description || ''}`;
+        return `<i>Starts with ${e.item.item}</i>.<br>${e.description || ''}`;
     } else if( e.type == "end") {
-        return `<i>End with ${e.item.item}</i>.<br>${e.description || ''}`;
+        return `<i>Ends with ${e.item.item}</i>.<br>${e.description || ''}`;
     } else {
         return JSON.stringify(e, null, 2);
     }
