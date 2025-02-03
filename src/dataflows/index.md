@@ -7,21 +7,6 @@ This is a dataflow diagram, designed to show how data moves between different sy
 
 As an example, here is what it looks like for a simplified version of how the Open Archival Information System describes the flow of data through an archive:
 
-```{dataflow}
-domain ar "The Archive"
-domain dc "Designated Community"
-place store.ar "Archival Storage"
-place producer.dc "Producer"
-place consumer.dc "Consumer"
-data sip "Submission Information Package"
-data aip "Archival Information Package"
-data dip "Dissemination Information Package"
-# Ingest
-move sip@producer.dc aip@store.ar
-# Access
-copy aip@store.ar dip@consumer.dc
-```
-
 The lines of the 'tube map' layout show how the data moves overall, but you can also click/press on the event 'stations' to get more information about what is happening at each stage.
 
 Add more complex version  in separate page?
@@ -31,15 +16,20 @@ Add more complex version  in separate page?
 
 ```js
 import yaml from "npm:js-yaml@4.1.0";
+import { parseDataflow } from "./dataflows.js";
 
 // Load the first YAML doc, i.e. the frontmatter:
-const dfs_txt = await FileAttachment("ffaa.md").text();
+const dfs_txt = await FileAttachment("bfi.md").text();
 var dfs = [];
 yaml.loadAll(dfs_txt, function (doc) { if(doc) dfs.push(doc) });
+var df = dfs[0];
 
-//display(dfs)
 
-const df = dfs[0];
+df = parseDataflow( await FileAttachment("oais-simple.dfl").text() );
+
+display(df)
+```
+```js
 const wf = df.workflows[0];
 ```
 
@@ -55,7 +45,7 @@ const data = generateTubeMapData(df, wf);
 var width = 1000;
 var height = 500;
 
-const div = html`<div style="height: ${height}px; width: 100%;" />
+const div = html`<div style="height: ${height}px; width: 100%; border: 1px solid lightgray;" />
 <style>
 .label text {
   cursor: pointer
@@ -98,7 +88,7 @@ function formatEvent(e) {
     } else if( e.type == "end") {
         return `<i>Ends with ${e.item.item}</i>.<br>${e.description || ''}`;
     } else {
-        return JSON.stringify(e, null, 2);
+        return `<i>${JSON.stringify(e, null, 2)}</i>`;
     }
 }
 
@@ -238,10 +228,12 @@ function rasterize(svg) {
   image.onload = () => {
     const rect = svg.getBoundingClientRect();
     const canvas = document.createElement('canvas');
-    canvas.width = 3*svg.clientWidth;
-    canvas.height = 3*svg.clientHeight;
+    // Get the bounding box then scale up for better resolution image:
+    var bBox = svg.getBBox();
+    canvas.width = 4*bBox.width;
+    canvas.height = 4*bBox.height;
     const context = canvas.getContext("2d");
-    context.drawImage(image, 0, 0, 3*canvas.width, 3*canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
     context.canvas.toBlob(resolve);
   };
   image.src = URL.createObjectURL(serialize(svg));

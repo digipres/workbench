@@ -1,0 +1,30 @@
+dataflow 1.0
+title: "Preserving Virtual Archaeology Workflow Webinar 2025-02"
+"""
+Panos Papageorgiou (International College Portsmouth)
+"""
+
+place site "Archaeological dig site"
+
+data evidence "Archaeological evidence"
+
+# Starting point:
+start evidence@site
+"""
+LIDAR? etc.
+"""
+
+move evidence@site evidence@mod "Transfer evidence"
+derive evidence@mod vr@mod "Create VR"
+derive vr@mod film@mod "Render"@N
+"""
+Obsolete virtual reconstructions.
+Rendering dependent on emulated platforms, using Windows 95. 
+Leading to an emulation framework for virtual reconstruction.
+"""
+
+copy film@mod film@public "Publish"
+
+
+# Final state
+end

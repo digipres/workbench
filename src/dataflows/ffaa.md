@@ -16,7 +16,7 @@ workflows:
   initialZoom: 0.9
   events:
   - type: start
-    sources: 
+    targets: 
     - all@collection
     color: "#444"
     shiftCoords: [0,1] # TBD!!!!

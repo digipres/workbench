@@ -1,0 +1,26 @@
+dataflow 1.0
+title: "CUL Workflow Webinar 2025-02"
+"""
+
+A tonne of detail, too much to capture in time.
+
+- <https://digitalpreservation-blog.lib.cam.ac.uk/building-our-repository-ingest-workflow-e09a0d2cdddc>
+
+"""
+
+place apollo "Apollo (DSpace)"
+place aips "S3 Bucket for AIPs"
+place subs "S3 Bucket for Submissions"
+place aips-backups "S3 Glacier Bucket for backing up AIPs"
+
+data src "Original Source Files"
+
+# Starting point:
+start eth@apollo,carriers@transfer,items@deposit
+
+copy eth@apollo eth@aips
+derive eth@aips eth-vir@aips "Scan for viruses"
+move eth-vir@aips eth-vir@dash "Send to dashboard"
+
+# Final state
+end

@@ -1,0 +1,44 @@
+dataflow 1.0
+title: "UCC Workflow Webinar 2025-02"
+"""
+
+See also:
+
+- <https://github.com/UCC-Library/UCC-Library-DigiPres>
+
+"""
+
+place register "Digital Asset Register"
+place nas "NAS"
+place raid "RAID Array"
+place exthd1 "External HD 1"
+place exthd2 "External HD 2"
+
+data src "Original Source Files"
+
+# Starting point:
+start src@nas
+
+derive src@nas summary@nas "folder_summary.py"
+"""
+Summarise the file extensions, files sizes, counts
+"""
+space
+space
+
+derive src@nas metadata@nas "metadata_extractor.py"@N
+space
+
+# Should be a MERGE to make _merged.csv
+derive src@nas ip@nas "ip_creator.py"
+
+# Replication
+copy ip@nas ip@raid,ip@exthd1,ip@exthd2
+"""
+Ensure there are independent copies of the data on multiple systems.
+"""
+
+copy metadata@nas entry@register "Record details on SharePoint DAR"
+
+# Final state
+end

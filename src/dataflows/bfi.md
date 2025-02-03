@@ -20,6 +20,13 @@ places:
   name: Tape Robot 2
 - id: vault
   name: Tape Vault
+things:
+- id: data
+  name: Source Data
+- id:  aip
+  name: Archival Information Package
+- id: aip-id
+  name: Unique identifier for the Archival Information Package
 workflows:
 - name: BFI Ingest Workflow
   initialZoom: 0.7
@@ -29,7 +36,7 @@ workflows:
   # Getting the SIP
   # ------------------------------
   - type: start
-    source: data@internet
+    target: data@internet
     color: "#000"
   - name: "Deposit"
     type: move
@@ -42,12 +49,11 @@ workflows:
   - name: Mint-API-ID
     label: "Mint\nAIP ID"
     type: derive
-    source: aip@workspace
+    source: data@workspace
     target: aip-id@workspace
     markerPos: N
     color: "#0000aa"
     shiftCoords: [0, 1]
-    markerShiftCoords: [0,1]
   - type: space
   - name: "Generate\nthe AIP"
     type: derive
@@ -74,14 +80,12 @@ workflows:
     - replica_2@tape2
     markerAt: 0.3
     shiftCoords: [0, -1]
-    markerShiftCoords: [0,-1]
   - name: "Copy to\ntape 3"
     type: derive
     source: replica_2@tape2
     target: replica_3@tape2
     color: "#bb0000"
     shiftCoords: [0, -2]
-    markerShiftCoords: [0,-2]
     markerPos: "S"
   - name: "Transfer tape 3 to vault"
     type: move
@@ -97,14 +101,12 @@ workflows:
     source: aip@workspace
     target: dip@workspace
     color: "#008800"
-    shiftCoords: [0, 1]
-    markerPos: "N"
-    markerShiftCoords: [0,1]
+    shiftCoords: [0, -2]
+    markerPos: "S"
   - name: Copy DIP
     type: copy
     source: dip@workspace
     target: dip@access
-    shiftCoords: [0, 1]
   - name: Delete Working Copies
     type: delete
     targets:
@@ -113,7 +115,7 @@ workflows:
     - dip@workspace
     marker: interchange
     markerPos: "E"
-    markerShiftCoords: [0,0]
+    markerShiftCoords: [0,-1]
   - name: Ingest Complete
     type: status
   - type: end

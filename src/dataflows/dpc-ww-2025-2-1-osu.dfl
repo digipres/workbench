@@ -1,0 +1,20 @@
+dataflow 1.0
+title: "Ohio State University Workflow Webinar 2025-02"
+"""
+Gray Repo <https://go.osu.edu/gray-repo-wiki>
+
+A "dim digital preservation archive" as there is no direct access, only mediated access for patrons.
+"""
+
+place sftp "Secure FTP Server"
+
+data rec "University Archives Records"
+
+# Starting point:
+start rec@sftp
+"""
+"""
+
+
+# Final state
+end

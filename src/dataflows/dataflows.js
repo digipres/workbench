@@ -3,6 +3,7 @@
 // Parser an item string, pulling out the place
 // The final item includes the place
 function parseItemInPlace( df, itemInPlace ) {
+    console.log(`Splitting ${itemInPlace}`);
     const [id, place] = itemInPlace.split('@');
     const index = df.places.findIndex( (p) => p.id == place );
     if ( index >= 0 ) {
@@ -73,16 +74,6 @@ function getTargets(df, event) {
     }
     return targets;    
 }
-function getSources(df, event) {
-    var sources = [];
-    if( event.source ) {
-        sources.push(parseItemInPlace(df, event.source));
-    } else {
-        sources = event.sources.map( (s) => parseItemInPlace(df, s) );
-    }
-    return sources;    
-}
-
 
 export function generateTubeMapData(df, wf) {
 
@@ -114,7 +105,7 @@ export function generateTubeMapData(df, wf) {
                     item = target.item;
                     // Pass properties through by default:
                     event.color = event.color || lines[source.item].color;
-                    event.shiftCoords = event.shiftCoords || lines[source.item].shiftCoords;
+                    event.shiftCoords = event.shiftCoords || lines[source.item].shiftCoords || [0,0];
                 } 
                 setupEntitiesForEvent(lines, stations, item, event );
                 pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
@@ -146,7 +137,7 @@ export function generateTubeMapData(df, wf) {
                 var item = target.item;
                 const y2 = target.index*ds;
                 var parentShiftCoords = null;
-                if( lines[source.item] ) parentShiftCoords = lines[source.item].shiftCoords;
+                if( lines[source.item] ) parentShiftCoords = lines[source.item].shiftCoords || [0,0];
                 setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
                 lines[item].nodes.push({
                     "coords": [0.5*(t1+t2),y2],
@@ -163,7 +154,7 @@ export function generateTubeMapData(df, wf) {
                 }
             });
         } else if( event.type == "start" ) {
-            var sources = getSources(df, event);
+            var sources = getTargets(df, event);
             sources.forEach( ( source ) => {
                 const item = source.item;
                 const source_event = {
@@ -245,4 +236,130 @@ export function generateTubeMapData(df, wf) {
     }
 
     return data;
+}
+
+
+export function parseDataflow(text) {
+    // Set up basic structure
+    const dfs = {
+        title: '',
+        places: [],
+        items: [],
+        workflows: [],
+    }
+    var workflow = { title: '', events: [] };
+    dfs.workflows.push(workflow);
+    // Place to store longer comments:
+    var multilineComment = null;
+    // Loop over the lines:
+    var lineCounter = 0;
+    const lines = text.split('\n');
+    lines.forEach(function(line) {
+        // Up the counter:
+        lineCounter += 1;
+        // Are we in a multiline comment?
+        if( multilineComment != null ) {
+            if ( line.startsWith('"""') ) {
+                console.log("Multiline-comment ends!" + multilineComment);
+                multilineComment = null;
+            } else {
+                multilineComment += line;
+            }
+        } else {
+            // Normal line handling:
+            line = line.trim();
+            if( line.startsWith('#')) {
+                console.log("Comment " + line);
+            } else if ( line.startsWith('"""') ) {
+                console.log("Multiline-comment begins!");
+                multilineComment = "";
+            } else {
+                // Split the line on spaces, unless quoted.
+                const l = line.match(/(?:[^\s"]+|"[^"]*")+/g);
+                if( l == null ) {
+                    return;
+                }
+                // Set up an event:
+                var event = undefined;
+                // Parse the line parts and create an event with the right shape:
+                if( ["move", "copy", "derive", "rename", "merge"].includes(l[0])) {
+                    event = {
+                        label: l[3] || l[0],
+                        type: l[0],
+                    };
+                    // Parse offset if any:
+                    if( l[4] ) {
+                        event.shiftCoords = JSON.parse(l[4])
+                    }
+                    // Specific adjustments:
+                    if( l[0] == "copy") {
+                        event.source = l[1];
+                        event.targets = l[2].split(",");
+                        event.color = event.source;
+                    } else if( l[0] == "merge") {
+                        event.sources = l[1].split(","),
+                        event.target = l[2]
+                        event.color = event.target;
+                    } else {
+                        event.source = l[1],
+                        event.target = l[2]
+                        event.color = event.target;
+                    }
+                } else if( ["space", "end"].includes(l[0])) {
+                    // Push this event in:
+                    event = {
+                        label: l[1] || l[0],
+                        type: l[0],
+                    }
+                } else if( l[0] == "delete" || l[0] == "start" ) {
+                    // FIXME Kinda broken because only one color is allowed and there could be multiple starts
+                    event = {
+                        label: l[2] || l[0],
+                        type: l[0],
+                        targets: l[1].split(','),
+                        color: l[1]
+                    }
+                } else if( l[0] == "place") {
+                    const place = {
+                        id: l[1],
+                        name: l[2] || l[1]
+                    }
+                    place.name = place.name.replace(/^"(.*)"$/, '$1');
+                    dfs.places.push(place)
+                } else if( l[0] == "data") {
+                    const data = {
+                        id: l[1],
+                        name: l[2] || l[1],
+                        color: l[3] || undefined
+                    }
+                    dfs.items[data.id] = data;
+                } else if( l[0] == "title" ) {
+                    dfs.title = l[1].replace(/^"(.*)"$/, '$1');
+                }
+                // Record the event, if set:
+                if( event != undefined) {
+                    // Force a unique event 'name' (internal reference):
+                    event.name = `l-${lineCounter}`;
+                    // Extract any position, strip any quotes (e.g. label@W or "This thing"@S ):
+                    if( event.label ) {
+                        if( event.label.includes('@')) {
+                            const [new_label, pos] = event.label.split('@');
+                            event.label = new_label;
+                            event.markerPos = pos;
+                        }
+                        event.label = event.label.replace(/^"(.*)"$/, '$1');
+                    }
+                    // Convert color
+                    if( event.color ) {
+                        const item = event.color.split('@');
+                        event.color = dfs.items[item[0]].color || undefined;
+                    }
+                    // Record the event in the sequence:
+                    workflow.events.push(event);
+                }
+            }
+        }
+    });
+
+    return dfs;
 }
