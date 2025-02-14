@@ -35,6 +35,7 @@ const db = FileAttachment("../data/registries.db").sqlite();
 ```js
 const lines = db.sql`
 SELECT
+  f.*,
   (SELECT GROUP_CONCAT(e.id, ', ')
     FROM format_extensions f_e
     JOIN extension e ON f_e.format_id = f.id
@@ -44,8 +45,7 @@ SELECT
     FROM format_media_types f_mt
     JOIN media_type mt ON f_mt.format_id = f.id
     WHERE f_mt.media_type_id = mt.id
-  ) AS media_types,
-  f.*
+  ) AS media_types
 FROM format f
 GROUP BY f.id
 `;
@@ -53,8 +53,37 @@ const formats_search = view(Inputs.search((await lines), {placeholder: "Search f
 ```
 
 ```js
-view(Inputs.table(formats_search, { select: false, rows: 20 }));
+const fmt = view(Inputs.table(formats_search, { required: false, multiple: false, rows: 25, layout: 'auto', columns: ['id', 'name', 'version', 'extensions', 'media_types']}));
 ```
+
+### Full Format Record
+
+```js
+if( fmt ) {
+  display(fmt);
+} else {
+  display(html`<i>no record selected</i>`)
+}
+```
+
+#### Read By Software
+
+```js
+if( fmt ) {
+  const fmt_sw = db.sql`
+  SELECT
+    s.*
+  FROM software s
+  JOIN formats_read_by_software f_s ON f_s.software_id == s.id
+  JOIN format f ON f_s.format_id == f.id
+  WHERE f.id = ${fmt.id}
+  `;
+  view(Inputs.table(await fmt_sw, {select: false, layout: 'auto'}))
+} else {
+  display(html`<i>no record selected</i>`)
+}
+```
+
 
 ### Faceted Browsing & SQL Queries
 
