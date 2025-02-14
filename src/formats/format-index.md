@@ -29,10 +29,26 @@ This basic search just matches your text strings against any of the fields in th
 
 ```js
 const db = FileAttachment("../data/registries.db").sqlite();
+//const db = SQLiteDatabaseClient.open("https://raw.githubusercontent.com/digipres/digipres.github.io/refs/heads/master/_data/formats/registries.db");
 ```
 
 ```js
-const lines = db.sql`SELECT * FROM formats`;
+const lines = db.sql`
+SELECT
+  (SELECT GROUP_CONCAT(e.id, ', ')
+    FROM format_extensions f_e
+    JOIN extension e ON f_e.format_id = f.id
+    WHERE f_e.extension_id = e.id
+  ) AS extensions,
+  (SELECT GROUP_CONCAT(mt.id, ', ')
+    FROM format_media_types f_mt
+    JOIN media_type mt ON f_mt.format_id = f.id
+    WHERE f_mt.media_type_id = mt.id
+  ) AS media_types,
+  f.*
+FROM format f
+GROUP BY f.id
+`;
 const formats_search = view(Inputs.search((await lines), {placeholder: "Search format registry data…"}));
 ```
 
@@ -42,7 +58,7 @@ view(Inputs.table(formats_search, { select: false, rows: 20 }));
 
 ### Faceted Browsing & SQL Queries
 
-Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/workbench/main/src/data/registries.db#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id&_facet_array=genres&_facet_array=extensions&_facet_array=iana_media_types)
+Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/digipres.github.io/master/_data/formats/registries.db#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id&_facet_array=genres&_facet_array=extensions&_facet_array=iana_media_types)
 
 
 ## Overall Statistics
@@ -50,7 +66,7 @@ Note that more sophisticated analysis is possible [using Datasette Lite](https:/
 How many records are there in each registry?
 
 ```js
-const fr_tots = db.sql([`SELECT registry_id, COUNT(*) as count FROM formats GROUP BY registry_id;`]);
+const fr_tots = db.sql([`SELECT registry_id, COUNT(*) as count FROM format GROUP BY registry_id;`]);
 ```
 
 <div class="card">
@@ -90,7 +106,7 @@ const date_selection = view(Inputs.select(date_options, {
 
 
 ```js
-const fr_query = `SELECT registry_id, CAST(STRFTIME("%Y", ${date_selection.value}) AS INT) AS year, COUNT(*) as count FROM formats WHERE ${date_selection.value} != '' GROUP BY registry_id, year;`;
+const fr_query = `SELECT registry_id, CAST(STRFTIME("%Y", ${date_selection.value}) AS INT) AS year, COUNT(*) as count FROM format WHERE ${date_selection.value} != '' GROUP BY registry_id, year;`;
 const fr = db.sql([`${fr_query}`]);
 ```
 
@@ -115,7 +131,17 @@ resize((width) => Plot.plot({
 ## PRONOM Records by Genre
 
 ```js
-const pr = db.sql`SELECT genre.value as genre, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats, JSON_EACH(formats.genres) genre WHERE registry_id == 'pronom' GROUP BY genre.value, year ORDER BY year;`;
+const pr = db.sql`
+SELECT 
+  g.name as genre, 
+  CAST(STRFTIME("%Y", created) AS INT) AS year, 
+  COUNT(*) as count 
+FROM format f
+JOIN format_genres f_g ON f_g.format_id = f.id
+JOIN genre g ON f_g.genre_id = g.id
+WHERE registry_id == 'pronom' 
+GROUP BY g.name, year ORDER BY year;
+`;
 ```
 
 <div class="card">

@@ -228,7 +228,7 @@ function rasterize(svg) {
   image.onload = () => {
     const rect = svg.getBoundingClientRect();
     const canvas = document.createElement('canvas');
-    // Get the bounding box then scale up for better resolution image:
+    // Get the bounding box and scale up for better resolution image:
     var bBox = svg.getBBox();
     canvas.width = 4*bBox.width;
     canvas.height = 4*bBox.height;
