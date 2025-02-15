@@ -53,7 +53,49 @@ const formats_search = view(Inputs.search((await lines), {placeholder: "Search f
 ```
 
 ```js
-const fmt = view(Inputs.table(formats_search, { required: false, multiple: false, rows: 25, layout: 'auto', columns: ['id', 'name', 'version', 'extensions', 'media_types']}));
+
+const id_prefix = {
+  'lcfdd': 'https://www.loc.gov/preservation/digital/formats/fdd/',
+  'naradpf': 'https://www.archives.gov/files/lod/dpframework/id/',
+  'pronom': 'https://www.nationalarchives.gov.uk/PRONOM/',
+  'wikidata': 'http://www.wikidata.org/entity/'
+}
+
+function id_linker(pre) {
+  return (id) => {
+    const ida = id.split(/:(.+)/);
+    if( ida[0] in pre ) {
+      return htl.html`<a href="${pre[ida[0]]}${ida[1]}" target="_blank">${ida[0]}</a>`;
+    } else {
+      return id;
+    }
+  }
+}
+
+function urler(url) {
+  return htl.html`<a href="${url}" target="_blank">[link]</a>`;
+}
+
+function clipper(max) {
+  return (x) => {
+    if( x.length > max ) {
+      return x.substring(0, max) + "...";
+    } else {
+      return x;
+    }
+  }
+}
+
+const fmt = view(Inputs.table(formats_search, { 
+  required: false, 
+  multiple: false, 
+  rows: 25, 
+  layout: 'auto', 
+  columns: ['id', 'name', 'version', 'extensions', 'media_types'],
+  format: {
+    'id': id_linker(id_prefix),
+    'name': clipper(50)
+  }}));
 ```
 
 ### Full Format Record
@@ -78,7 +120,13 @@ if( fmt ) {
   JOIN format f ON f_s.format_id == f.id
   WHERE f.id = ${fmt.id}
   `;
-  view(Inputs.table(await fmt_sw, {select: false, layout: 'auto'}))
+  view(Inputs.table(await fmt_sw, {
+    select: false, 
+    layout: 'auto',
+    format: {
+    'id': id_linker(id_prefix),
+    'registry_url': urler
+  }}))
 } else {
   display(html`<i>no record selected</i>`)
 }
