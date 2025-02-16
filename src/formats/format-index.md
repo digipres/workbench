@@ -55,6 +55,7 @@ const formats_search = view(Inputs.search((await lines), {placeholder: "Search f
 ```js
 
 const id_prefix = {
+  'ffw': 'http://fileformats.archiveteam.org/wiki/',
   'lcfdd': 'https://www.loc.gov/preservation/digital/formats/fdd/',
   'naradpf': 'https://www.archives.gov/files/lod/dpframework/id/',
   'pronom': 'https://www.nationalarchives.gov.uk/PRONOM/',
