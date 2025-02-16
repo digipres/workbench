@@ -49,9 +49,24 @@ SELECT
 FROM format f
 GROUP BY f.id
 `;
+```
+
+```js
+const search_fields = view(
+  Inputs.select(
+    new Map([
+      ["Extensions & Media Types", ['extensions', 'media_types']],
+      ["All Fields", ['name', 'version', 'extensions', 'media_types']],
+    ]),
+    {value: ['extensions', 'media_types'], label: "Search"}
+  )
+);
+```
+
+```js
 const formats_search = view(Inputs.search((await lines), {
-  placeholder: "Search format registry data…",
-  columns: ['name', 'version', 'extensions', 'media_types']
+  placeholder: "Search for any substring…",
+  columns: search_fields
   }));
 ```
 
