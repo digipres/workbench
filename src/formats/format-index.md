@@ -49,7 +49,10 @@ SELECT
 FROM format f
 GROUP BY f.id
 `;
-const formats_search = view(Inputs.search((await lines), {placeholder: "Search format registry data…"}));
+const formats_search = view(Inputs.search((await lines), {
+  placeholder: "Search format registry data…",
+  columns: ['name', 'version', 'extensions', 'media_types']
+  }));
 ```
 
 ```js
@@ -99,6 +102,7 @@ const fmt = view(Inputs.table(formats_search, {
   }}));
 ```
 
+
 ### Full Format Record
 
 ```js
@@ -121,6 +125,7 @@ if( fmt ) {
   JOIN format f ON f_s.format_id == f.id
   WHERE f.id = ${fmt.id}
   `;
+
   view(Inputs.table(await fmt_sw, {
     select: false, 
     layout: 'auto',
@@ -136,7 +141,7 @@ if( fmt ) {
 
 ### Faceted Browsing & SQL Queries
 
-Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/digipres.github.io/master/_data/formats/registries.db#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id&_facet_array=genres&_facet_array=extensions&_facet_array=iana_media_types)
+Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/digipres.github.io/master/_data/formats/registries.db#/registries/format?_facet_size=8&_searchmode=raw&_facet=registry_id)
 
 
 ## Overall Statistics
@@ -151,14 +156,15 @@ const fr_tots = db.sql([`SELECT registry_id, COUNT(*) as count FROM format GROUP
 
 ```js
 resize((width) => Plot.plot({
-  title: `Registry Records`,
-  subtitle: "Broken down by registry (not all registries are included yet!)",
-  x: { tickFormat: (d) => d.toString() },
-  color: { legend: true },
+  title: `Total Format Records`,
+  subtitle: "Broken down by format information source",
+  y: {grid: true, label: "Registry ID" },
+  x: {grid: true, label: "# Format Records" },
+  color: {legend: false, label: "Registry ID"},
   width,
   marginLeft: 80,
   marks: [
-    Plot.barX(fr_tots, {x: "count", y: "registry_id", fill: "registry_id", tip: true })
+    Plot.barX(fr_tots, {x: "count", y: "registry_id", fill: "registry_id", tip: true, sort: { y: "x" }  })
   ] 
 }))
 ```
