@@ -18,7 +18,7 @@ function parseItemInPlace( df, itemInPlace ) {
             'id': place,
             'name': place
         });
-        return { item: itemInPlace, itemId: place, place: df.places.at(-1), index: df.places.length - 1 };
+        return { item: itemInPlace, itemId: place, place: df.places.at(0), index: 0 };
     }
 }
 
@@ -39,7 +39,7 @@ function setupEntitiesForEvent( lines, stations, item, event, parentShiftCoords 
 
     // Remember the lines that meet this station:
     stations[event.name].items.add(item);
-    // Remeber the events associated with this station:
+    // Remember the events associated with this station:
     stations[event.name].events.add(event);
 }
 
@@ -261,118 +261,122 @@ export function parseDataflow(text) {
     var lineCounter = 0;
     const lines = text.split('\n');
     lines.forEach(function(line) {
-        // Up the counter:
-        lineCounter += 1;
-        // Are we in a multiline comment?
-        if( multilineComment != null ) {
-            if ( line.startsWith('"""') ) {
-                //console.log("Multiline-comment ends!" + multilineComment);
-                multilineComment = null;
-            } else {
-                multilineComment += line;
-            }
-        } else {
-            // Normal line handling:
-            line = line.trim();
-            if( line.startsWith('#')) {
-                //console.log("Comment " + line);
-            } else if ( line.startsWith('"""') ) {
-                //console.log("Multiline-comment begins!");
-                multilineComment = "";
-            } else {
-                // Split the line on spaces, unless quoted.
-                const l = line.match(/(?:[^\s"]+|"[^"]*")+/g);
-                if( l == null ) {
-                    return;
+        try {
+            // Up the counter:
+            lineCounter += 1;
+            // Are we in a multiline comment?
+            if( multilineComment != null ) {
+                if ( line.startsWith('"""') ) {
+                    //console.log("Multiline-comment ends!" + multilineComment);
+                    multilineComment = null;
+                } else {
+                    multilineComment += line;
                 }
-                // Set up an event:
-                var event = undefined;
-                // Parse the line parts and create an event with the right shape:
-                if( ["move", "copy", "derive", "transform", "merge"].includes(l[0])) {
-                    event = {
-                        label: l[3] || l[0],
-                        type: l[0],
-                    };
-                    if( l[0] == "transform") {
-                        event.marker = 'interchange'; // FIXME This should be configuration and shift-able.
+            } else {
+                // Normal line handling:
+                line = line.trim();
+                if( line.startsWith('#')) {
+                    //console.log("Comment " + line);
+                } else if ( line.startsWith('"""') ) {
+                    //console.log("Multiline-comment begins!");
+                    multilineComment = "";
+                } else {
+                    // Split the line on spaces, unless quoted.
+                    const l = line.match(/(?:[^\s"]+|"[^"]*")+/g);
+                    if( l == null ) {
+                        return;
                     }
-                    // Parse offset if any:
-                    if( l[4] ) {
-                        event.shiftCoords = JSON.parse(l[4])
-                    }
-                    // Specific adjustments:
-                    if( l[0] == "copy") {
-                        event.source = l[1];
-                        event.targets = l[2].split(",");
-                        event.color = event.source;
-                    } else if( l[0] == "merge") {
-                        event.sources = l[1].split(","),
-                        event.target = l[2]
-                        event.color = event.target;
-                    } else {
-                        event.source = l[1],
-                        event.target = l[2]
-                        event.color = event.target;
-                    }
-                } else if( ["space", "end"].includes(l[0])) {
-                    // Push this event in:
-                    event = {
-                        label: l[1] || l[0],
-                        type: l[0],
-                    }
-                } else if( l[0] == "delete" || l[0] == "start" ) {
-                    // FIXME Kinda broken because only one color is allowed and there could be multiple starts
-                    event = {
-                        label: l[2] || l[0],
-                        type: l[0],
-                        targets: l[1].split(','),
-                        color: l[1]
-                    }
-                } else if( l[0] == "place") {
-                    const place = {
-                        id: l[1],
-                        name: l[2] || l[1]
-                    }
-                    place.name = place.name.replace(/^"(.*)"$/, '$1');
-                    dfs.places.push(place)
-                } else if( l[0] == "data") {
-                    const data = {
-                        id: l[1],
-                        name: l[2] || l[1],
-                        color: l[3] || undefined
-                    }
-                    dfs.items[data.id] = data;
-                } else if( l[0] == "title" ) {
-                    workflow.title = l[1].replace(/^"(.*)"$/, '$1');
-                } else if( l[0] == "width") {
-                    workflow.width = parseInt(l[1]);
-                } else if( l[0] == "height") {
-                    workflow.height = parseInt(l[1]);
-                } else if( l[0] == "zoom") {
-                    workflow.initialZoom = parseFloat(l[1]);
-                }
-                // Record the event, if set:
-                if( event != undefined) {
-                    // Force a unique event 'name' (internal reference):
-                    event.name = `l-${lineCounter}`;
-                    // Extract any position, strip any quotes (e.g. label@W or "This thing"@S ):
-                    if( event.label ) {
-                        if( event.label.includes('@')) {
-                            const [new_label, pos] = event.label.split('@');
-                            event.label = new_label;
-                            event.markerPos = pos;
+                    // Set up an event:
+                    var event = undefined;
+                    // Parse the line parts and create an event with the right shape:
+                    if( ["move", "copy", "derive", "transform", "merge"].includes(l[0])) {
+                        event = {
+                            label: l[3] || l[0],
+                            type: l[0],
+                        };
+                        if( l[0] == "transform") {
+                            event.marker = 'interchange'; // FIXME This should be configuration and shift-able.
                         }
-                        event.label = event.label.replace(/^"(.*)"$/, '$1');
+                        // Parse offset if any:
+                        if( l[4] ) {
+                            event.shiftCoords = JSON.parse(l[4])
+                        }
+                        // Specific adjustments:
+                        if( l[0] == "copy") {
+                            event.source = l[1];
+                            event.targets = l[2].split(",");
+                            event.color = event.source;
+                        } else if( l[0] == "merge") {
+                            event.sources = l[1].split(","),
+                            event.target = l[2]
+                            event.color = event.target;
+                        } else {
+                            event.source = l[1],
+                            event.target = l[2]
+                            event.color = event.target;
+                        }
+                    } else if( ["space", "end"].includes(l[0])) {
+                        // Push this event in:
+                        event = {
+                            label: l[1] || l[0],
+                            type: l[0],
+                        }
+                    } else if( l[0] == "delete" || l[0] == "start" ) {
+                        // FIXME Kinda broken because only one color is allowed and there could be multiple starts
+                        event = {
+                            label: l[2] || l[0],
+                            type: l[0],
+                            targets: l[1].split(','),
+                            color: l[1]
+                        }
+                    } else if( l[0] == "place") {
+                        const place = {
+                            id: l[1],
+                            name: l[2] || l[1]
+                        }
+                        place.name = place.name.replace(/^"(.*)"$/, '$1');
+                        dfs.places.push(place)
+                    } else if( l[0] == "data") {
+                        const data = {
+                            id: l[1],
+                            name: l[2] || l[1],
+                            color: l[3] || undefined
+                        }
+                        dfs.items[data.id] = data;
+                    } else if( l[0] == "title" ) {
+                        workflow.title = l[1].replace(/^"(.*)"$/, '$1');
+                    } else if( l[0] == "width") {
+                        workflow.width = parseInt(l[1]);
+                    } else if( l[0] == "height") {
+                        workflow.height = parseInt(l[1]);
+                    } else if( l[0] == "zoom") {
+                        workflow.initialZoom = parseFloat(l[1]);
                     }
-                    // Convert color
-                    if( event.color ) {
-                        const item = event.color.split('@');
-                        event.color = dfs.items[item[0]].color || undefined;
+                    // Record the event, if set:
+                    if( event != undefined) {
+                        // Force a unique event 'name' (internal reference):
+                        event.name = `l-${lineCounter}`;
+                        // Extract any position, strip any quotes (e.g. label@W or "This thing"@S ):
+                        if( event.label ) {
+                            if( event.label.includes('@')) {
+                                const [new_label, pos] = event.label.split('@');
+                                event.label = new_label;
+                                event.markerPos = pos;
+                            }
+                            event.label = event.label.replace(/^"(.*)"$/, '$1');
+                        }
+                        // Convert color
+                        if( event.color ) {
+                            const item = event.color.split('@');
+                            event.color = dfs.items[item[0]].color || undefined;
+                        }
+                        // Record the event in the sequence:
+                        workflow.events.push(event);
                     }
-                    // Record the event in the sequence:
-                    workflow.events.push(event);
                 }
             }
+        } catch( error ) {
+            console.log(error);
         }
     });
 
