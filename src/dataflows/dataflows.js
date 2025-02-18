@@ -614,43 +614,23 @@ export function rasterize(svg) {
     }
   }
 
-// Set up a mutation observer so we can update when in 'npm run dev' mode.
-
-// Options for the observer (which mutations to observe)
-const config = { attributes: false, childList: true, subtree: false };
-
-// Callback function to execute when mutations are observed
-const callback = (mutationList, observer) => {
-    renderDataflows();
-};
-
-// Create an observer instance linked to the callback function
-const observer = new MutationObserver(callback);
-
 // Main function that actually turns the code blocks into diagrams:
 export async function renderDataflows() {
-    // Consume all queued observed events so this doesn't run multiple times:
-    //observer.disconnect();  
-    //observer.takeRecords();
-
     var codes = document.getElementsByClassName('language-dataflow');
     for (var i=0; i < codes.length; i++) {
         const dataflow = await generateDataflow(codes[i].innerText);
         const dataflowId = `dataflow-${i}`;
         var current = document.getElementById(dataflowId);
         if( current != null ) {
-            console.log(`Reusing ${dataflowId}...`);
-            current.replaceChildren(dataflow);
-        } else {
-            console.log(`Inserting ${dataflowId}...`);
-            const inserted = codes[i].parentElement.insertAdjacentElement('beforeBegin', dataflow);
-            inserted.id = dataflowId;
-            codes[i].parentElement.hidden = true;
-            // FIXME This logic is likely a bit too hard-coded to Observable Framework
-            // Make the container the same size as the new contents:
-            // Add an observer to the grandparent so we can update if the element is replace:
-            observer.observe(codes[i].parentElement.parentElement.parentElement, config);
+            console.log(`Deleting ${dataflowId}...`);
+            current.remove();
         }
+        console.log(`Inserting ${dataflowId}...`);
+        const inserted = codes[i].parentElement.insertAdjacentElement('beforeBegin', dataflow);
+        inserted.id = dataflowId;
+        codes[i].parentElement.hidden = true;
+        codes[i].hidden = true;
+        
         // FIXME This logic is likely a bit too hard-coded to Observable Framework
         // Make the container the same size as the new contents:
         codes[i].height = dataflow.height;
