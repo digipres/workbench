@@ -335,6 +335,7 @@ export function parseDataflow(text) {
                             name: l[2] || l[1]
                         }
                         place.name = place.name.replace(/^"(.*)"$/, '$1');
+                    place.name = place.name.replace('\\n', '\n');
                         dfs.places.push(place)
                     } else if( l[0] == "data") {
                         const data = {
@@ -364,11 +365,16 @@ export function parseDataflow(text) {
                                 event.markerPos = pos;
                             }
                             event.label = event.label.replace(/^"(.*)"$/, '$1');
+                            event.label = event.label.replace('\\n' ,'\n');
                         }
                         // Convert color
                         if( event.color ) {
                             const item = event.color.split('@');
-                            event.color = dfs.items[item[0]].color || undefined;
+                            if( dfs.items[item[0]] ) {
+                                event.color = dfs.items[item[0]].color || undefined;
+                            } else {
+                                event.color = undefined;
+                            }
                         }
                         // Record the event in the sequence:
                         workflow.events.push(event);

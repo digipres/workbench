@@ -7,24 +7,6 @@ Dataflow diagrams show how data moves between different systems over time.  The 
 
 As an example, here is what it looks like for a simplified version of how the Open Archival Information System describes the flow of data through an archive:
 
-
-```js
-import yaml from "npm:js-yaml@4.1.0";
-
-// Load the first YAML doc, i.e. the frontmatter:
-const dfs_txt = await FileAttachment("bfi.md").text();
-var dfs = [];
-yaml.loadAll(dfs_txt, function (doc) { if(doc) dfs.push(doc) });
-var df = dfs[0];
-var wf = df.workflows[0];
-
-
-```
-
-```js
-import { renderDataflows } from "./dataflows.js";
-```
-
 ```js
 display(html`<pre data-language="dataflow">
 <code class="language-dataflow">${dfl}</code>
@@ -125,7 +107,10 @@ end
 
 
 ```js
-renderDataflows();
 
 ```
 
+```js
+import { renderDataflows } from "./dataflows.js";
+renderDataflows();
+```

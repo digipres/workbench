@@ -35,6 +35,13 @@ export default {
       ]
     },
     {
+      name: "Dataflows",
+      open: true,
+      pages: [
+        {name: "All About Dataflows", path: "/dataflows/"},
+      ]
+    },
+    {
       name: "Publications",
       open: true,
       pages: [
