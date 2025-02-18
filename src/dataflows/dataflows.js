@@ -1,6 +1,6 @@
 import { showSaveFilePicker } from 'npm:file-system-access';
 import { tubeMap } from "npm:d3-tube-map";
-import {html} from "npm:htl";
+import { html } from "npm:htl";
 import * as d3 from "npm:d3";
 import tippy from "npm:tippy.js"
 
@@ -36,6 +36,7 @@ function setupEntitiesForEvent( lines, stations, item, event, parentShiftCoords 
         "items": new Set(),
         "events": new Set()
     };
+
     // Remember the lines that meet this station:
     stations[event.name].items.add(item);
     // Remeber the events associated with this station:
@@ -134,7 +135,7 @@ export function generateTubeMapData(df, wf) {
                 // Record as a merge:
                 lines[item].name = `${target.itemId}@${target.place.id}`;
             });
-        } else if( event.type == "derive" || event.type == "rename" ) {
+        } else if( event.type == "derive" || event.type == "transform" ) {
             const source = parseItemInPlace(df, event.source);
             var targets = getTargets(df, event);
             targets.forEach( (target ) => {
@@ -150,7 +151,7 @@ export function generateTubeMapData(df, wf) {
                     "marker": event.marker || undefined,
                     "shiftCoords": event.markerShiftCoords || event.shiftCoords|| lines[source.item].shiftCoords || [0,0]
                 });
-                if( event.type == "rename") {
+                if( event.type == "transform") {
                     lines[source.item].terminated = t2;
                     lines[source.item].nodes.push({
                       "coords": [0.5*(t1+t2),y2],
@@ -243,6 +244,7 @@ export function generateTubeMapData(df, wf) {
 }
 
 
+// This parses the text-format for Dataflows and turns it into the event representation:
 export function parseDataflow(text) {
     // Set up basic structure
     const dfs = {
@@ -251,7 +253,7 @@ export function parseDataflow(text) {
         items: [],
         workflows: [],
     }
-    var workflow = { title: '', events: [] };
+    var workflow = { title: '', events: [], initialZoom: 0.6, initialOffset: [0,0], width:600, height:400 };
     dfs.workflows.push(workflow);
     // Place to store longer comments:
     var multilineComment = null;
@@ -286,11 +288,14 @@ export function parseDataflow(text) {
                 // Set up an event:
                 var event = undefined;
                 // Parse the line parts and create an event with the right shape:
-                if( ["move", "copy", "derive", "rename", "merge"].includes(l[0])) {
+                if( ["move", "copy", "derive", "transform", "merge"].includes(l[0])) {
                     event = {
                         label: l[3] || l[0],
                         type: l[0],
                     };
+                    if( l[0] == "transform") {
+                        event.marker = 'interchange'; // FIXME This should be configuration and shift-able.
+                    }
                     // Parse offset if any:
                     if( l[4] ) {
                         event.shiftCoords = JSON.parse(l[4])
@@ -338,7 +343,13 @@ export function parseDataflow(text) {
                     }
                     dfs.items[data.id] = data;
                 } else if( l[0] == "title" ) {
-                    dfs.title = l[1].replace(/^"(.*)"$/, '$1');
+                    workflow.title = l[1].replace(/^"(.*)"$/, '$1');
+                } else if( l[0] == "width") {
+                    workflow.width = parseInt(l[1]);
+                } else if( l[0] == "height") {
+                    workflow.height = parseInt(l[1]);
+                } else if( l[0] == "zoom") {
+                    workflow.initialZoom = parseFloat(l[1]);
                 }
                 // Record the event, if set:
                 if( event != undefined) {
@@ -369,11 +380,13 @@ export function parseDataflow(text) {
 }
 
 
-export async function generateDataflow(dfl, width=800, height=600) {
+export async function generateDataflow(dfl) {
 
     const df = parseDataflow( dfl );
 
     const wf = df.workflows[0];
+    const width = wf.width;
+    const height = wf.height;
 
     const data = generateTubeMapData(df, wf);
 
@@ -412,6 +425,8 @@ export async function generateDataflow(dfl, width=800, height=600) {
             return `<i>Copy ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "move") {
             return `<i>Move ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+        } else if( e.type == "transform") {
+            return `<i>Transform ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "merge") {
             return `<i>Merge ${e.source} into ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "delete") {
@@ -456,14 +471,14 @@ export async function generateDataflow(dfl, width=800, height=600) {
     
     var zoomContainer = svg.call(zoom);
     var initialScale = wf.initialZoom || 0.75;
-    var initialTranslate = wf.initialOffset || undefined; // e.g. [100,10] etc.
+    var initialTranslate = wf.initialOffset || undefined; // e.g. [100,10] percentages of the total w/h
     
     zoom.scaleTo(zoomContainer, initialScale);
     if( initialTranslate ) {
         zoom.translateTo(
             zoomContainer,
-            initialTranslate[0],
-            initialTranslate[1]
+            (0.5-initialTranslate[0]/100)*width,
+            (0.5-initialTranslate[1]/100)*height
         );
     }
     
@@ -589,6 +604,8 @@ export function rasterize(svg) {
     }
   }
 
+// Set up a mutation observer so we can update when in 'npm run dev' mode.
+
 // Options for the observer (which mutations to observe)
 const config = { attributes: false, childList: true, subtree: false };
 
@@ -600,26 +617,38 @@ const callback = (mutationList, observer) => {
 // Create an observer instance linked to the callback function
 const observer = new MutationObserver(callback);
 
-
+// Main function that actually turns the code blocks into diagrams:
 export async function renderDataflows() {
     // Consume all queued observed events so this doesn't run multiple times:    
     observer.takeRecords();
 
     var codes = document.getElementsByClassName('language-dataflow');
     for (var i=0; i < codes.length; i++) {
-      const dataflow = await generateDataflow(codes[i].innerText);
-      const dataflowId = `dataflow-${i}`;
-      var current = document.getElementById(dataflowId);
-      if( current != null ) {
-        console.log(`Reusing ${dataflowId}...`);
-        current.replaceChildren(dataflow);
-      } else {
-        console.log(`Inserting ${dataflowId}...`);
-        const inserted = codes[i].parentElement.insertAdjacentElement('afterend', dataflow);
-        inserted.id = dataflowId;
-        codes[i].parentElement.hidden = true;
-        observer.observe(codes[i].parentElement.parentElement.parentElement, config);
-      }
+        const dataflow = await generateDataflow(codes[i].innerText);
+        const dataflowId = `dataflow-${i}`;
+        var current = document.getElementById(dataflowId);
+        if( current != null ) {
+            console.log(`Reusing ${dataflowId}...`);
+            current.replaceChildren(dataflow);
+        } else {
+            console.log(`Inserting ${dataflowId}...`);
+            const inserted = codes[i].parentElement.insertAdjacentElement('beforeBegin', dataflow);
+            inserted.id = dataflowId;
+            codes[i].parentElement.hidden = true;
+            // FIXME This logic is likely a bit too hard-coded to Observable Framework
+            // Make the container the same size as the new contents:
+            // Add an observer to the grandparent so we can update if the element is replace:
+            observer.observe(codes[i].parentElement.parentElement.parentElement, config);
+        }
+        // FIXME This logic is likely a bit too hard-coded to Observable Framework
+        // Make the container the same size as the new contents:
+        codes[i].height = dataflow.height;
+        codes[i].parentElement.height = dataflow.height;
+        codes[i].parentElement.parentElement.height = dataflow.height;
     }
     enableTooltips();
 }
+
+// Need to add this back in, as vanilla JS:
+//const save_button = view(Inputs.button("Save as SVG", {value: serialize(svg.node()), reduce: saveSvg, disabled: false }));
+//const save_png_button = view(Inputs.button("Save as PNG", {value: await rasterize(svg.node()), reduce: saveImage, disabled: false }));
