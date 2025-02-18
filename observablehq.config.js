@@ -1,6 +1,7 @@
 // See https://observablehq.com/framework/config for documentation.
 import MarkdownItFootnote from "markdown-it-footnote";
 
+
 // Set up anonymised analytics if building on GITHUB:
 const analytics = process.env.GITHUB_JOB == undefined ? '' : '<script defer src="https://cloud.umami.is/script.js" data-website-id="0ed0c854-0297-411f-b19c-4688ea996bdc"></script>';
 
