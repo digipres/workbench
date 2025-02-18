@@ -623,8 +623,9 @@ const observer = new MutationObserver(callback);
 
 // Main function that actually turns the code blocks into diagrams:
 export async function renderDataflows() {
-    // Consume all queued observed events so this doesn't run multiple times:    
-    observer.takeRecords();
+    // Consume all queued observed events so this doesn't run multiple times:
+    //observer.disconnect();  
+    //observer.takeRecords();
 
     var codes = document.getElementsByClassName('language-dataflow');
     for (var i=0; i < codes.length; i++) {
