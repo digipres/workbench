@@ -55,10 +55,16 @@ end
 
 `;
 
-const dfl = view(Inputs.textarea({value: dflDefault, rows:40, monospace: true}));
+const dfl = view(Inputs.textarea({value: dflDefault, rows:40, monospace: true, resize: true, spellcheck: true }));
 ```
 
-
+<!-- Using this to force a large text area 
+as Observable Framework limits it be default -->
+<style>
+textarea {
+    max-height: 200em !important;
+}
+</style>
 
 ## TBC...
 
