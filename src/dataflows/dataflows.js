@@ -7,7 +7,7 @@ import tippy from "npm:tippy.js"
 // Parser an item string, pulling out the place
 // The final item includes the place
 function parseItemInPlace( df, itemInPlace ) {
-    //console.log(`Splitting ${itemInPlace}`);
+    console.log(`Splitting ${itemInPlace}`);
     const [id, place] = itemInPlace.split('@');
     const index = df.places.findIndex( (p) => p.id == place );
     if ( index >= 0 ) {
@@ -93,6 +93,7 @@ export function generateTubeMapData(df, wf) {
     // Loop through the events:
     wf.events.forEach( event => {
         //display(event);
+        console.log(`Processing event ${event.type}`);
         // Current time window
         const t1 = time*dt;
         const t2 = (time + 1)*dt;
@@ -123,7 +124,7 @@ export function generateTubeMapData(df, wf) {
                 }
             });
         } else if( event.type == "merge" ) {
-            const source = parseItemInPlace(df, event.source);
+            const source = parseItemInPlace(df, event.sources[0]); // FIXME Multiple sources?!
             var targets = getTargets(df, event);
             targets.forEach( (target ) => {
                 const y1 = source.index*ds;
@@ -438,7 +439,7 @@ export async function generateDataflow(dfl) {
         } else if( e.type == "transform") {
             return `<i>Transform ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "merge") {
-            return `<i>Merge ${e.source} into ${e.target}</i>.<br>${e.description || ''}`;
+            return `<i>Merge ${e.sources} into ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "delete") {
             return `<i>Delete ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "start") {
@@ -629,7 +630,6 @@ export async function renderDataflows() {
         const inserted = codes[i].parentElement.insertAdjacentElement('beforeBegin', dataflow);
         inserted.id = dataflowId;
         codes[i].parentElement.hidden = true;
-        codes[i].hidden = true;
         
         // FIXME This logic is likely a bit too hard-coded to Observable Framework
         // Make the container the same size as the new contents:

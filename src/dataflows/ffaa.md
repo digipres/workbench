@@ -127,3 +127,47 @@ workflows:
     name: ""
   - type: end
 ---
+
+This is a 
+
+```dataflow
+dataflow 1.0
+title "Flickr Foundation"
+place flickr "Flickr.com"
+place flickr-commons "Flickr Commons"
+place collection "Print Collection"
+place workstation "Workstation"
+place archive "Archival System"
+
+start all@collection 
+derive all@collection toScan@collection "Select"@N
+move toScan@collection toScan@workstation "Transfer"
+derive toScan@workstation scanned@workstation "Digitise"
+merge toScan@workstation all@collection "Return"
+space 
+derive scanned@workstation metadata@workstation "Describe\n(baseline)"@N
+space 
+copy scanned@workstation scanned@flickr "Upload Access Copy"
+copy metadata@workstation metadata@flickr "Upload Metadata"@E
+space 
+copy scanned@workstation scanned@archive "Store Archive Copy"
+copy metadata@workstation metadata@archive "Store Metadata"@E
+delete metadata@workstation,scanned@workstation "Delete Working Copies"@E
+derive metadata@flickr annotations@flickr "Annotate"@N
+space 
+derive annotations@flickr lifeboat@flickr "Create\nLifeboat"@S
+move lifeboat@flickr lifeboat@workstation "Download Lifeboat"
+derive lifeboat@workstation annotations@workstation "Extract\nAnnotations"@S
+copy annotations@workstation annotations@archive "Ingest Annotations"@E
+delete annotations@workstation,lifeboat@workstation "Delete Lifeboat"@E
+space 
+space 
+end 
+```
+
+
+
+```js
+import { renderDataflows } from "./dataflows.js";
+renderDataflows();
+```

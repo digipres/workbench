@@ -3,9 +3,9 @@
 import yaml from "npm:js-yaml@4.1.0";
 
 // Load the first YAML doc, i.e. the frontmatter:
-const dfs_txt = await FileAttachment("bfi.md").text();
+const dfs_txt = await FileAttachment("ffaa.md").text();
 var dfs = [];
-yaml.loadAll(dfs_txt, function (doc) { if(doc) dfs.push(doc) });
+yaml.loadAll(dfs_txt, function (doc) { if(doc) dfs.push(doc) } );
 var df = dfs[0];
 var wf = df.workflows[0];
 
