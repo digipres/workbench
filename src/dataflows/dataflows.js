@@ -7,7 +7,7 @@ import tippy from "npm:tippy.js"
 // Parser an item string, pulling out the place
 // The final item includes the place
 function parseItemInPlace( df, itemInPlace ) {
-    console.log(`Splitting ${itemInPlace}`);
+    //console.log(`Splitting ${itemInPlace}`);
     const [id, place] = itemInPlace.split('@');
     const index = df.places.findIndex( (p) => p.id == place );
     if ( index >= 0 ) {
@@ -92,8 +92,7 @@ export function generateTubeMapData(df, wf) {
     
     // Loop through the events:
     wf.events.forEach( event => {
-        //display(event);
-        console.log(`Processing event ${event.type}`);
+        //console.log(`Processing event ${JSON.stringify(event)}`);
         // Current time window
         const t1 = time*dt;
         const t2 = (time + 1)*dt;
@@ -102,7 +101,7 @@ export function generateTubeMapData(df, wf) {
             const source = parseItemInPlace(df, event.source);
             var targets = getTargets(df, event);
             targets.forEach( (target ) => {
-                const y1 = source.index*ds;
+                const y1 = source.index*ds; // FIXME take source shiftCoords into account?
                 const y2 = target.index*ds;
                 // Default to doing a move:
                 var item = source.item;
@@ -170,7 +169,8 @@ export function generateTubeMapData(df, wf) {
                     'name': source.place.name,
                     'label': source.place.name,
                     'color': event.color,
-                    'item': source
+                    'item': source,
+                    'description': event.description
                 }
                 setupEntitiesForEvent(lines, stations, item, source_event );
                 const y = source.index * ds;
@@ -216,7 +216,8 @@ export function generateTubeMapData(df, wf) {
                     'name': endpoint_name,
                     'label': source.place.name,
                     'item': source,
-                    'color': event.color
+                    'color': event.color,
+                    'description': event.description
                 }
                 setupEntitiesForEvent(lines, stations, item, source_event );
                 const y = target.nodes.at(-1)['coords'][1];
@@ -247,6 +248,17 @@ export function generateTubeMapData(df, wf) {
 }
 
 
+function storeDescription(dfs, workflow, comment) {
+    if ( workflow.events.length > 0 ) {
+        const lastEvent = workflow.events.at(-1);
+        lastEvent.description = comment;
+        //console.log(JSON.stringify(lastEvent));
+    } else {
+        // Otherwise, assume it's meant to describe the whole data flow:
+        dfs.description = comment;
+    }
+}
+
 // This parses the text-format for Dataflows and turns it into the event representation:
 export function parseDataflow(text) {
     // Set up basic structure
@@ -271,18 +283,27 @@ export function parseDataflow(text) {
             if( multilineComment != null ) {
                 if ( line.startsWith('"""') ) {
                     //console.log("Multiline-comment ends!" + multilineComment);
+                    storeDescription(dfs, workflow, multilineComment);
                     multilineComment = null;
                 } else {
                     multilineComment += line;
                 }
             } else {
                 // Normal line handling:
+                // Trim leading/trailing whitespace:
                 line = line.trim();
                 if( line.startsWith('#')) {
                     //console.log("Comment " + line);
                 } else if ( line.startsWith('"""') ) {
-                    //console.log("Multiline-comment begins!");
-                    multilineComment = "";
+                    // Single-line description:
+                    line = line.replace('"""', '');
+                    if( line.endsWith('"""') ) {
+                        line = line.replaceAll('"""', '');
+                        storeDescription(dfs, workflow, line);
+                    } else {
+                        //console.log("Multiline-comment begins!");
+                        multilineComment = line;
+                    }
                 } else {
                     // Split the line on spaces, unless quoted.
                     const l = line.match(/(?:[^\s"]+|"[^"]*")+/g);
@@ -298,7 +319,7 @@ export function parseDataflow(text) {
                             type: l[0],
                         };
                         if( l[0] == "transform") {
-                            event.marker = 'interchange'; // FIXME This should be configuration and shift-able.
+                            event.marker = 'interchange';
                         }
                         // Parse offset if any:
                         if( l[4] ) {
@@ -325,12 +346,15 @@ export function parseDataflow(text) {
                             type: l[0],
                         }
                     } else if( l[0] == "delete" || l[0] == "start" ) {
-                        // FIXME Kinda broken because only one color is allowed and there could be multiple starts
+                        // FIXME START is kinda broken because only one color is allowed and there could be multiple starts
                         event = {
                             label: l[2] || l[0],
                             type: l[0],
                             targets: l[1].split(','),
                             color: l[1]
+                        }
+                        if( l[0] == "delete") {
+                            event.marker = 'interchange';
                         }
                     } else if( l[0] == "place") {
                         const place = {
@@ -512,7 +536,7 @@ export function enableTooltips() {
     tippy('[data-tippy-content]',{
         allowHTML: true,
         sticky: true,
-        trigger: 'click mouseenter focus',
+        trigger: 'click mouseenter focus focusin touchstart',
         interactive: true,
         // Need to do this to see interactive tooltips:
         // https://atomiks.github.io/tippyjs/v5/faq/#my-tooltip-appears-cut-off-or-is-not-showing-at-all
@@ -638,10 +662,10 @@ export async function renderDataflows() {
         const dataflowId = `dataflow-${i}`;
         var current = document.getElementById(dataflowId);
         if( current != null ) {
-            console.log(`Deleting ${dataflowId}...`);
+            //console.log(`Deleting ${dataflowId}...`);
             current.remove();
         }
-        console.log(`Inserting ${dataflowId}...`);
+        //console.log(`Inserting ${dataflowId}...`);
         const inserted = codes[i].parentElement.insertAdjacentElement('beforeBegin', dataflow);
         inserted.id = dataflowId;
         codes[i].parentElement.hidden = true;

@@ -148,7 +148,13 @@ place tape2 "Tape Robot 2"
 place vault "Tape Vault"
 
 start data@internet 
+"""This is a start"""
+
 move data@internet data@workspace "Deposit"
+"""
+The precise mechanism of the deposit depends on the context.
+"""
+
 space 
 derive data@workspace aip-id@workspace "Mint-API-ID"@N [0,1]
 space 
@@ -157,7 +163,7 @@ move aip-id@workspace record@cdi "Record\nAIP ID"
 copy aip@workspace replica_1@tape1,replica_2@tape2 "Copy to\ntapes 1 & 2"
 derive replica_2@tape2 replica_3@tape2 "Copy to\ntape 3"@S [0,-2]
 move replica_3@tape2 replica_3@vault "Transfer tape 3 to vault"@E
-derive aip@workspace dip@workspace "Create DIP"@S [0,-2]
+derive aip@workspace dip@workspace "Create DIP"@N [0,1]
 copy dip@workspace dip@access "Copy DIP"
 delete data@workspace,aip@workspace,dip@workspace "Delete Working Copies"@E 
 status "Ingest Complete"
