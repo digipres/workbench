@@ -70,14 +70,14 @@ function pushCopyEvent(lines, stations, item, event, sx, sy, tx, ty){
         });
 }
 
-function getTargets(df, event) {
-    var targets = [];
-    if( event.target ) {
-        targets.push(parseItemInPlace(df, event.target));
+function getTargets(df, event, name='target') {
+    var results = [];
+    if( event[name] ) {
+        results.push(parseItemInPlace(df, event[name]));
     } else {
-        targets = event.targets.map( (t) => parseItemInPlace(df, t) );
+        results = event[`${name}s`].map( (t) => parseItemInPlace(df, t) );
     }
-    return targets;    
+    return results;    
 }
 
 export function generateTubeMapData(df, wf) {
@@ -124,17 +124,19 @@ export function generateTubeMapData(df, wf) {
                 }
             });
         } else if( event.type == "merge" ) {
-            const source = parseItemInPlace(df, event.sources[0]); // FIXME Multiple sources?!
+            const sources = getTargets(df, event, 'source');
             var targets = getTargets(df, event);
-            targets.forEach( (target ) => {
-                const y1 = source.index*ds;
-                const y2 = target.index*ds;
-                // Where we start from:
-                var item = source.item;
-                setupEntitiesForEvent(lines, stations, item, event );
-                pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
-                // Record as a merge:
-                lines[item].name = `${target.itemId}@${target.place.id}`;
+            sources.forEach( (source) => {
+                targets.forEach( (target ) => {
+                    const y1 = source.index*ds;
+                    const y2 = target.index*ds;
+                    // Where we start from:
+                    var item = source.item;
+                    setupEntitiesForEvent(lines, stations, item, event );
+                    pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
+                    // Record as a merge:
+                    lines[item].name = `${target.itemId}@${target.place.id}`;
+                });
             });
         } else if( event.type == "derive" || event.type == "transform" ) {
             const source = parseItemInPlace(df, event.source);
@@ -353,6 +355,8 @@ export function parseDataflow(text) {
                         workflow.height = parseInt(l[1]);
                     } else if( l[0] == "zoom") {
                         workflow.initialZoom = parseFloat(l[1]);
+                    } else if( l[0] == "offset") {
+                        workflow.initialOffset = [parseFloat(l[1]), parseFloat(l[2])];
                     }
                     // Record the event, if set:
                     if( event != undefined) {
@@ -615,6 +619,17 @@ export function rasterize(svg) {
     }
   }
 
+
+// Set up a mutation observer so we can update when in 'npm run dev' mode.
+// Options for the observer (which mutations to observe)
+const config = { attributes: false, childList: true, subtree: false };
+// Callback function to execute when mutations are observed
+const callback = (mutationList, observer) => {
+    renderDataflows();
+};
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(callback);
+
 // Main function that actually turns the code blocks into diagrams:
 export async function renderDataflows() {
     var codes = document.getElementsByClassName('language-dataflow');
@@ -636,6 +651,8 @@ export async function renderDataflows() {
         codes[i].height = dataflow.height;
         codes[i].parentElement.height = dataflow.height;
         codes[i].parentElement.parentElement.height = dataflow.height;
+        // Add an observer to the grandparent so we can update if the element is replace:
+       observer.observe(codes[i].parentElement.parentElement.parentElement, config);
     }
     enableTooltips();
 }

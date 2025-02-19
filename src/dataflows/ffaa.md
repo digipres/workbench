@@ -128,24 +128,35 @@ workflows:
   - type: end
 ---
 
-This is a 
+This is a
 
 ```dataflow
 dataflow 1.0
 title "Flickr Foundation"
+zoom 1.6
+height 500
+offset 25 35
+
+data all "Photos" black
+data toScan "Selected Photos" black
+data scanned "Scanned Images" red
+data metadata "Metadata" darkblue
+data annotations "Annotations" blue
+data lifeboat "Data Lifeboat" green
+
 place flickr "Flickr.com"
 place flickr-commons "Flickr Commons"
-place collection "Print Collection"
+place collection "Print\nCollection"
 place workstation "Workstation"
-place archive "Archival System"
+place archive "Archival\nSystem"
 
 start all@collection 
 derive all@collection toScan@collection "Select"@N
 move toScan@collection toScan@workstation "Transfer"
-derive toScan@workstation scanned@workstation "Digitise"
+derive toScan@workstation scanned@workstation "Digitise" [0,-1]
 merge toScan@workstation all@collection "Return"
 space 
-derive scanned@workstation metadata@workstation "Describe\n(baseline)"@N
+derive scanned@workstation metadata@workstation "Describe\n(baseline)"@N [0,0]
 space 
 copy scanned@workstation scanned@flickr "Upload Access Copy"
 copy metadata@workstation metadata@flickr "Upload Metadata"@E
@@ -153,18 +164,17 @@ space
 copy scanned@workstation scanned@archive "Store Archive Copy"
 copy metadata@workstation metadata@archive "Store Metadata"@E
 delete metadata@workstation,scanned@workstation "Delete Working Copies"@E
-derive metadata@flickr annotations@flickr "Annotate"@N
+transform metadata@flickr annotations@flickr "Annotate"@N
 space 
-derive annotations@flickr lifeboat@flickr "Create\nLifeboat"@S
+derive annotations@flickr lifeboat@flickr "Create\nLifeboat"@N [0,1]
 move lifeboat@flickr lifeboat@workstation "Download Lifeboat"
-derive lifeboat@workstation annotations@workstation "Extract\nAnnotations"@S
-copy annotations@workstation annotations@archive "Ingest Annotations"@E
+derive lifeboat@workstation annotations@workstation "Extract\nAnnotations"@S [0,0]
+copy annotations@workstation annotations@archive "Ingest Annotations"@E [0,0]
 delete annotations@workstation,lifeboat@workstation "Delete Lifeboat"@E
 space 
 space 
-end 
+end
 ```
-
 
 
 ```js

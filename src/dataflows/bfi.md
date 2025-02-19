@@ -140,7 +140,7 @@ data replica_3 "Tape 3" darkred
 
 place internet "Internet"
 place bt-net "BT Connection"
-place cdi "Collections\nInformation Database"
+place cdi "Collections\nInformation Database (CID)"
 place access "Access Storage"
 place workspace "Working Storage"
 place tape1 "Tape Robot 1"
