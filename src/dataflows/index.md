@@ -8,9 +8,10 @@ Dataflow diagrams show how data moves between different systems over time.  The 
 As an example, here is what it looks like for a simplified version of how the Open Archival Information System describes the flow of data through an archive:
 
 ```js
-import { generateDataflow } from "./dataflows.js";
+import { generateDataflow, enableTooltips } from "./dataflows.js";
 
 display(await generateDataflow(dfl));
+enableTooltips();
 ```
 
 Each diagram is defined using a text format that describes the sequence of events involved in the data flow. The text box below shows the source for the diagram above, and you can edit it to see what happens.
@@ -66,51 +67,7 @@ textarea {
 }
 </style>
 
-## TBC...
 
-
-Add more complex version  in separate page?
- https://commons.wikimedia.org/wiki/File:OAIS_Functional_Model_(en).svg 
- 
-
-```dataflow
-dataflow 1.0
-title "OAIS Simple Dataflow 2"
-height 600
-zoom 0.6
-"""
-This is what the OAIS dataflow looks like from the outside. 
-All of the internal detail is invisible to external users.
-"""
-
-domain ar "The Arive"
-domain dc "Designated Community"
-
-place consumer "Codsdnmer"
-place producer "Pr cer"
-place store "Archival Storage"
-
-data sip "Submission Information Package" black
-data aip "Archival Information Package" red
-data dip "Dissemination Information Package" green
-
-# Starting point:
-start sip@producer
-
-# Ingest:
-move sip@producer sip@store "sdft asasa  sSIP"
-
-# Preserve:
-transform sip@store aip@store "SIP t AIP"
-space
-
-# Access
-derive aip@store dip@store "A to DIOP"@N [0,1]
-move dip@store dip@consumer "Adds"
-
-# Final state
-end
-```
 
 ```js
 import { renderDataflows } from "./dataflows.js";
