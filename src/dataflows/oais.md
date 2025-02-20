@@ -1,49 +1,17 @@
+# OAIS Dataflows
+## Using dataflow diagrams to explore the Open Archival Information System standard
 
-## TBC...
+<div class="caution" label="DRAFTY CONTENT WARNING!">This page is nowhere near complete, and may never be so!</div>
 
+## OAIS Internal
 
-Add more complex version  in separate page?
- https://commons.wikimedia.org/wiki/File:OAIS_Functional_Model_(en).svg 
+Add more complex version, based on exploding this:
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/OAIS_Functional_Model_%28en%29.svg">
  
+So this is one layer in from the external view, but still higher-level than the full functional model...
 
-```dataflow
-dataflow 1.0
-title "OAIS Simple Dataflow 2"
-height 600
-zoom 0.6
-"""
-This is what the OAIS dataflow looks like from the outside. 
-All of the internal detail is invisible to external users.
-"""
-
-domain ar "The Arive"
-domain dc "Designated Community"
-
-place consumer "Codsdnmer"
-place producer "Pr cer"
-place store "Archival Storage"
-
-data sip "Submission Information Package" black
-data aip "Archival Information Package" red
-data dip "Dissemination Information Package" green
-
-# Starting point:
-start sip@producer
-
-# Ingest:
-move sip@producer sip@store "sdft asasa  sSIP"
-
-# Preserve:
-transform sip@store aip@store "SIP t AIP"
-space
-
-# Access
-derive aip@store dip@store "A to DIOP"@N [0,1]
-move dip@store dip@consumer "Adds"
-
-# Final state
-end
-```
+## Dataflow  
 
 ```dataflow
 dataflow 1.0
@@ -65,9 +33,9 @@ domain ar "The Archive"
 domain man "Management"
 
 # Data types and descriptions:
-data sip "Submission Information Package" color="#ff0000"
-data aip "Archival Information Package"
-data dip "Dissemination Information Package"
+data sip "Submission Information Package" black
+data aip "Archival Information Package" red
+data dip "Dissemination Information Package" green
 
 #
 # Then the sequence of events in this dataflow...
@@ -102,3 +70,7 @@ delete aip@access.ar,dip@access.ar
 end
 ```
 
+```js
+import { renderDataflows } from "./dataflows.js";
+renderDataflows();
+```
