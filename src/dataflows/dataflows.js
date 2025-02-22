@@ -429,7 +429,7 @@ export async function generateDataflow(dfl) {
 
     const data = generateTubeMapData(df, wf);
 
-    const div = html`<div style="height: ${height}px; width: ${width}; border: 1px solid lightgray;" />
+    const div = html`<div style="height: ${height}px; width: ${width}; border: 1px solid lightgray; background-color: white;" />
     <style>
     .label text {
       cursor: pointer
