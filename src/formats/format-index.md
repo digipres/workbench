@@ -3,7 +3,7 @@
 
 <div class="warning">
 
-This page demonstrates very early-stage prototype systems and is not in any way final. More registries will be added and the database structure is not finalised.
+This page demonstrates an early-stage prototype system. The interface and database structure is not finalised.
 
 The rest of this site uses the data from the current [Format Registry Aggregator](https://www.digipres.org/formats/) system so the results here will be different to those on the rest of the site at this time.
 
