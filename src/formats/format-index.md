@@ -24,7 +24,7 @@ The following sections demonstrate some of the capabilities of this new iteratio
 
 ## Search The Format Index
 
-This basic search just matches your text strings against any of the fields in the database. The table is quite wide!
+This basic search just matches your text strings against the selected fields from the database. Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/digipres.github.io/master/_data/formats/registries.db#/registries/format?_facet_size=8&_searchmode=raw&_facet=registry_id).
 
 
 ```js
@@ -92,7 +92,11 @@ function id_linker(pre) {
 }
 
 function urler(url) {
-  return htl.html`<a href="${url}" target="_blank">[link]</a>`;
+  if( url != null && url != "" ) {
+    return htl.html`<a href="${url}" target="_blank">[link]</a>`;
+  } else {
+    return null;
+  }
 }
 
 function clipper(max) {
@@ -117,18 +121,55 @@ const fmt = view(Inputs.table(formats_search, {
   }}));
 ```
 
+<style>
+  dt {
+    font-style: italic;
+  }
+</style>
 
-### Full Format Record
+<div class="grid grid-cols-2">
+  <div class="">
+    <h3>Full Format Record</h3>
 
 ```js
 if( fmt ) {
-  display(fmt);
+  display(html`<dl>
+<dt>ID & Link</dt>
+<dd>${id_linker(id_prefix)(fmt.id)}</a></dd>
+<dt>Name</dt>
+<dd>${fmt.name || "-"}</dd>
+<dt>Version</dt>
+<dd>${fmt.version || "-"}</dd>
+<dt>Summary</dt>
+<dd>${fmt.summary || "-"}</dd>
+<dt>Extensions</dt>
+<dd>${fmt.extensions || "-"}</dd>
+<dt>Media Types</dt>
+<dd>${fmt.media_types || "-"}</dd>
+<dt>Primary Media Type</dt>
+<dd>${fmt.primary_media_type || "-"}</dd>
+<dt>Parent Media Type</dt>
+<dd>${fmt.parent_media_type || "-"}</dd>
+<dt>Has Magic?</dt>
+<dd>${fmt.has_magic}</dd>
+<dt>Registry URL</dt>
+<dd>${urler(fmt.registry_url) || "-"}</dd>
+<dt>Registry Source Data URL</dt>
+<dd>${urler(fmt.registry_source_data_url) || "-"}</dd>
+<dt>Registry Index Data URL</dt>
+<dd>${urler(fmt.registry_index_data_url) || "-"}</dd>
+<dt>Created</dt>
+<dd>${fmt.created || "-"}</dd>
+<dt>Last Modified</dt>
+<dd>${fmt.last_modified || "-"}</dd>
+</dl>`)
 } else {
   display(html`<i>no record selected</i>`)
 }
 ```
-
-#### Read By Software
+  </div>
+  <div class="">
+  <h3>Software Support</h3>
 
 ```js
 if( fmt ) {
@@ -144,6 +185,8 @@ if( fmt ) {
   view(Inputs.table(await fmt_sw, {
     select: false, 
     layout: 'auto',
+    rows: 40,
+    columns: ['id', 'name', 'version', 'summary', 'license'],
     format: {
     'id': id_linker(id_prefix),
     'registry_url': urler
@@ -153,11 +196,8 @@ if( fmt ) {
 }
 ```
 
-
-### Faceted Browsing & SQL Queries
-
-Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/digipres.github.io/master/_data/formats/registries.db#/registries/format?_facet_size=8&_searchmode=raw&_facet=registry_id)
-
+  </div>
+</div>
 
 ## Overall Statistics
 
