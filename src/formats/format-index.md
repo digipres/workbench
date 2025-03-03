@@ -16,7 +16,7 @@ This page demonstrates the first iteration of a new version of the [Format Regis
 - Do a better job of getting people the information they need quickly, while directing them back to the source pages as soon as possible.
 - Rename it to be an Index rather than an Aggregator as that better reflects the design decision to route users back to the source.
 - Add NARA and TCDB registry sources.
-- Include software information from WikiData.
+- Include software information from WikiData and NARA.
 - Use the same flexible and powerful SQLite-based approach as the Publications Index.
 - Adopt a sustainable UI rather than maintaining our own.
 
