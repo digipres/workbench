@@ -5,7 +5,7 @@
 
 ## Introduction
 
-blah.
+blah. Data Lake.
 
 ## Dataflow
 
@@ -15,23 +15,25 @@ title: "UKWA Overall Dataflow"
 """
 This documents my understanding of the UK Web Archive dataflow in mid-2023.
 """
+zoom 1.0
+height 350
+offset 10 20
 
 # Locations where data can be stored:
-place producer.dc "Producer"
-place consumer.dc "Consumer"
-place ingest.ar "Ingest Storage"
-place store.ar "Archival Storage"
-place access.ar "Access Storage"
+place internet "Internet"
+place crawler "Crawler"
+place hadoop "Hadoop"
+place w3act "W3ACT"
 
 # Domains where locations are maintained:
-domain dc "Designated Community"
-domain ar "The Archive"
-domain man "Management"
+domain public "Public Network"
+domain n45 "Service Network"
+domain n1 "Storage Network"
 
 # Data types and descriptions:
-data sip "Submission Information Package" black
-data aip "Archival Information Package" red
-data dip "Dissemination Information Package" green
+data website "Website" black
+data warcs "WARCS" red
+data md "Metadata" blue
 
 #
 # Then the sequence of events in this dataflow...
@@ -39,28 +41,20 @@ data dip "Dissemination Information Package" green
 
 
 # We start by transferring a package from an external party:
-start sip@producer.dc
-move sip@producer.dc sip@ingest.ar "Transfer to the archive"
-"""
-A detailed explanation of what happens at this point.
-"""
-
+start website@internet,w3act@w3act
+derive w3act@w3act md@w3act "Create Crawl Target\nDatabase Export" [0,-1]
+copy md@w3act md@hadoop "Copy to HDFS"
+delete md@w3act "Delete"@N
+copy md@hadoop md@crawler "Update Crawl\nTargets"@E
 space
-
-# We then prepare the item for ingest to the archival storage storage system:
-derive sip@ingest.ar aip@ingest.ar "Generate AIP from SIP"
+copy website@internet website@crawler "Crawl Target\nWebsites"
 space
-copy sip@ingest.ar aip@storage.ar "Copy to archival storage" 
-# And delete the temporary files:
-delete sip@ingest.ar,aip@ingest.ar
+transform website@crawler warcs@crawler "Package\nWARCs"@N
+copy warcs@crawler warcs@hadoop "Copy to HDFS"
 space
-
-# When access is requested, we generate an access copy:
-copy aip@storage.ar aip@access.ar "Retrieve the AIP"
-derive aip@access.ar dip@access.ar "Generate the DIP"
 space
-copy dip@access.ar dip@consumer.dc "Send the DIP"
-delete aip@access.ar,dip@access.ar
+copy warcs@crawler warc-checksums@hadoop "Verify"
+delete warcs@crawler "Delete\nWARCs"@N
 
 # And we're done:
 end
