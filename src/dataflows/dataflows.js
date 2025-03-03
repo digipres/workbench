@@ -362,7 +362,7 @@ export function parseDataflow(text) {
                             name: l[2] || l[1]
                         }
                         place.name = place.name.replace(/^"(.*)"$/, '$1');
-                    place.name = place.name.replace('\\n', '\n');
+                    place.name = place.name.replaceAll('\\n', '\n');
                         dfs.places.push(place)
                     } else if( l[0] == "data") {
                         const data = {
@@ -394,7 +394,7 @@ export function parseDataflow(text) {
                                 event.markerPos = pos;
                             }
                             event.label = event.label.replace(/^"(.*)"$/, '$1');
-                            event.label = event.label.replace('\\n' ,'\n');
+                            event.label = event.label.replaceAll('\\n' ,'\n');
                         }
                         // Convert color
                         if( event.color ) {
