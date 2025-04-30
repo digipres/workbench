@@ -51,9 +51,12 @@ export const generate_exts_chart = async function(width) {
     const exts_chart = Plot.plot({
         title: "Comparing Format Registries",
         subtitle: "Based on counting file extensions",
-        style: "overflow: visible;",
+        style: "overflow: visible; font-size: 20px;",
         width,
-        marginBottom: 50,
+        marginRight: 70,
+        marginBottom: 90,
+        marginTop: 40,
+        marginLeft: 70,
         x: {grid: true, label: "Registry ID", tickRotate: -30 },
         y: {grid: true, label: "No. of File Extensions" },
         // Using the same label as 'x' stops both being shown in the tooltip:

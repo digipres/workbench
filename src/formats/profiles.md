@@ -920,12 +920,15 @@ Plotting that as a graph, we can see the overall benefit each tool brings.
 
 ```js
 Plot.plot({
+    style: "font-size: 20px;",
     title: "How well do the whole set of registries cover our collection extensions?",
     subtitle: "Starting from scratch, applying all the tools one by one, in the optimal order.",
-    x: { label: 'Registry ID' },
+    x: { label: 'Registry ID', tickRotate: -30 },
     y: { label: 'Total Unmatchable Extensions', grid: true, type: 'linear' },
+    marginRight: 70,
+    marginBottom: 80,
+    marginTop: 40,
     marginLeft: 70,
-    marginBottom: 40,
     color: {legend: true},
     width,
     marks: [

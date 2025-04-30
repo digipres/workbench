@@ -48,12 +48,15 @@ exts.forEach( function (item, index) {
 
 ```js
 Plot.plot({
-    style: "overflow: visible;",
+    style: "overflow: visible; font-size: 20px;",
     y: {grid: true, label: "Unique Extensions (%)", domain: [0,100] },
     x: {grid: true, label: "Total Extensions" },
     color: {legend: false, label: "Registry ID"},
     width,
-    marginRight: 50,
+    marginRight: 70,
+    marginBottom: 60,
+    marginTop: 40,
+    marginLeft: 50,
     marks: [
         Plot.ruleX([0]),
         Plot.ruleY([0]),
@@ -105,11 +108,15 @@ const fit_chart = new Promise((resolve) => {
     // Create a plot that combines the raw data and the fit:
     resolve(
         Plot.plot({
-            style: "overflow: visible;",
+            style: "overflow: visible; font-size: 20px;",
             y: {grid: true, label:"Cumulative Unique Extensions" },
             x: {grid: true, label:"Cumulative Total Extensions" },
-            color: {legend: true, label: "Registry ID"},
+            color: {legend: true, label: "Registry ID", swatchSize: 20, style: "font-size: 16px"},
             width,
+            marginRight: 70,
+            marginBottom: 60,
+            marginTop: 40,
+            marginLeft: 70,
             marks: [
                 Plot.ruleY([0]),
                 Plot.axisY({label: "Cumulative Total of Unique File Extensions Across Registries"}),

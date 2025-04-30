@@ -28,8 +28,9 @@ This basic search just matches your text strings against the selected fields fro
 
 
 ```js
-//const db = FileAttachment("../data/registries.db").sqlite();
-const db = SQLiteDatabaseClient.open("https://raw.githubusercontent.com/digipres/digipres.github.io/refs/heads/master/_data/formats/registries.db");
+const db = FileAttachment("../data/registries.db").sqlite();
+// NOTE Weirdly, loading the file locally from this site, as above, it brittle and often cuts out during the download when deployed on GitHub Pages. The below works more reliably...?
+//const db = SQLiteDatabaseClient.open("https://www.digipres.org/_data/formats/registries.db");
 ```
 
 ```js
