@@ -24,13 +24,17 @@ The following sections demonstrate some of the capabilities of this new iteratio
 
 ## Search The Format Index
 
-This basic search just matches your text strings against the selected fields from the database. Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=https://raw.githubusercontent.com/digipres/digipres.github.io/master/_data/formats/registries.db#/registries/format?_facet_size=8&_searchmode=raw&_facet=registry_id).
+```js
+const db_url = "https://www.digipres.org/_data/formats/registries.db";
+```
 
+This basic search just matches your text strings against the selected fields from the database. Note that more sophisticated analysis is possible [using Datasette Lite](https://lite.datasette.io/?url=${db_url}#/registries/format?_facet_size=8&_searchmode=raw&_facet=registry_id), or you can [download the SQLite database yourself](${db_url}) and use other tools.
 
 ```js
+// Using a local file is faster, and self-contained:
 //const db = FileAttachment("../data/registries.db").sqlite();
-// NOTE Weirdly, loading the file locally from this site, as above, it brittle and often cuts out during the download when deployed on GitHub Pages. The below works more reliably...?
-const db = SQLiteDatabaseClient.open("https://www.digipres.org/_data/formats/registries.db");
+// But the remote file is up-to-date:
+const db = SQLiteDatabaseClient.open(db_url);
 ```
 
 ```js
