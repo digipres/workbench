@@ -3,7 +3,7 @@ sql:
   formats: https://www.digipres.org/_data/formats/index/formats.parquet
   exts: https://www.digipres.org/_data/formats/index/extensions.parquet
 ---
-# Parquet Test
+# File Extension Lookup
 
 First...
 
@@ -12,7 +12,7 @@ const ext = view(
   Inputs.text({
     label: "Extension",
     placeholder: "Extension?",
-    value: "r"
+    value: observable.params.ext
   })
 );
 ```
@@ -35,3 +35,5 @@ Inputs.table(await sql([`SELECT * FROM formats WHERE id in (${fids})`]))
 ```js
 Inputs.table(await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]))
 ```
+
+The current ext is ${observable.params.ext}.
