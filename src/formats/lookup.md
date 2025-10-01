@@ -1,6 +1,7 @@
 ---
 sql:
   formats: https://www.digipres.org/_data/formats/index/formats.parquet
+  exts: https://www.digipres.org/_data/formats/index/extensions.parquet 
 ---
 # File Extension Lookup
 
@@ -16,29 +17,29 @@ const ext = view(
 );
 ```
 
+Using a two-step query:
+
 ```js
 import {DuckDBClient} from "npm:@observablehq/duckdb";
 
 const config = {
+  customUserAgent: "Wild Bob",
   filesystem: {
     forceFullHTTPReads: true
   }
 }
 const db = await DuckDBClient.of({exts: "https://www.digipres.org/_data/formats/index/extensions.parquet" }, config);
-//const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
-const rows = await db.sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
+//const rows = await db.sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
+const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
 ```
 
 
 ```js
 const fids = rows.toArray().map((r) => `'${r.ext}'`);
-view(fids);
+view(Inputs.table(await sql([`SELECT * FROM formats WHERE id in (${fids})`])));
 ```
 
-
-```js
-Inputs.table(await sql([`SELECT * FROM formats WHERE id in (${fids})`]))
-```
+Just querying the `formats.parquet` directly:
 
 ```js
 Inputs.table(await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]))
