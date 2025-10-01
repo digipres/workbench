@@ -1,7 +1,6 @@
 ---
 sql:
   formats: https://www.digipres.org/_data/formats/index/formats.parquet
-  exts: https://www.digipres.org/_data/formats/index/extensions.parquet
 ---
 # File Extension Lookup
 
@@ -18,7 +17,17 @@ const ext = view(
 ```
 
 ```js
-const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
+import {DuckDBClient} from "npm:@observablehq/duckdb";
+
+const config = {
+  filesystem: {
+    forceFullHTTPReads: true
+  }
+}
+const db = await DuckDBClient.of({exts: "https://www.digipres.org/_data/formats/index/extensions.parquet" }, config);
+//const sql = DuckDBClient.sql({quakes: `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/${feed}_day.csv`});
+//const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
+const rows = await db.sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
 ```
 
 
