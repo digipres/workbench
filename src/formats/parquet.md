@@ -7,12 +7,31 @@ sql:
 
 First...
 
-```sql
-SELECT * FROM exts WHERE id == 'r' LIMIT 10
+```js
+const ext = view(
+  Inputs.text({
+    label: "Extension",
+    placeholder: "Extension?",
+    value: "r"
+  })
+);
 ```
 
-Second...
+```js
+const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
+```
 
-```sql
-SELECT * FROM formats WHERE 'r' in extensions LIMIT 10
+
+```js
+const fids = rows.toArray().map((r) => `'${r.ext}'`);
+view(fids);
+```
+
+
+```js
+Inputs.table(await sql([`SELECT * FROM formats WHERE id in (${fids})`]))
+```
+
+```js
+Inputs.table(await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]))
 ```
