@@ -11,7 +11,7 @@ const ext = view(
   Inputs.text({
     label: "Extension",
     placeholder: "Extension?",
-    value: observable.params.ext
+    value: "r"
   })
 );
 ```
@@ -25,7 +25,6 @@ const config = {
   }
 }
 const db = await DuckDBClient.of({exts: "https://www.digipres.org/_data/formats/index/extensions.parquet" }, config);
-//const sql = DuckDBClient.sql({quakes: `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/${feed}_day.csv`});
 //const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
 const rows = await db.sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
 ```
@@ -45,4 +44,27 @@ Inputs.table(await sql([`SELECT * FROM formats WHERE id in (${fids})`]))
 Inputs.table(await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]))
 ```
 
-The current ext is ${observable.params.ext}.
+
+```
+// TODO
+
+// Set up bookmarkable search results:
+const search_params = new URLSearchParams(window.location.search);
+// Support 'search-input' parameter:
+const alt_key = 'search-input';
+const alt_q = search_params.get(alt_key);
+if( alt_q ) {
+    search_params.set('q', alt_q );
+    search_params.delete(alt_key);
+}
+// Do the search, if there is one:
+pagefind.triggerSearch(search_params.get('q'));
+// Set up the listener tom update the search parameters:
+const search_input = document.querySelector('#search input');
+search_input.addEventListener('input', (e) => {
+    search_params.set('q', e.target.value);
+    const new_url = `${window.location.pathname}?${search_params.toString()}`;
+        history.pushState(null, '', new_url);
+});
+
+```
