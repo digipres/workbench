@@ -34,27 +34,14 @@ This basic search just matches your text strings against the selected fields fro
 
 ```js
 // Using a local file is faster, and self-contained:
-//const db = FileAttachment("../data/registries.db").sqlite();
+const db = FileAttachment("../data/registries.db").sqlite();
 // But the remote file is up-to-date:
-const db = SQLiteDatabaseClient.open(db_url);
+//const db = SQLiteDatabaseClient.open(db_url);
 ```
 
 ```js
 const lines = db.sql`
-SELECT
-  f.*,
-  (SELECT GROUP_CONCAT(e.id, ', ')
-    FROM format_extensions f_e
-    JOIN extension e ON f_e.format_id = f.id
-    WHERE f_e.extension_id = e.id
-  ) AS extensions,
-  (SELECT GROUP_CONCAT(mt.id, ', ')
-    FROM format_media_types f_mt
-    JOIN media_type mt ON f_mt.format_id = f.id
-    WHERE f_mt.media_type_id = mt.id
-  ) AS media_types
-FROM format f
-GROUP BY f.id
+SELECT f.* FROM formats f ORDER BY id;
 `;
 ```
 
@@ -180,20 +167,34 @@ if( fmt ) {
 
 ```js
 if( fmt ) {
-  const fmt_sw = db.sql`
-  SELECT
-    s.*
-  FROM software s
-  JOIN formats_read_by_software f_s ON f_s.software_id == s.id
-  JOIN format f ON f_s.format_id == f.id
+  const fmt_sw_jsons = await db.sql`
+  SELECT readers, writers
+  FROM formats f 
   WHERE f.id = ${fmt.id}
   `;
 
-  view(Inputs.table(await fmt_sw, {
+  // Pull the readers and writers back together:
+  const fmt_sw = [];
+  const keys = ['readers','writers'];
+  keys.forEach( k => {
+    const sws = JSON.parse(fmt_sw_jsons[0][k])
+    sws.forEach(sw => {
+        sw['mode'] = [k];
+        const found = fmt_sw.find((e) => e['id'] == sw['id']);
+        if( found ) {
+          found['mode'].push(k);
+        } else {
+          fmt_sw.push(sw);
+        }
+    });
+  });
+
+  view(Inputs.table(fmt_sw, {
     select: false, 
     layout: 'auto',
     rows: 40,
-    columns: ['id', 'name', 'version', 'summary', 'license'],
+    columns: ['id', 'name', 'version', 'mode', 'summary', 'license'],
+    sort: 'name',
     format: {
     'id': id_linker(id_prefix),
     'registry_url': urler
@@ -211,7 +212,7 @@ if( fmt ) {
 How many records are there in each registry?
 
 ```js
-const fr_tots = db.sql([`SELECT registry_id, COUNT(*) as count FROM format GROUP BY registry_id;`]);
+const fr_tots = db.sql([`SELECT registry_id, COUNT(*) as count FROM formats GROUP BY registry_id;`]);
 ```
 
 <div class="card">
@@ -252,7 +253,7 @@ const date_selection = view(Inputs.select(date_options, {
 
 
 ```js
-const fr_query = `SELECT registry_id, CAST(STRFTIME("%Y", ${date_selection.value}) AS INT) AS year, COUNT(*) as count FROM format WHERE ${date_selection.value} != '' GROUP BY registry_id, year;`;
+const fr_query = `SELECT registry_id, CAST(STRFTIME("%Y", ${date_selection.value}) AS INT) AS year, COUNT(*) as count FROM formats WHERE ${date_selection.value} != '' GROUP BY registry_id, year;`;
 const fr = db.sql([`${fr_query}`]);
 ```
 
@@ -279,14 +280,12 @@ resize((width) => Plot.plot({
 ```js
 const pr = db.sql`
 SELECT 
-  g.name as genre, 
+  json_each.value as genre,
   CAST(STRFTIME("%Y", created) AS INT) AS year, 
   COUNT(*) as count 
-FROM format f
-JOIN format_genres f_g ON f_g.format_id = f.id
-JOIN genre g ON f_g.genre_id = g.id
+FROM formats, json_each(genres)
 WHERE registry_id == 'pronom' 
-GROUP BY g.name, year ORDER BY year;
+GROUP BY genre, year ORDER BY year;
 `;
 ```
 

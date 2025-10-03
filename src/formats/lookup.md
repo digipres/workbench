@@ -47,7 +47,7 @@ Inputs.table(await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]))
 
 
 ```
-// TODO
+// TODO Support URLs like https://www.digipres.org/formats/extensions/#*.hpgl and map them to a virtual query
 
 // Set up bookmarkable search results:
 const search_params = new URLSearchParams(window.location.search);
