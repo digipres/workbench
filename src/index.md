@@ -26,7 +26,7 @@ You can use the menu on the left or the plots and links below to get started.
 
 ```js
 const db = await FileAttachment("data/registries.db").sqlite();
-const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM format WHERE registry_id == 'pronom' GROUP BY year ORDER BY year;`;
+const fr = db.sql`SELECT registry_id, CAST(STRFTIME("%Y", created) AS INT) AS year, COUNT(*) as count FROM formats WHERE registry_id == 'pronom' GROUP BY year ORDER BY year;`;
 ```
 
 

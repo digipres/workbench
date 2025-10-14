@@ -30,7 +30,7 @@ const db_url = "https://www.digipres.org/_data/formats/registries.db";
 
 <!-- Ugh inline expressions in links don't work https://github.com/observablehq/framework/issues/32 -->
 
-This basic search just matches your text strings against the selected fields from the database. Note that more sophisticated analysis is possible ${htl.html`<a href='https://lite.datasette.io/?url=${db_url}#/registries/format?_facet_size=8&_searchmode=raw&_facet=registry_id'>using Datasette Lite</a>`}, or you can ${htl.html`<a href='${db_url}'>download the SQLite database yourself</a>`} and use other tools.
+This basic search just matches your text strings against the selected fields from the database. Note that more sophisticated analysis is possible ${htl.html`<a href='https://lite.datasette.io/?url=${db_url}#/registries/formats?_facet_size=8&_searchmode=raw&_facet=registry_id'>using Datasette Lite</a>`}, or you can ${htl.html`<a href='${db_url}'>download the SQLite database yourself</a>`} and use other tools.
 
 ```js
 // Using a local file is faster, and self-contained:
