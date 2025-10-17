@@ -120,7 +120,7 @@ A collection of patterns noticed while working with digital preservation institu
 	- Have a developer, covering in-house training up as well as implementation. 
 	- Digital Preservation systems are all managed outside of corporate IT.
 - 
-- Questions raised by BFI, noted here for reference:
+- Questions raised by members, noted here for reference:
 	- In general, it would be good to have ways to find out which conferences/forums are relevant for a given focus area.
 	- Who are the other Archivematica users across DPC?
 

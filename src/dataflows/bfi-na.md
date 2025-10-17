@@ -1,9 +1,9 @@
-# British Film Institute
-## Dataflows at the BFI
+# British Film Institute National Archive
+## Dataflows at the BFI National Archive
 
 <div class="warning">
 
-This page reflects my understanding of how things worked at the BFI at one point in time, based on publicly available resources and some discussions with BFI staff during and after a site visit. I may have made many errors or omitted many omissions!
+This page reflects my understanding of how things worked at the BFI National Archive, at one point in time, based on publicly available resources and some discussions with BFI staff during and after a site visit. I may have made many errors or omitted many omissions!
 
 If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
 
@@ -22,13 +22,13 @@ The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org
 
 ## Ingest Dataflow
 
-The following dataflow diagram summarises the flow of data into the BFI's Digital Preservation Infrastructure (DPI). It focusses on the overall dataflow shared across all content streams.
+The following dataflow diagram summarises the flow of data into the BFI National Archive's Digital Preservation Infrastructure (DPI). It focusses on the overall dataflow shared across all content streams.
 
 The core workflow of ingesting content into the DPI ‘autoingest job’ code is at [bfidatadigipres/BFI_scripts](https://github.com/bfidatadigipres/BFI_scripts).
 
 ```dataflow
 dataflow 1.0
-title "BFI General Ingest Workflow"
+title "BFI National Archive Ingest Workflow"
 zoom 0.8
 height 600
 
@@ -39,7 +39,7 @@ data dip "Dissemination Information Package" green
 data replica_3 "Tape 3" darkred
 
 place internet "Internet"
-place bt-net "BT Connection"
+place bt-net "ISP Connection"
 place cdi "Collections\nInformation Database (CID)"
 place access "Access Storage"
 place workspace "Working Storage"
@@ -93,7 +93,7 @@ At the end of the ingest process, the Collections Information Database (CID) sho
 
 ```dataflow
 dataflow 1.0
-title "BFI General Ingest Workflow"
+title "BFI National Archive Access Workflow"
 zoom 0.8
 height 600
 
