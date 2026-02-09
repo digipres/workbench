@@ -124,23 +124,6 @@ A number of well-established and long-running digital preservation services have
 
 - [UK Web Archive (c.2023)](./ukwa)
 
-### Patterns Noted
-
-A collection of patterns noticed while working with digital preservation institutions. 
-
-
-- Approaches:
-	- Working in the open.
-	- Projects used to build capability, show need, establish business cases for permanent roles.
-	- Have a developer, covering in-house training up as well as implementation. 
-	- Digital Preservation systems are all managed outside of corporate IT.
-- 
-- Questions raised by members, noted here for reference:
-	- In general, it would be good to have ways to find out which conferences/forums are relevant for a given focus area.
-	- Who are the other Archivematica users across DPC?
-
-
-
 
 ## Dataflow Definition Language
 

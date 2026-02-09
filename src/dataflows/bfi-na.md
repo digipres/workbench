@@ -34,7 +34,7 @@ data replica_3 "Tape 3" darkred
 place internet "Internet"
 place rr "Reading Room"
 place website "BFI Website"
-place cdi "Collections\nInformation Database (CID)"
+place cdi "Collections\nInformation\nDatabase (CID)"
 place access "Access Storage"
 place workspace "Working Storage"
 place tape1 "Tape Robot 1"
@@ -96,8 +96,8 @@ Public internet access uses the 'access copies':
 ```dataflow
 dataflow 1.0
 title "BFI National Archive Public Access Workflow"
-zoom 0.8
-offset 4 0
+zoom 0.84
+offset 0 0
 height 300
 
 data request "User Request/Query" black
@@ -116,7 +116,7 @@ data get_aip "Get AIP" red
 place internet "Internet"
 place rr "Reading\nRoom"
 place website "BFI Website"
-place cdi "Collections\nInformation Database (CID)"
+place cdi "Collections\nInformation\nDatabase (CID)"
 place access "Access Storage"
 place workspace "Working Storage"
 place tape1 "Tape Robot 1"
