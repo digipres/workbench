@@ -92,14 +92,17 @@ domain n1 "Storage Network"
 
 # Data types and descriptions:
 data website "Website" black
+data pywb "PyWB" purple
 data warcs "WARCS" red
 data md "Metadata" blue
 data w3act "W3ACT" darkblue
 data cdx "CDX" orange
 data query "Query" black
+date response "Response" black
 data playback "Playback" green
 
-start website@internet
+start query@internet
+start pywb@pywb
 start warcs@hadoop,md@hadoop
 
 space
@@ -109,12 +112,16 @@ move cdx@hadoop cdx@cdx "Update\nCDX Server"@E
 move query@internet query@pywb "Request URL"
 copy cdx@cdx cdx@pywb "Query CDX" 
 copy warcs@hadoop warcs@pywb "Get WARC"
-transform warcs@pywb playback@pywb "Rewrite\nResource"@N [0,1]
+space
+derive warcs@pywb playback@pywb "Rewrite\nResource"@S [0,-1]
 move playback@pywb playback@internet "Deliver"@E
+delete warcs@pywb,cdx@pywb " "
 
 # And we're done:
 end
 ```
+
+Example block diagram
 
 <!-- See https://mermaid.js.org/syntax/block.html -->
 ```mermaid

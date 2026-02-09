@@ -105,13 +105,16 @@ export function generateTubeMapData(df, wf) {
                 const y2 = target.index*ds;
                 // Default to doing a move:
                 var item = source.item;
+                if (!lines[item]) {
+                    throw new Error(`Attempt to ${event.type} ${item} but this does not exist!`);
+                }
                 // If it's a move, update the source item instead:
                 if( event.type == "copy") {
                     item = target.item;
                     // Pass properties through by default:
                     event.color = event.color || lines[source.item].color;
                     event.shiftCoords = event.shiftCoords || lines[source.item].shiftCoords || [0,0];
-                } 
+                }
                 setupEntitiesForEvent(lines, stations, item, event );
                 pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
                 // But if it's a move, rename the line to match the new location:
@@ -123,6 +126,10 @@ export function generateTubeMapData(df, wf) {
                 }
             });
         } else if( event.type == "merge" ) {
+            /* WARNING! This is not implemented correctly!? 
+              Currently attempts to merge two different data items in difference places in a single event, 
+              which does not really make sense I think. It should only operate on data in the same place 
+              and create one/delete others.*/
             const sources = getTargets(df, event, 'source');
             var targets = getTargets(df, event);
             sources.forEach( (source) => {
@@ -131,6 +138,11 @@ export function generateTubeMapData(df, wf) {
                     const y2 = target.index*ds;
                     // Where we start from:
                     var item = source.item;
+                    if (!lines[item]) {
+                        throw new Error(`Attempt to ${event.type} ${item} but this does not exist!`);
+                    } else {
+                        console.log([source, target]);
+                    }
                     setupEntitiesForEvent(lines, stations, item, event );
                     pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
                     // Record as a merge:
@@ -144,7 +156,15 @@ export function generateTubeMapData(df, wf) {
                 var item = target.item;
                 const y2 = target.index*ds;
                 var parentShiftCoords = null;
-                if( lines[source.item] ) parentShiftCoords = lines[source.item].shiftCoords || [0,0];
+                if( lines[source.item] ) {
+                    parentShiftCoords = lines[source.item].shiftCoords || [0,0];
+                } else {
+                    throw new Error(`Attempt to ${event.type} from ${source.item} that does not exist!`)
+                }
+                // Check the actual thing changes:
+                if( source.item == target.item ) {
+                    throw new Error(`Attempt to ${event.type} from ${source.item} to ${target.item}!`)
+                }
                 setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
                 lines[item].nodes.push({
                     "coords": [0.5*(t1+t2),y2],
@@ -191,11 +211,13 @@ export function generateTubeMapData(df, wf) {
             targets.forEach( (target) => {
                 var item = target.item;
                 const y2 = target.index*ds;
-                setupEntitiesForEvent(lines, stations, item, event );
                 if (lines[item]) {
                     //console.log(item)
                     lines[item].terminated = t2;
+                } else {
+                    throw new Error(`Attempted to delete ${item} but that does not exist!`)
                 }
+                setupEntitiesForEvent(lines, stations, item, event );
                 lines[item].nodes.push({
                     "coords": [0.5*(t1+t2),y2],
                     "name": event.name,

@@ -101,7 +101,7 @@ offset 4 0
 height 300
 
 data request "User Request/Query" black
-data web "Website Data" grey
+data web "Website Data" purple
 data data "Source Data" black
 data aip-id "Archival Information Package Identifier" darkblue
 data aip "Archival Information Package" red
@@ -129,7 +129,7 @@ start aip-id@cdi
 start dips@access
 
 move request@internet request@website " "@N
-transform request@website lookup@website "Lookup\nItem"@N [0,1]
+transform request@website lookup@website "Lookup\nItem"@N [0,0]
 move lookup@website lookup@cdi " "@N
 move lookup@cdi lookup@website " "@N
 
@@ -151,12 +151,12 @@ The highest-quality 'preservation copies' are only available on site, and are re
 ```dataflow
 dataflow 1.0
 title "BFI National Archive On-Site Access Workflow"
-zoom 0.8
-offset 4 0
+zoom 1.0
+offset 6 4
 height 350
 
 data request "User Request/Query" black
-data web "Website Data" grey
+data web "Website Data" purple
 data data "Source Data" black
 data aip-id "Archival Information Package Identifier" darkblue
 data aip "Archival Information Package" red
@@ -166,11 +166,12 @@ data replica_3 "Tape 3" darkred
 data lookup "Look up ID" darkblue
 data get_dip "Get DIP" green
 data get_aip "Get AIP" red
+data aip_tape "AIP Tape" darkred
 
 place internet "Internet"
 place rr "Reading\nRoom"
 place website "BFI Website"
-place cdi "Collections\nInformation Database (CID)"
+place cdi "Collections\nInformation\nDatabase (CID)"
 place access "Access Storage"
 place workspace "Working Storage"
 place tape1 "Tape Robot 1"
@@ -184,16 +185,19 @@ start aip-id@cdi
 start dip@access
 start replica_1@tape1
 
-move request@rr request2@website " "@N
-transform request2@website lookup@website "Lookup\nItem"@N [0,1]
+move request@rr request@website " "@N
+transform request@website lookup@website "Lookup\nItem"@N [0,0]
 move lookup@website lookup@cdi " "@N
 move lookup@cdi lookup@website " "@N
 
 transform lookup@website get_aip@website "Extract\nAIP ID"@N
 
 move get_aip@website get_aip@tape1 " "@N
+derive get_aip@tape1 aip_tape@tape1 "Retrieve\nTape" [0,-1]
+space
 transform get_aip@tape1 aip@tape1 "Read\nAIP"@N
 move aip@tape1 aip@access  " "@N
+delete aip_tape@tape1 "Unload\nTape"
 move aip@access aip@website  " "@N
 move aip@website aip@rr  " "@N
 
