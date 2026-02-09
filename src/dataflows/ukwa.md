@@ -20,22 +20,32 @@ offset 10 0
 
 # Locations where data can be stored:
 place internet "Internet"
+place w3act "W3ACT"
+place pywb "PyWB"
+place cdx "CDX Index"
+place net "NET"
 place crawler "Crawler"
 place hadoop "Archival\nStorage"
-place w3act "W3ACT"
 
 # Data types and descriptions:
 data website "Website" black
 data warcs "WARCS" red
 data md "Metadata" blue
 data w3act "W3ACT" darkblue
+data pywb "PyWB" purple
+data cdx "CDX" orange
+data query "Query" black
+data playback "Playback" green
+
 
 # Events
 start website@internet
 start w3act@w3act
+start pywb@pywb
+
 derive w3act@w3act md@w3act "Export\nDatabase" [0,-1]
 move md@w3act md@hadoop "Copy to HDFS"
-copy md@hadoop md@crawler "Update Crawl Targets"
+copy md@hadoop md@crawler "Update\nCrawl Targets"@E
 space
 
 
@@ -44,6 +54,16 @@ space
 transform website@crawler warcs@crawler "Package\nWARCs"@N
 copy warcs@crawler warcs@hadoop "Copy to\nHDFS"
 delete warcs@crawler "Delete\nWARCs"@N
+
+space
+derive warcs@hadoop cdx@hadoop "Generate CDX"@N [0,1]
+move cdx@hadoop cdx@cdx "Update\nCDX Server"@E 
+
+copy cdx@cdx cdx@pywb "Query CDX" 
+copy warcs@hadoop warcs@pywb "Get WARC"
+derive warcs@pywb playback@pywb "Rewrite\nResource"@N [0,1]
+move playback@pywb playback@internet "Deliver"@E@0.7
+delete warcs@pywb,cdx@pywb " "@S
 
 # And we're done:
 end
@@ -59,8 +79,10 @@ offset 10 0
 
 # Locations where data can be stored:
 place internet "Internet"
+place w3act "W3ACT"
 place pywb "PyWB"
 place cdx "CDX Index"
+place crawler "Crawler"
 place hadoop "Archival\nStorage"
 
 # Domains where locations are maintained:

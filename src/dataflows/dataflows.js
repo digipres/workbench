@@ -386,12 +386,13 @@ export function parseDataflow(text) {
                     if( event != undefined) {
                         // Force a unique event 'name' (internal reference):
                         event.name = `l-${lineCounter}`;
-                        // Extract any position, strip any quotes (e.g. label@W or "This thing"@S ):
+                        // Extract any position, strip any quotes (e.g. label@W or "This thing"@S or "This"@S@0.8" ):
                         if( event.label ) {
                             if( event.label.includes('@')) {
-                                const [new_label, pos] = event.label.split('@');
-                                event.label = new_label;
-                                event.markerPos = pos;
+                                const label_parts = event.label.split('@');
+                                event.label = label_parts[0];
+                                event.markerPos = label_parts[1];
+                                event.markerAt = label_parts[2] || 0.5;
                             }
                             event.label = event.label.replace(/^"(.*)"$/, '$1');
                             event.label = event.label.replaceAll('\\n' ,'\n');
