@@ -3,7 +3,7 @@
 
 <div class="warning">
 
-This is an experiment in visualising how data flows over time. There are a number of outstanding issues and limitations with this approach. Please see [the `dataflow` GitHub issues](https://github.com/digipres/workbench/issues?q=state%3Aopen%20label%3A%22dataflows%22) for more detail.
+This is an experiment in visualising how data flows over time. There are a number of outstanding issues and limitations with this approach. Please see [the `dataflow` GitHub issues](https://github.com/digipres/workbench/issues?q=state:open+label:"dataflows") for more detail.
 
 </div>
 
