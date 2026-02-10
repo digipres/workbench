@@ -185,21 +185,21 @@ start aip-id@cdi
 start dip@access
 start replica_1@tape1
 
-move request@rr request@website " "@N
+move request@rr request@website "Request Item"@W
 transform request@website lookup@website "Lookup\nItem"@N [0,0]
-move lookup@website lookup@cdi " "@N
-move lookup@cdi lookup@website " "@N
+move lookup@website lookup@cdi "Query Item"@W
+move lookup@cdi lookup@website "Return\nMetadata"@E
 
 transform lookup@website get_aip@website "Extract\nAIP ID"@N
 
-move get_aip@website get_aip@tape1 " "@N
+move get_aip@website get_aip@tape1 "Request AIP"@W@0.75
 derive get_aip@tape1 aip_tape@tape1 "Retrieve\nTape" [0,-1]
 space
 transform get_aip@tape1 aip@tape1 "Read\nAIP"@N
-move aip@tape1 aip@access  " "@N
+move aip@tape1 aip@access  "Return AIP"@W
 delete aip_tape@tape1 "Unload\nTape"
-move aip@access aip@website  " "@N
-move aip@website aip@rr  " "@N
+move aip@access aip@website  "Transfer AIP"@W@0.7
+move aip@website aip@rr  "Deliver AIP"@W
 
 end 
 ```
