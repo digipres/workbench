@@ -197,9 +197,9 @@ derive get_aip@tape1 aip_tape@tape1 "Retrieve\nTape" [0,-1]
 space
 transform get_aip@tape1 aip@tape1 "Read\nAIP"@N
 move aip@tape1 aip@access  "Return AIP"@W
-delete aip_tape@tape1 "Unload\nTape"
 move aip@access aip@website  "Transfer AIP"@W@0.7
 move aip@website aip@rr  "Deliver AIP"@W
+delete aip_tape@tape1 "Unload\nTape"
 
 end 
 ```
