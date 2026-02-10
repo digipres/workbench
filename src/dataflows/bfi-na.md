@@ -128,17 +128,17 @@ start web@website
 start aip-id@cdi
 start dips@access
 
-move request@internet request@website " "@N
+move request@internet request@website "Request Item"@W
 transform request@website lookup@website "Lookup\nItem"@N [0,0]
-move lookup@website lookup@cdi " "@N
-move lookup@cdi lookup@website " "@N
+move lookup@website lookup@cdi "Query Item"@W
+move lookup@cdi lookup@website "Return\nMetadata"@E
 
 transform lookup@website get_dip@website "Extract\nAIP ID"@N
-move get_dip@website get_dip@access " "@N 
+move get_dip@website get_dip@access "Find\nDIP"@W@0.7 
 transform get_dip@access dip@access "Read\nDIP"@N 
-move dip@access dip@website  " "@N
+move dip@access dip@website  "Return\nDIP"@E@0.3
 
-move dip@website dip@internet  " "@N
+move dip@website dip@internet  "Deliver DIP"@W
 
 end 
 ```
