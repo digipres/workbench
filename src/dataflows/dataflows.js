@@ -3,6 +3,8 @@ import { tubeMap } from "npm:d3-tube-map";
 import { html } from "npm:htl";
 import * as d3 from "npm:d3";
 import tippy from "npm:tippy.js"
+// Observable Framework specific embedding:
+import * as Inputs from "npm:@observablehq/inputs";
 
 // Parser an item string, pulling out the place
 // The final item includes the place
@@ -694,16 +696,26 @@ export async function renderDataflows() {
         codes[i].parentElement.hidden = true;
         
         // FIXME This logic is likely a bit too hard-coded to Observable Framework
+        // 2026-02-21: Doesn't actually seem to be necessary?
         // Make the container the same size as the new contents:
-        codes[i].height = dataflow.height;
-        codes[i].parentElement.height = dataflow.height;
-        codes[i].parentElement.parentElement.height = dataflow.height;
+        //codes[i].height = dataflow.height;
+        //codes[i].parentElement.height = dataflow.height;
+        //codes[i].parentElement.parentElement.height = dataflow.height;
         // Add an observer to the grandparent so we can update if the element is replace:
-       observer.observe(codes[i].parentElement.parentElement.parentElement, config);
+        observer.observe(codes[i].parentElement.parentElement.parentElement, config);
+
+        // Add in save buttons, currently coded to re-use Observable Framework buttons:
+        const save_button = Inputs.button("SVG", {value: serialize(dataflow.svg.node()), reduce: saveSvg, disabled: false });
+        save_button.style.position = 'absolute';
+        save_button.style.left = '3px';
+        dataflow.insertAdjacentElement('afterBegin', save_button);
+        const save_png_button = Inputs.button("PNG", {value: await rasterize(dataflow.svg.node()), reduce: saveImage, disabled: false });
+        save_png_button.style.position = 'absolute';
+        save_png_button.style.left = '3px';
+        save_png_button.style.top = '25px';
+        dataflow.insertAdjacentElement('afterBegin', save_png_button);
+
     }
     enableTooltips();
 }
 
-// Need to add this back in, as vanilla JS:
-//const save_button = view(Inputs.button("Save as SVG", {value: serialize(svg.node()), reduce: saveSvg, disabled: false }));
-//const save_png_button = view(Inputs.button("Save as PNG", {value: await rasterize(svg.node()), reduce: saveImage, disabled: false }));

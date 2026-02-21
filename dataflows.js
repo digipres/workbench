@@ -1,3 +1,14 @@
+/*
+
+This is a work-in-progress attempt to make the dataflows.js a re-usable component and/or Observable Framework module.
+
+
+It is not in use at present. The one in src/dataflows is the 'real' development version.
+
+
+*/
+
+
 import { showSaveFilePicker } from 'file-system-access';
 import { tubeMap } from "d3-tube-map";
 import {html} from "htl";
