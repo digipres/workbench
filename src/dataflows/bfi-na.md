@@ -12,7 +12,7 @@ If you have any comments or corrections please let [me](https://anjackson.net/) 
 
 ## Introduction
 
-The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge and Collections Developer).
+The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
 
 ## Bitstream Preservation Dataflow
 
@@ -21,7 +21,7 @@ The following dataflow diagram summarises the flow of data into the BFI National
 
 ```dataflow
 dataflow 1.0
-title "BFI National Archive Ingest Workflow"
+title "BFI National Archive Overall Bitstream Workflow"
 zoom 0.8
 height 600
 
@@ -211,14 +211,14 @@ Building on the generic DPI workflow, different types of content are handled as 
 - Items for different streams land in different folders in the `workspace` working area.
 - Custom Python scripts process items by arranging them in and moving them between folders under shared naming conventions.
 - If the stream is not fully automated, any manual Digital Acquisitions or QC work is done at this point. If all is well, a corresponding `autoingest job` is created.
-- Crucially, significant events and distinct copies are registered in the CID. This is automated wherever possible.
+- Significant events and distinct copies are registered in the CID. This is automated wherever possible.
 - Any access restrictions are added to the CID, can be seen in the DPI.
 
 Some links and notes about the details on the content stream variations are given below.
 
 ### Digital Film
 
-* [iPRES 2024: “You oughta be in pictures”: Insights to Digital Moving Image Preservation from the BFI, EYE, and LOC](https://deploy-preview-30--digipres-org-publications.netlify.app/ipres/ipres-2024/papers/you-oughta-be-in-pictures-insights-to-digital-moving-image-prese)  
+* [iPRES 2024: “You oughta be in pictures”: Insights to Digital Moving Image Preservation from the BFI, EYE, and LOC](https://www.digipres.org/publications/ipres/ipres-2024/papers/you-oughta-be-in-pictures-insights-to-digital-moving-image-prese/)  
 
 ### Digitised Video & Film
 
