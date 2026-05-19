@@ -12,7 +12,12 @@ If you have any comments or corrections please let [me](https://anjackson.net/) 
 
 ## Introduction
 
-The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
+The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. See also [Inside the Archive #49: World Digital Preservation Day 2025 part one | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one). A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
+
+TBA "BFI Blog", "Website Blog" ?
+
+Q: No digitisation represented? Only born digital...
+A (emailed): Not intentional, just reflecting what I'd thought about, and my focus on digital bitstreams rather than information carriers.
 
 ## Bitstream Preservation Dataflow
 
@@ -26,7 +31,8 @@ zoom 0.8
 height 600
 
 data data "Source Data" black
-data aip-id "Archival Information Package Identifier" darkblue
+data record "CID Record" darkblue
+data aip-id "CID Archival Information Package Identifier" darkblue
 data aip "Archival Information Package" red
 data dip "Dissemination Information Package" green
 data replica_3 "Tape 3" darkred
@@ -48,14 +54,16 @@ move data@internet data@workspace "Deposit"
 """Deposits arrive and are places in working storage, as Submission Information Packages (SIP). The precise details depend on the content stream."""
 
 space 
-derive data@workspace aip-id@workspace "Mint\nAIP ID"@N [0,1]
+derive data@workspace record@workspace "Basic\nDocumentation"@S [0,-1]
+move record@workspace record@cdi "Create\nCID Record"
+copy record@cdi aip-id@workspace "Retrieve\n CID"@E [0,-1]
 """An identifier is created for the archival information package."""
 
 space 
 derive data@workspace aip@workspace "Generate\nthe AIP"@S [0,-1]
 """An archival information package is generated from the submitted data. This stage varies a great deal between content streams. It may be manual or automated."""
 
-move aip-id@workspace record@cdi "Record\nAIP ID"
+#move aip-id@workspace record@cdi "Record\nAIP ID"
 """If the AIP was generated successfully, the AIP ID is recorded in the Collections Information Database."""
 
 copy aip@workspace replica_1@tape1,replica_2@tape2 "Copy to\ntapes 1 & 2"
@@ -73,7 +81,7 @@ derive aip@workspace dip@workspace "Create DIP"@N [0,1]
 copy dip@workspace dip@access "Copy DIP"
 """The access copy is transferred to the storage location used to provide access to end users."""
 
-delete data@workspace,aip@workspace,dip@workspace "Delete Working Copies"@S 
+delete data@workspace,aip@workspace,dip@workspace,aip-id@workspace "Delete Working Copies"@S 
 """All the intermediary file and the original submission are now deleted."""
 
 status "Ingest Complete"
@@ -81,13 +89,33 @@ status "Ingest Complete"
 end 
 ```
 
+Notes to integrate:
+
+
+1. Deposit
+2. CID Record Creation
+3. Assign ID to digital file (rename file)
+
+- CID record creation generates unique ID
+- Sources: Portable carriers, HDD/SSD/data tape
+- We don't use BagIt or other format AIP container/process
+- we do 
+  - validation
+  - QC
+  - some normalisation 
+  - prep for autoingest (file naming to standard)
+  - some TAR, some RAWcooked
+- only acquisitions here, not digitisation from physical collections, is this intentional?
+- this diagram only covers A/V and images, not documents (not currently preserving actively)
+
+
 At the end of the ingest process, there are immediately accessible 'access copies' (DIPs) and the 'preservation copies' (AIPs) are stored on multiple tapes.  The Collections Information Database (CID) contains all metadata needed for management and discovery of content, along with the appropriate identifier for the information packages that contain the digital assets. The CID remains the master metadata store, and this metadata is preserved independently of the DPI.
 
 The code for the core `autoingest job` and related workflows is here: [bfidatadigipres/BFI_scripts](https://github.com/bfidatadigipres/BFI_scripts).
 
 ## Access Dataflow
 
-There are two different modes of access. Some content is available over the public web, and some is only available on site. 
+There are two different modes of access. Some content is available over the public web (rights clearance required), while TBC???virtually all collection material is available on site. 
 
 ### Internet Access
 
@@ -145,7 +173,7 @@ end
 
 ### On-Site Access
 
-The highest-quality 'preservation copies' are only available on site, and are retrieved from tape on demand:
+Only BFI staff are able to access the highest-quality (very high bitrate) 'preservation copies'. These copies are retrieved from tape on demand:
 
 
 ```dataflow
@@ -208,15 +236,17 @@ end
 
 Building on the generic DPI workflow, different types of content are handled as follows:
 
+TBA: Meaning of Workspace below is unclear:
+
 - Items for different streams land in different folders in the `workspace` working area.
 - Custom Python scripts process items by arranging them in and moving them between folders under shared naming conventions.
 - If the stream is not fully automated, any manual Digital Acquisitions or QC work is done at this point. If all is well, a corresponding `autoingest job` is created.
-- Significant events and distinct copies are registered in the CID. This is automated wherever possible.
-- Any access restrictions are added to the CID, can be seen in the DPI.
+- TBC: "CID gets a record for every file ingest to the DPI, with automated metadata from MediaInfo (Python)" This is actually per package, right, every file?
+- Any access restrictions are added to CID, displayed in the DPI, and used to limit onward delivery.
 
 Some links and notes about the details on the content stream variations are given below.
 
-### Digital Film
+### Digital Film TBA ? focus on streamers for BFI part
 
 * [iPRES 2024: “You oughta be in pictures”: Insights to Digital Moving Image Preservation from the BFI, EYE, and LOC](https://www.digipres.org/publications/ipres/ipres-2024/papers/you-oughta-be-in-pictures-insights-to-digital-moving-image-prese/)  
 

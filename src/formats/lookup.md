@@ -17,29 +17,18 @@ const ext = view(
 );
 ```
 
-Using a two-step query:
-
 ```js
 import {DuckDBClient} from "npm:@observablehq/duckdb";
 
+// Supported forcing full read because GitHub wasn't supporting range requests, but they fixed that!
 const config = {
   customUserAgent: "Wild Bob",
   filesystem: {
-    forceFullHTTPReads: true
+    forceFullHTTPReads: false
   }
 }
 const db = await DuckDBClient.of({exts: "https://www.digipres.org/_data/formats/index/extensions.parquet" }, config);
-//const rows = await db.sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
-const rows = await sql([`SELECT UNNEST(format_ids) AS ext FROM exts WHERE id == '${ext}'`]);
 ```
-
-
-```js
-const fids = rows.toArray().map((r) => `'${r.ext}'`);
-view(Inputs.table(await sql([`SELECT * FROM formats WHERE id in (${fids})`])));
-```
-
-Just querying the `formats.parquet` directly:
 
 ```js
 Inputs.table(await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]))
