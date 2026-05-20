@@ -1,5 +1,7 @@
-# Collection Profiles Management
+# Your Collection Profiles
+## Manage The Set Of Collection Profiles You Can Use
 
+Here you can inspect the format profiles and add your own if you wish. They will be stored in your browser and won't be shared or uploaded anywhere.
 
 ```js
 import { get_profiles, process_profile, get_local_profile_folder } from './profiles.js';
@@ -114,14 +116,13 @@ if( profile_overview ) {
 
 ## Add your local collection profiles
 
-You can also add your own profile to this page, and analyse it without uploading your data anywhere:
+You can add your own profile to this page, and analyse it without uploading your data anywhere:
 
 ```js
 const csvfile = view(Inputs.file({label: "Add Your Own CSV Extension Profile", accept: ".csv"}));
 ```
 
-<details class="card">
-<summary>How do I create a suitable Extension Profile in CSV format?</summary>
+### How do I create a suitable Extension Profile in CSV format?
 
 Your file extension collection profile should have at least two columns, one called 'extension' and one called 'count'. Other columns will be ignored. This would look something like:
 
@@ -148,7 +149,6 @@ If your browser supports it, you can try generating an extension profile of some
 
 If you have any problems, please [get in touch via the contact details on the homepage](../#contact).
 
-</details>
 
 ```js
 

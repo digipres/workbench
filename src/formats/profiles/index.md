@@ -3,27 +3,20 @@
 
 ## Introduction
 
-Here we look at two different ways of exploring and understanding our digital collections.
-
-- We'd like to be able to compare our collections with those of other institutions, so we can find our common ground, but also understand what makes us distinctive.
-- We'd like to be able to compare our collections with the various format registries and identification tools that are out there. This would help us understand which format information sources have the most potential to illuminate our collections.
-
-This page provides interactive tools allowing you to do both of these things, based on some basic statistical information about your collection in the form of a format profile.
-
-## Collection Format Profiles
-
 A format profile for a collection simply lists all the formats there are, along with a count of how many distinct files or bitstreams appear to be in that format. For example, this is precisely what the [UK National Archives File Profiling Tool (DROID) does](https://www.nationalarchives.gov.uk/information-management/manage-information/policy-process/digital-continuity/file-profiling-tool-droid/). For the formats that PRONOM covers, this works very well, and the resulting profile can be analysed within DROID itself, or by using complementary tools like [Freud](https://github.com/digital-preservation/freud) or [Demystify](http://exponentialdecay.co.uk/blog/demystify-lite-and-demystify-2-0-0-released/).
 
 However, to compare against a wider range of sources, we need to boil things down to the simplest format signature: file extensions. This lets us combine multiple information sources, with [all of the benefits and limitations that implies](./#file-extensions).
 
-A number of institutions have already made suitable file extension collection profiles available, so you can use those to explore this idea. Note that this analysis discards any extensions that appear to be just numbers or contain spaces, but anything else is OK. If you want to look at the source CSV files, you can find them [here](https://github.com/digipres/workbench/tree/main/src/data/collection-profiles).
+A number of institutions have already made suitable file extension collection profiles available, so you can use those to explore this idea. Or you can [add your own!](manage)
 
 <div class="warning">
-<p>These profiles have been generously generated and shared on a best-effort basis. They may cover all holdings, or not. They may include the results from peeking inside container/archive formats, or not. It's surprisingly difficult to generate this information, and these profiles should not be considered a complete and accurate reflection of all the different items an institution holds.
-</p>
-<p>
+
+These profiles have been generously generated and shared on a best-effort basis. They may cover all holdings, or not. They may include the results from peeking inside container/archive formats, or not. It's surprisingly difficult to generate this information, and these profiles should not be considered a complete and accurate reflection of all the different items an institution holds.
+
 Crucially, unlike more formal format registries, collection profiles reflect the endlessly inventive chaos of real people doing real things in the real world. These file extensions cannot be trusted, but <a href="https://www.reddit.com/r/calvinandhobbes/comments/rmfnsc/theres_treasure_everywhere/">there's treasure everywhere.</a>
-</p>
+
+The analysis process discards any extensions that appear to be just numbers or contain spaces, but anything else is OK. If you want to look at the source CSV files, you can find them [here](https://github.com/digipres/workbench/tree/main/src/data/collection-profiles).
+
 </div>
 
 ```js
@@ -157,9 +150,6 @@ if( profile_overview ) {
 ```
 
 
-## Select A Collection Profile
-
-First, we need to select 'our' profile, the primary collection profile we want to compare with other collections and registries:
 
 ```js
 var default_1 = 'yul';
@@ -170,15 +160,14 @@ if( profile_overview ) {
 // Select
 const profile_1_source = view(
   Inputs.select(profiles, {
-    label: "Primary Profile",
+    label: "Selected Profile",
     format: (t) => t.title,
     value: profiles.find((t) => t.key === default_1),
     width: "100%",
+    disabled: true
   })
 );
 ```
-
-### Summary of Your Collection Profile
 
 ```js
 const profile_1 = profiles.find((p) => p.key === profile_1_source.key );
@@ -195,10 +184,29 @@ ${ resize((width) => gen_profile_plot(profile_1, width) ) }
 
 This gives a reasonable overview, but also hides all the interesting details of what's going on in that long tail of other formats.
 
+## Going Deeper
+
+Lets dig into those long-tailed format distributions.
+
+<div class="grid grid-cols-3">
+  <div class="card">
+    Take a <a href="./manage">closer look at the profiles that are available, and add in your own local collection profiles too</a>.
+  </div>
+  <div class="card">
+    <a href="./compare">Compare collections across institutions</a>, so we can find our common ground, but also understand what makes us distinctive.
+  </div>
+  <div class="card">
+    <a href="./tools">Compare collections with the various format registries and identification tools that are out there</a>, to help us understand which format information sources have the most potential to illuminate our collections.
+  </div>
+</div>
+
+
+
+
 ## Feedback & Futures
 
 This is a first prototype of this kind of analysis tool, and we are keen to hear your feedback on what works, what doesn't, and what a future version could look like!
 
-It will be launched at [iPRES 2024](https://ipres2024.pubpub.org/), as part of the [Digital Preservation Registries: What We Have & What We Need](https://ipres2024.pubpub.org/pub/52dby49z/release/1?readingCollection=ef524688) workshop. But if you see us at the conference you are encouragedto ask us to walk you through using this tool and talk to us about sharing your own format profiles.
+It will was launched at [iPRES 2024](https://ipres2024.pubpub.org/), as part of the [Digital Preservation Registries: What We Have & What We Need](https://ipres2024.pubpub.org/pub/52dby49z/release/1?readingCollection=ef524688) workshop.
 
-You can also get in touch with us directly. See the [contact details on the homepage](../#contact).
+Feel free to get in touch with us directly. See the [contact details on the homepage](../#contact).

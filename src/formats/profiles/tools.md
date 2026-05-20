@@ -1,5 +1,5 @@
-# Collection Profiles
-## Using Format Profiles to Compare Collections & Registries
+# Tools For Collections
+## Using Format Profiles To Compare Collections Against Format Registries
 
 ## Introduction
 

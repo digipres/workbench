@@ -5,7 +5,7 @@ sql:
 ---
 # File Extension Lookup
 
-First...
+This is an early prototype of a format extensions lookup page that works something like https://www.digipres.org/formats/extensions/#*.sd2 i.e. bookmarkable URLs to individual entries
 
 ```js
 // Set up Observable config to read the window hash and integrate it:
@@ -29,8 +29,6 @@ const ext = view(
 ```
 
 
-Querying the `formats.parquet` directly:
-
 ```js
 const new_url = `${window.location.pathname}#${ext}`;
         history.pushState(null, '', new_url);
@@ -43,13 +41,6 @@ view(Inputs.table(formats, {
     name: (value, i) => formats.get(i).id + ":" + value.toLowerCase()
   }
 }));
-```
-
-
-Querying the `extensions.parquet` file instead:
-
-```js
-Inputs.table(await sql([`SELECT * FROM exts WHERE id == '${ext}'`]))
 ```
 
 
