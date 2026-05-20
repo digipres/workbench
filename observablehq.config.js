@@ -19,9 +19,20 @@ export default {
       open: true,
       pages: [
         { name: "All About Formats", path: "/formats/"},
-        { name: "Using Collection Profiles", path: "/formats/profiles"},
         { name: "Format Diversity Estimation", path: "/formats/species"},
         { name: "The Format Index (ALPHA)", path: "/formats/format-index"},
+        { name: "The Format Index Lookup (ALPHA)", path: "/formats/lookup"},
+      ]
+    },
+    {
+      name: "Profiles",
+      collapsible : true,
+      open: true,
+      pages: [
+        { name: "All About Profiles", path: "/formats/profiles/"},
+        { name: "Adding Collection Profiles", path: "/formats/profiles/manage"},
+        { name: "Comparing Collection Profiles", path: "/formats/profiles/compare"},
+        { name: "Tools for Collection Profiles", path: "/formats/profiles/tools"},
       ]
     },
     {
