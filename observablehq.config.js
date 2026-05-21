@@ -29,7 +29,7 @@ export default {
       collapsible : true,
       open: true,
       pages: [
-        { name: "All About Profiles", path: "/formats/profiles/"},
+        { name: "All About Collection Profiles", path: "/formats/profiles/"},
         { name: "Your Collection Profiles", path: "/formats/profiles/manage"},
         { name: "Comparing Collections", path: "/formats/profiles/compare"},
         { name: "Tools for Collections", path: "/formats/profiles/tools"},

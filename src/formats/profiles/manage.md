@@ -147,7 +147,7 @@ Finally, note that if the same (canonical) extension appears multiple times, the
 
 If your browser supports it, you can try generating an extension profile of some of your own files with the [DigiPres Workbench File System Scanner](../../tools/scanner/).
 
-If you have any problems, please [get in touch via the contact details on the homepage](../#contact).
+If you have any problems, please [get in touch via the contact details on the homepage](../../#contact).
 
 
 ```js
