@@ -117,6 +117,14 @@ const original_profiles = [
     description: "",
     terms: "CC-BY",
     raw_data: await FileAttachment("../../data/collection-profiles/naa/naa-profile-2024.csv").csv({typed: true})
+  },
+  {
+    key: "gpo-icufl-2026",
+    title: "The Indiana University CD-ROM & Floppy Library (U.S. Government Publication Office)",
+    link: "../../reports/case-study-gpo-icufl/",
+    description: "",
+    terms: "CC-BY",
+    raw_data: await FileAttachment("../../data/collection-profiles/gpo/gpo-icufl-extensions.csv").csv({typed: true})
   }
 ]
 
@@ -144,13 +152,19 @@ export async function get_profiles() {
                 source_profiles.push({
                     key: entry.name, 
                     title: "Local profile: "+entry.name,
-                    raw_data: await csvParse(contents)
+                    raw_data: await csvParse(contents),
+                    local_file: entry.name
                 });
                 console.log(`Loading ${entry.name} ${contents.slice(0,40)}`);
             }
         }
     }
     return source_profiles;
+}
+
+export async function delete_local_profile(profile) {
+    const locals = await get_local_profile_folder();
+    const file = await locals.removeEntry(profile.local_file);
 }
 
 // Clean up the data a bit:

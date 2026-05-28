@@ -4,20 +4,27 @@
 Here you can inspect the format profiles and add your own if you wish. They will be stored in your browser and won't be shared or uploaded anywhere.
 
 ```js
-import { get_profiles, process_profile, get_local_profile_folder } from './profiles.js';
-const source_profiles = await get_profiles();
+import { get_profiles, process_profile, get_local_profile_folder, delete_local_profile } from './profiles.js';
+import { save_dataset } from '../csv_helper.js';
+import {Mutable} from "observablehq:stdlib";
+
+const changes = Mutable(0);
+const increment = () => ++changes.value;
+
 const profiles = [];
-source_profiles.forEach((p) => profiles.push(process_profile(p)));
-```
 
-```js
+async function update_profiles() {
+    const source_profiles = await get_profiles();
+    profiles.length = 0;
+    source_profiles.forEach((p) => profiles.push(process_profile(p)));
+}
 
-```
-
-```js
+const deleter = async (profile) => {
+    await delete_local_profile(profile);
+    increment();
+};
 
 // n.b. best to create new top-level objects in blocks, rather than update existing ones, as that makes if easier for Observable Framework to keep track of block dependencies:        
-
 if( csvfile != null ) {
     const uploaded = await csvfile.csv();
     const locals = await get_local_profile_folder();
@@ -26,27 +33,15 @@ if( csvfile != null ) {
     const out_file = await locals.getFileHandle(csvfile.name, { create: true });
     const out_stream = await out_file.createWritable();
     in_stream.pipeTo(out_stream)
-
-/*
-    const uploaded_item = source_profiles.find((p) => p.key == user_profile_key);
-    // If it's already in the source profiles list, just update the data (rather than creating another entry)
-    if( uploaded_item ) {
-        uploaded_item.raw_data = uploaded
-    } else {
-        source_profiles.push({
-        key: user_profile_key, 
-        title: "Your uploaded extension profile",
-        raw_data: uploaded
-        });
-    };
-    */
 }
-
 
 ```
 
-
 ```js
+changes; // Make sure this updates if the changes field updates
+
+await update_profiles();
+
 // output the table:
 const profile_overview = view(Inputs.table(profiles, {
     columns: [
@@ -76,19 +71,8 @@ const profile_overview = view(Inputs.table(profiles, {
 ```
 
 ```js
-
-//view(Inputs.button("Save All As CSV...", {value: { data: source_profiles, columns: ['title', 'terms', 'link', 'total_count' ], name: "collection-profiles" }, reduce: save_dataset }));
-```
-
-```js
-// Define defaults:
-var default_1 = "yul";
-var default_2 = "kb-edepot";
-
 if( profile_overview ) {
     console.log(profile_overview);
-    // Override default:
-    default_1 = profile_overview.key;
     // And display:
     display(html`<div class="tip" label="${profile_overview.title}">
     <p>${profile_overview.description}</p>
@@ -107,12 +91,16 @@ if( profile_overview ) {
     </tbody>
     </table>
     </div`);
+
+    if( profile_overview.local_file != undefined ) {
+        const delete_this_profile = view(Inputs.button("Remove local profile", {value: profile_overview, reduce: await deleter } ));
+    }
+
 } else {
     display(html`<div class="tip">Select a row from the table to find out more.</div>`);
 }
 
 ```
-
 
 ## Add your local collection profiles
 
@@ -121,6 +109,9 @@ You can add your own profile to this page, and analyse it without uploading your
 ```js
 const csvfile = view(Inputs.file({label: "Add Your Own CSV Extension Profile", accept: ".csv"}));
 ```
+
+
+
 
 ### How do I create a suitable Extension Profile in CSV format?
 
@@ -153,4 +144,9 @@ If you have any problems, please [get in touch via the contact details on the ho
 ```js
 
 //view(Inputs.button("Save All As CSV...", {value: { data: source_profiles, columns: ['title', 'terms', 'link', 'total_count' ], name: "collection-profiles" }, reduce: save_dataset }));
+```
+
+
+```js
+// view(Inputs.button("Save All As CSV...", {value: { data: profiles, columns: ['title', 'terms', 'link', 'total_count' ], name: "collection-profiles" }, reduce: save_dataset }));
 ```

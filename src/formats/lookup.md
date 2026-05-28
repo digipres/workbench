@@ -36,11 +36,14 @@ const new_url = `${window.location.pathname}#${ext}`;
 
 ```js
 const formats = await sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]);
-view(Inputs.table(formats, {
+```
+
+```js
+Inputs.table(formats, {
   format: {
     name: (value, i) => formats.get(i).id + ":" + value.toLowerCase()
   }
-}));
+})
 ```
 
 
