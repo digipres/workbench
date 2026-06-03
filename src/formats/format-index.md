@@ -34,9 +34,9 @@ This basic search just matches your text strings against the selected fields fro
 
 ```js
 // Using a local file is faster, and self-contained:
-const db = FileAttachment("../data/registries.db").sqlite();
+//const db = FileAttachment("../data/registries.db").sqlite();
 // But the remote file is up-to-date:
-//const db = SQLiteDatabaseClient.open(db_url);
+const db = SQLiteDatabaseClient.open(db_url);
 ```
 
 ```js

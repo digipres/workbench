@@ -51,7 +51,7 @@ export const generate_exts_chart = async function(width) {
     const exts_chart = Plot.plot({
         title: "Comparing Format Registries",
         subtitle: "Based on counting file extensions",
-        style: "overflow: visible; font-size: 20px;",
+        style: "overflow: visible;",
         width,
         marginRight: 70,
         marginBottom: 90,

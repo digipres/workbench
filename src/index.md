@@ -6,13 +6,19 @@ toc: true
 
 ## Tools, analysis and technical resources for practical digital preservation
 
-<div class="caution" label="Project Status">
+<div class="tip" label="About the DigiPres Workbench">
 
-This is an experimental prototype created as part of the [Registries of Good Practice project](https://github.com/digipres/registries-of-practice-project). Things may evolve and break over time! See the [Funding & Sustainability](#funding-%26-sustainability) section below for more details.
+<a href="https://dpconline.org"><img src="./images/DPCLogoSquare.png" width="120" style="float: right; margin: 5px;"></a>
+The DigiPres Workbench is a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections.
+
+First funded by Yale University Library and the Digital Preservation Coalition (DPC) as part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), with maintenance and updates via the [Digital Preservation Coalition Member Support programme](https://www.dpconline.org/digipres/discover-good-practice/dedicated-support-for-members).
+
+If you have any questions, please do [get in touch](#contact).
 
 </div>
 
-The DigiPres Workbench is a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections. 
+
+## Overview
 
 Here's a high-level view of what this is for, what we're doing now, and what we're thinking of doing in the future (indicated by dashed and dotted boxes)...
 
@@ -120,17 +126,9 @@ The DigiPres Workbench was inspired by:
 
 ## Funding & Sustainability
 
-The initial development of this site was funded by Yale University Library and the Digital Preservation Coalition (DPC) as part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project).
+The initial development of this site was funded by Yale University Library and the Digital Preservation Coalition (DPC) as part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project). Maintenance work, new features and updates are implemented as needed when carrying out work for DPC members through the [Digital Preservation Coalition Member Support programme](https://www.dpconline.org/digipres/discover-good-practice/dedicated-support-for-members). 
 
-<div class="warning">
-
-These experiments are being designed with long-term sustainability in mind, and the DPC will endeavour to maintain and update this site in the future. 
-
-However, the purpose of these prototypes is to help us explore what is _really_ needed and which approaches are more sustainable, so the content and function of this service may change radically over time. 
-
-We need your feedback in order to get this right, so please let use know what you think!
-
-</div>
+This project is open to direct contributions via GitHub at [digipres/workbench](https://github.com/digipres/workbench). We are also open to offers for additional funded work through [project partnership](https://www.dpconline.org/digipres/collaborative-projects) or [consultancy services](https://www.dpconline.org/digipres/discover-good-practice/dpc-consultancy).
 
 ---
 

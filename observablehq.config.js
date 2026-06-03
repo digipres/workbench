@@ -25,7 +25,7 @@ export default {
       ]
     },
     {
-      name: "Profiles",
+      name: "Collection Profiles",
       collapsible : true,
       open: true,
       pages: [
@@ -56,8 +56,8 @@ export default {
       name: "Publications",
       open: true,
       pages: [
+        {name: "Reports", path: "/reports/"},
         {name: "Publication Statistics", path: "/publications/"},
-        //{name: "Dataflows", path: "/dataflows/"},
         //{name: "Dashboard", path: "/example-dashboard"},
         //{name: "Report", path: "/example-report"}
       ]
