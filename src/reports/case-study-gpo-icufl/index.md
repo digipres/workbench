@@ -84,15 +84,3 @@ Direct links require the `FID####` part, which is (presumably) in the METS/MARC 
 
 https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/4951822/FID2042/data/readme.txt
 
-
-<details>
-<summary>Source code for <tt>generate_index.py</tt></summary>
-
-```js
-import hljs from 'highlight.js';
-const src = await FileAttachment("./data/generate_index.py").text();
-display(html`<pre data-language="python"><code class="language-python">${src}</code></pre>`)
-hljs.highlightAll();
-```
-
-</details>
