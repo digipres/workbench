@@ -80,6 +80,14 @@ export default {
         {name: "Put iPRES In Context 🫶🏼", path: "/workshops/ipres-in-context"},
         {name: "Share Hidden Gems 💎", path: "/workshops/hidden-gems"}
       ]
+    },
+    {
+      name: "Links",
+      open: true,
+      pages: [
+        {name: "GitHub", path: "https://github.com/digipres/workbench"},
+        {name: "DigiPres.org", path: "https://digipres.org/"},
+      ]
     }
   ],
 
