@@ -56,7 +56,6 @@ export default {
       name: "Publications",
       open: true,
       pages: [
-        {name: "Reports", path: "/reports/"},
         {name: "Publication Statistics", path: "/publications/"},
         //{name: "Dashboard", path: "/example-dashboard"},
         //{name: "Report", path: "/example-report"}
