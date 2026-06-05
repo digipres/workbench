@@ -2,9 +2,9 @@
 sql:
   # The large dataset of individual files:
   # Best/fastest for local development, but not stored remotely due to being Yet Another Large File requiring Git LFS or similar:
-  icufl: ./gpo-icufl-files.parquet
+  #icufl: ./gpo-icufl-files.parquet
   # GitHub Pages, seems to work fine, if not terribly quickly
-  #icufl: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
+  icufl: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
   # Netlify, seems to get blocked/dropped.
   #icufl: https://digipres-practices.netlify.app/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
   # Own server, does not range request? Too old?
@@ -131,6 +131,7 @@ display(Inputs.table(exts, {
     layout: 'auto', 
     select: false,
     format: {
+      extension: (x) => htl.html`<a href="../../lookup?ext=${x}" target="_blank">${x}</a>`,
       size: show_big_int
       }
 }));
