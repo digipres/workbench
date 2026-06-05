@@ -1,8 +1,15 @@
 ---
 sql:
-  #icufl: ./gpo-icufl-files.parquet
-  icufl: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
+  # The large dataset of individual files:
+  # Best/fastest for local development, but not stored remotely due to being Yet Another Large File requiring Git LFS or similar:
+  icufl: ./gpo-icufl-files.parquet
+  # GitHub Pages, seems to work fine, if not terribly quickly
+  #icufl: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
+  # Netlify, seems to get blocked/dropped.
   #icufl: https://digipres-practices.netlify.app/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
+  # Own server, does not range request? Too old?
+  #icufl: https://services.anjackson.net/gpo-icufl-files.parquet
+  # And the items data:
   icufl_items: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-items.csv
 ---
 # GPO IUCFL Collection Explorer
@@ -17,11 +24,15 @@ This tool was developed as part of [this piece of work with the U.S. Government 
 
 ## Purpose
 
-The purpose of this tool is to help find formats and patterns of file extensions in the copy of the [Indiana University CD-ROM & Floppy Library](https://webapp1.dlib.indiana.edu/virtual_disk_library/) held by the U.S. Government Publishing Office. See [the full report](https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/us-gpo-icufl-review-2026.html) for more details.
+The purpose of this tool is to help find formats and patterns of file extensions in the copy of the [Indiana University CD-ROM & Floppy Library](https://webapp1.dlib.indiana.edu/virtual_disk_library/) held by the U.S. Government Publishing Office. 
+
+The full list of file extensions has been included in the [collection profiles part of the workbench](../), so you can get an overview all the extensions there.  You can then use this page to look at individual extensions in more detail.
+
+See [the full report](https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/us-gpo-icufl-review-2026.html) for more information about this project.
 
 
 <div class="warning" label="Warning! May be slow!">
-This system depends on a database file containing information on over six million files, over 175MB in size. It might take a while to start up and respond.
+This system depends on a database file containing information on over six million files. It's compressed, but it's still 175MB in size. It might take a while to start up and respond. Seriously, like 5/10 minutes depending on your download speed and the host server status.
 </div>
 
 ## Query
