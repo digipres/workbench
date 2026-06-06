@@ -1,8 +1,3 @@
----
-sql:
-  formats: https://www.digipres.org/_data/formats/index/formats.parquet
-  exts: https://www.digipres.org/_data/formats/index/extensions.parquet 
----
 # File Extension Lookup
 ## Finding formats across multiple information sources
 
@@ -28,6 +23,10 @@ const ext_q = view(
 ```
 
 ```js
+//  exts: https://www.digipres.org/_data/formats/index/extensions.parquet
+// Set up the database connection:
+const sql = await DuckDBClient.sql({formats: `https://www.digipres.org/_data/formats/index/formats.parquet`});
+
 // Clean up the extension:
 const ext = ext_q.replace(/^[\*\.]+/,'');
 // Return a promise as this will get resolved when writing the table:
@@ -39,7 +38,6 @@ history.pushState(null, '', new_url);
 ```
 
 ```js
-
 function registry_linker(value, i, formats) {
   const reg_url = formats.get(i).registry_url;
   const title = (value.length > 50) ? value.substring(0,50) + "..." : value;
