@@ -26,54 +26,86 @@ const ext_q = view(
 //  exts: https://www.digipres.org/_data/formats/index/extensions.parquet
 // Set up the database connection:
 const sql = await DuckDBClient.sql({formats: `https://www.digipres.org/_data/formats/index/formats.parquet`});
+```
 
+```js
 // Clean up the extension:
 const ext = ext_q.replace(/^[\*\.]+/,'');
 // Return a promise as this will get resolved when writing the table:
 const formats = sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]);
 // And update the URL for the page
-search_params.set('ext', ext);
-const new_url = `${window.location.pathname}?${search_params.toString()}`;
-history.pushState(null, '', new_url);
+if ( ext_q != "" ) {
+  search_params.set('ext', ext);
+  const new_url = `${window.location.pathname}?${search_params.toString()}`;
+  history.pushState(null, '', new_url);
+}
 ```
 
 ```js
 function registry_linker(value, i, formats) {
   const reg_url = formats.get(i).registry_url;
-  const title = (value.length > 50) ? value.substring(0,50) + "..." : value;
   if( reg_url ) {
-    return html`<a href="${reg_url}" target="_blank">${title}</a>`;
+    return html`<a href="${reg_url}" target="_blank">${value}</a>`;
   } else {
-    return html`${title}`;
+    return html`${value}`;
   }
 }
+
+function clipper(value) {
+  const title = (value.length > 50) ? value.substring(0,50) + "..." : value;
+  return title;
+}
+
+function software_links(x) { 
+  const items = []
+  const value = x.toArray().forEach( (r) => {
+    items.push(html`<a href="${r.registry_url}" target="_blank">${r.name}</a>`)
+    items.push(", ")
+  });
+  return html`${items.slice(0,items.length-1)}`;
+}
+
 ```
 
 ```js
-Inputs.table(formats, {
+const selected = view(Inputs.table(formats, {
+  required: false,
   layout: 'auto',
+  sort: 'name',
   columns: [ 
-    'registry_id',
     'name',
+    'registry_id',
     'version',
-    'extensions'
+    'extensions',
+    'readers',
+    'writers'
   ],
   format: {
-    name: registry_linker
+    name: clipper,
+    extensions: (x) => x.toArray().join(', '),
+    registry_id: registry_linker,
+    readers: software_links,
+    writers: software_links
   }
-})
+}));
 ```
 
-<details>
-<summary>Debug Info</summary>
 
-Raw results for the first row:
+<div class="grid grid-cols-3">
+${selected.reverse().map( (f) => {
+  return html`<div class="card">
+  <h2>${f.name} ${f.version}</h2>
+  <h3><a href="${f.registry_url}">${f.id}</a></h3>
+  <p>${(f.summary && f.summary.length > 200) ? f.summary.substring(0,200) + "..." : f.summary}</p>
+  <p><b>Extensions:</b> ${f.extensions.toArray().join(", ")}</p>
+  <p><b>Media Types:</b> ${f.media_types.toArray().join(", ")}</p>
+  <p><b>Readers:</b>${software_links(f.readers)}</p>
+  <p><b>Writers:</b>${software_links(f.writers)}</p>
+  <details><summary>Debug</summary><pre>${JSON.stringify(f.toJSON(), null, 2)}</pre></details>
+  </div>`;
+})}
+</div>
 
-```js
-formats.get(0)
-```
-
-</details>
 
 
 ## Notes
@@ -83,6 +115,7 @@ formats.get(0)
 ### To Do
 
 - Drop extensions.parquet or switch it to denormalise the full dataset and see if it's faster.
+- File registry has a lot of empty names
 - Registry URLs :
   - missing prefix for Just Solve
   - Have erroneous trailing slash for LOC
