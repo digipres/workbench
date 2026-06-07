@@ -99,7 +99,7 @@ ${selected.reverse().map( (f) => {
   return html`<div class="card">
   <h2>${f.name} ${f.version}</h2>
   <h3><a href="${f.registry_url}">${f.id}</a></h3>
-  <p>${(f.summary && f.summary.length > 200) ? f.summary.substring(0,200) + "..." : f.summary}</p>
+  <p style="overflow:hidden">${(f.summary && f.summary.length > 200) ? f.summary.substring(0,200) + "..." : f.summary}</p>
   <p><b>Extensions:</b> ${f.extensions.toArray().join(", ")}</p>
   <p><b>Media Types:</b> ${f.media_types.toArray().join(", ")}</p>
   <p><b>Readers:</b>${software_links(f.readers)}</p>
