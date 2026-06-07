@@ -62,7 +62,8 @@ function software_links(x) {
     items.push(html`<a href="${r.registry_url}" target="_blank">${r.name}</a>`)
     items.push(", ")
   });
-  return html`${items.slice(0,items.length-1)}`;
+  // Return the items, dropping the ", " at the end:
+  return html`${items.slice(0, items.length-1)}`;
 }
 
 ```
@@ -89,7 +90,9 @@ const selected = view(Inputs.table(formats, {
   }
 }));
 ```
+## Selected formats
 
+${ (selected.length == 0 ) ? html`<div class='tip'>Use left-hand column of the table above to select formats of interest, and they will appear here as cards showing more details about each format.</div>` : "" }
 
 <div class="grid grid-cols-3">
 ${selected.reverse().map( (f) => {
@@ -107,12 +110,11 @@ ${selected.reverse().map( (f) => {
 </div>
 
 
-
 ## Notes
 
 - Supports fragment-based queries, so it can replace the format aggregator (e.g. https://www.digipres.org/formats/extensions/#*.sd2)
 
-### To Do
+## To Do
 
 - Drop extensions.parquet or switch it to denormalise the full dataset and see if it's faster.
 - File registry has a lot of empty names
