@@ -32,7 +32,7 @@ See [the full report](https://www.digipres.org/practices/reports/gpo-icufl-colle
 
 
 <div class="warning" label="Warning! May be slow!">
-This system depends on a database file containing information on over six million files. It's compressed, but it's still 175MB in size. It might take a while to start up and respond. Seriously, like 5/10 minutes depending on your download speed and the host server status.
+This system depends on a database file containing information on over six million files. It's compressed, but it's nearly 200MB in size. It might take a while to start up and respond. Seriously, like 5/10 minutes depending on your download speed and the host server status.
 </div>
 
 ## Query
@@ -87,40 +87,7 @@ const s = view(Inputs.table(entries, {
 If you select an item in the list (using the small circle in the left-hand column), more details about the item will be shown below (although it might take a moment to update).
 
 
-## Files with extension '${ext}' in the selected item
 
-This lists files in the item that have the extension '${ext}' (up to 1,000 files).
-
-```js
-
-function item_file_linker(path, i, d) {
-  if( path != null && path != "" ) {
-    const fid = d.get(i).fid;
-    const full_path = `${fid}/${path}`;
-    const file_name = full_path.substring(full_path.lastIndexOf('/')+1);
-    const dir = full_path.substring(0, full_path.lastIndexOf('/'));
-    return htl.html`<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${q_item_id}/${dir}" target="_blank">${dir}</a>/<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${q_item_id}/${full_path}" target="_blank">${file_name}</a>`;
-  } else {
-    return null;
-  }
-}
-
-const files = await sql([`SELECT fid, path, size FROM icufl WHERE LOWER(extension) == LOWER('.${ext}') AND item_id == '${q_item_id}' ORDER BY media ASC, path ASC LIMIT 1000`]);
-```
-
-```js
-Inputs.table(files, { 
-  layout: 'auto', 
-  select: false,
-  format: {
-    path: item_file_linker
-  },
-  columns: [
-    "path",
-    "size"
-  ]
- })
-```
 
 ## All file extensions in this item
 
@@ -140,3 +107,37 @@ display(Inputs.table(exts, {
 }));
 ```
 
+## Files with extension '${ext}' in the selected item
+
+This lists files in the item that have the extension '${ext}' (up to 1,000 files). Can be slow to load/refresh.
+
+```js
+
+function item_file_linker(path, i, d) {
+  if( path != null && path != "" ) {
+    const fid = d.get(i).fid;
+    const full_path = `${fid}/${path}`;
+    const file_name = full_path.substring(full_path.lastIndexOf('/')+1);
+    const dir = full_path.substring(0, full_path.lastIndexOf('/'));
+    return htl.html`<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${q_item_id}/${dir}" target="_blank">${dir}</a>/<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${q_item_id}/${full_path}" target="_blank">${file_name}</a>`;
+  } else {
+    return null;
+  }
+}
+
+const files = await sql([`SELECT fid, path, size FROM icufl WHERE item_id == '${q_item_id}' AND LOWER(extension) == LOWER('.${ext}') LIMIT 1000`]);
+```
+
+```js
+Inputs.table(files, { 
+  layout: 'auto', 
+  select: false,
+  format: {
+    path: item_file_linker
+  },
+  columns: [
+    "path",
+    "size"
+  ]
+ })
+```
