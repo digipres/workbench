@@ -134,7 +134,7 @@ display(Inputs.table(exts, {
     layout: 'auto', 
     select: false,
     format: {
-      extension: (x) => htl.html`<a href="../../lookup_ext?ext=${x}" target="_blank">${x}</a>`,
+      extension: (x) => htl.html`<a href="../../lookup?ext=${x}" target="_blank">${x}</a>`,
       size: show_big_int
       }
 }));
