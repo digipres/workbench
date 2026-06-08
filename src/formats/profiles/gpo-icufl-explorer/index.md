@@ -32,7 +32,7 @@ See [the full report](https://www.digipres.org/practices/reports/gpo-icufl-colle
 
 
 <div class="warning" label="Warning! May be slow!">
-This system depends on a database file containing information on over six million files. It's compressed, but it's nearly 200MB in size. It might take a while to start up and respond. Seriously, like 5/10 minutes depending on your download speed and the host server status.
+This system depends on a database file containing information on over six million files. It might take a while (minutes) to start up and respond, depending on your device, download speed and the host server status.
 </div>
 
 ## Query
