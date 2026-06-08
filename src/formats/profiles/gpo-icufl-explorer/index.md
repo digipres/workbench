@@ -86,7 +86,10 @@ const s = view(Inputs.table(entries, {
 
 If you select an item in the list (using the small circle in the left-hand column), more details about the item will be shown below (although it might take a moment to update).
 
+
 ## Files with extension '${ext}' in the selected item
+
+This lists files in the item that have the extension '${ext}' (up to 1,000 files).
 
 ```js
 
@@ -102,7 +105,7 @@ function item_file_linker(path, i, d) {
   }
 }
 
-const files = await sql([`SELECT fid, path, size FROM icufl WHERE LOWER(extension) == LOWER('.${ext}') AND item_id == '${q_item_id}' ORDER BY media ASC, path ASC`]);
+const files = await sql([`SELECT fid, path, size FROM icufl WHERE LOWER(extension) == LOWER('.${ext}') AND item_id == '${q_item_id}' ORDER BY media ASC, path ASC LIMIT 1000`]);
 ```
 
 ```js
@@ -121,7 +124,7 @@ Inputs.table(files, {
 
 ## All file extensions in this item
 
-This table shows all of the file extensions in the selected item, and counts up how many files have that extension, and now many bytes these files take up in total.
+This table shows all of the file extensions in the selected item, and counts up how many files have that extension, and now many bytes these files take up in total. This can be useful for spotting items with similar patterns of files extensions and file extensions that commonly appear together.
 
 ```js
 const q_item_id = (s === null) ? 0 : s.item_id;
@@ -131,10 +134,9 @@ display(Inputs.table(exts, {
     layout: 'auto', 
     select: false,
     format: {
-      extension: (x) => htl.html`<a href="../../lookup?ext=${x}" target="_blank">${x}</a>`,
+      extension: (x) => htl.html`<a href="../../lookup_ext?ext=${x}" target="_blank">${x}</a>`,
       size: show_big_int
       }
 }));
 ```
 
-This can be useful for spotting items with similar patterns of files extensions and file extensions that commonly appear together.
