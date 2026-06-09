@@ -221,6 +221,7 @@ export function generateTubeMapData(df, wf) {
                     throw new Error(`Attempted to delete ${item} but that does not exist!`)
                 }
                 setupEntitiesForEvent(lines, stations, item, event );
+                console.log("DEL",event)
                 lines[item].nodes.push({
                     "coords": [0.5*(t1+t2),y2],
                     "name": event.name,
@@ -233,7 +234,7 @@ export function generateTubeMapData(df, wf) {
             Object.keys(lines).forEach( (item) => {
                 const target = lines[item];
                 if( target.terminated != undefined ) return;
-                if( target.markedAtStart ) return;
+                //if( target.markedAtStart ) return;
                 const source = parseItemInPlace(df, target.name);
                 const endpoint_name = source.place.name+'_END';
                 const source_event = {
@@ -384,8 +385,9 @@ export function parseDataflow(text) {
                             event.marker = 'interchange';
                         }
                         // Parse offset if any:
-                        if( l[2] ) {
-                            event.shiftCoords = JSON.parse(l[2])
+                        if( l[3] ) {
+                            event.shiftCoords = JSON.parse(l[3])
+                            event.markerShiftCoords = JSON.parse(l[3])
                         }
                     } else if( l[0] == "place") {
                         const place = {
