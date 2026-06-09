@@ -50,6 +50,7 @@ function pushCopyEvent(lines, stations, item, event, sx, sy, tx, ty){
         const markerAt = event.markerAt || 0.5;
         const markerPos = event.markerPos || "W";
         const dir = Math.sign(ty-sy);
+        console.log("OPY", event);
         lines[item].nodes.push({
                 "coords": [sx+1,sy]
             },
@@ -128,10 +129,8 @@ export function generateTubeMapData(df, wf) {
                 }
             });
         } else if( event.type == "merge" ) {
-            /* WARNING! This is not implemented correctly!? 
-              Currently attempts to merge two different data items in difference places in a single event, 
-              which does not really make sense I think. It should only operate on data in the same place 
-              and create one/delete others.*/
+            /* This describes the idea of transferring data and merging it into another larger data set in a single event.
+              This might be more accurately a copy/move followed by a 'combine' event, but it useful as it is.*/
             const sources = getTargets(df, event, 'source');
             var targets = getTargets(df, event);
             sources.forEach( (source) => {
@@ -194,14 +193,16 @@ export function generateTubeMapData(df, wf) {
                     'item': source,
                     'description': event.description
                 }
-                setupEntitiesForEvent(lines, stations, item, source_event );
+                const parentShiftCoords = event.shiftCoords|| [0,0];
+                setupEntitiesForEvent(lines, stations, item, source_event, parentShiftCoords );
                 const y = source.index * ds;
                 lines[source.item].nodes.push({
                     "coords": [t1,y],
                     "name": source.place.name,
-                    "labelPos": "W"
+                    "labelPos": "W",
+                    "shiftCoords": parentShiftCoords
                 },{
-                    "coords": [t1+1,y]
+                    "coords": [t1+1,y],
                 });
                 // End this item as these are just start-point markers
                 //lines[source.item].terminated = t1;
@@ -256,7 +257,9 @@ export function generateTubeMapData(df, wf) {
         Object.keys(lines).forEach( (item ) => {
           const prev = lines[item].nodes.at(-1);
           if( prev && prev.coords && prev.coords[0] < t2 && lines[item].terminated == undefined ) {
-            lines[item].nodes.push( {"coords": [t2, prev.coords[1]]} );
+            lines[item].nodes.push( {
+                "coords": [t2, prev.coords[1]],
+            } );
           }
         });
         // Increment the timer:
@@ -379,6 +382,10 @@ export function parseDataflow(text) {
                         }
                         if( l[0] == "delete") {
                             event.marker = 'interchange';
+                        }
+                        // Parse offset if any:
+                        if( l[2] ) {
+                            event.shiftCoords = JSON.parse(l[2])
                         }
                     } else if( l[0] == "place") {
                         const place = {
