@@ -50,7 +50,6 @@ function pushCopyEvent(lines, stations, item, event, sx, sy, tx, ty){
         const markerAt = event.markerAt || 0.5;
         const markerPos = event.markerPos || "W";
         const dir = Math.sign(ty-sy);
-        console.log("OPY", event);
         lines[item].nodes.push({
                 "coords": [sx+1,sy]
             },
@@ -221,7 +220,6 @@ export function generateTubeMapData(df, wf) {
                     throw new Error(`Attempted to delete ${item} but that does not exist!`)
                 }
                 setupEntitiesForEvent(lines, stations, item, event );
-                console.log("DEL",event)
                 lines[item].nodes.push({
                     "coords": [0.5*(t1+t2),y2],
                     "name": event.name,
