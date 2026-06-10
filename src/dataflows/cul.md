@@ -17,14 +17,14 @@ For more contents, visit [the CUL digital preservation homepage](https://www.lib
 
 This service handles a range of digital media, transferring content from a range of different storage carriers including legacy media like floppy disks. See [the Transfer Service homepage](https://www.lib.cam.ac.uk/digitalpreservation/services/transfer-service) for more information.
 
-The overall dataflow for this service is shown below. You can use your mouse to hover over the name of each 'station' to find out more about every event in the dataflow.
+The overall dataflow for this service is shown below. You can use your mouse to navigate the map and hover over the name of each 'station' to find out more about every event in the dataflow.
 
 ```dataflow
 dataflow 1.0
 title "CUL Transfer Service"
-zoom 1.2
+zoom 1.5
 height 600
-offset 24 16
+offset 26 24
 
 data arc "Archives" darkred
 data sup "Supplemental Material"
