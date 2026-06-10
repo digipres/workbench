@@ -146,6 +146,7 @@ export function generateTubeMapData(df, wf) {
                     setupEntitiesForEvent(lines, stations, item, event );
                     pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
                     // Record as a merge:
+                    lines[source.item].terminated = t2;
                     lines[item].name = `${target.itemId}@${target.place.id}`;
                 });
             });
@@ -465,6 +466,10 @@ export async function generateDataflow(dfl) {
     <style>
     .label text {
       cursor: pointer
+    }
+    .tippy-content a {
+      color: white;
+      text-decoration: underline;
     }
     </style>
     `;
