@@ -28,7 +28,7 @@ offset 24 16
 
 data arc "Archives" darkred
 data sup "Supplemental Material"
-data leg "Legacy Material" darkred
+data leg "Legacy Material" red
 data content "Content" red
 data photo "Photographs of Legacy Carriers" green
 data sip "SIP" black
