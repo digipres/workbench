@@ -95,21 +95,24 @@ space
 transform id@adele sip@adele "Create\nSIP Folder"
 """The identifier is used to create a SIP folder that will hold the transfer. It contains a data folder and a metadata folder, named according to item identifiers. The data folder will contain the physical or logical disk contents. The metadata folder will contain photographs and the log and hash manifest from the media extraction process."""
 
-start photo@camera "Photograph\nCarrier"@N [0,0]
+start photo@camera "Photograph\nCarrier"@N [0,1]
 """A camera attached to the workstation is used to record what the carrier look like."""
 
-merge photo@camera sip@adele "Take\nPhotographs"
+move photo@camera photo@adele "Take\nPhotographs"
 """Pictures are taken of the front and back of the carrier, and these photos are added to the metadata folder of the SIP."""
+
+combine photo@adele "Add photos\nto SIP"
+"""The photographs are added to the SIP metadata folder."""
 
 space
 move leg@shelf leg@hub "Connect\nCarrier" [0,1]
 """The carrier is connected or inserted into the appropriate drive of the workstation."""
 
 space
-derive leg@hub content@hub "Extract\nContent & Logs"@N [0,0]
+copy leg@hub content@adele "Extract\nContent & Logs"@W [0,1]
 """The device in the workstation makes a copy of the content, logging the process as it goes, along with the checksums of each file. This may be a physical disk image of a logical copy of the disk contents, depending on teh situation."""
 
-merge content@hub sip@adele "Transfer to SIP"
+combine content@adele "Add data\nto SIP"
 """The extracted file contents and the log are written into the data and metadata folders of the SIP."""
 
 move leg@hub leg@shelf "Reshelve\nCarrier"

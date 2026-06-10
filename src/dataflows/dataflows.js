@@ -145,6 +145,9 @@ export function generateTubeMapData(df, wf) {
                     }
                     setupEntitiesForEvent(lines, stations, item, event );
                     pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
+                    // Create a post-merge marker 'station'?
+                    // Add this is a 'name' to the last line segment line  and .marker = "interchange"???
+                    //lines[item].nodes[-1].name = terminus
                     // Record as a merge:
                     lines[source.item].terminated = t2;
                     lines[item].name = `${target.itemId}@${target.place.id}`;
@@ -209,7 +212,7 @@ export function generateTubeMapData(df, wf) {
                 // Note that start point is marked:
                 lines[source.item].markedAtStart = true;
             });
-        } else if( event.type == "delete" ) {
+        } else if( event.type == "delete" || event.type == "combine" ) {
             const targets = getTargets(df, event);
             targets.forEach( (target) => {
                 var item = target.item;
@@ -372,7 +375,7 @@ export function parseDataflow(text) {
                             label: l[1] || l[0],
                             type: l[0],
                         }
-                    } else if( l[0] == "delete" || l[0] == "start" ) {
+                    } else if( l[0] == "delete" || l[0] == "combine" || l[0] == "start" ) {
                         // FIXME START is kinda broken because only one color is allowed and there could be multiple starts
                         event = {
                             label: l[2] || l[0],
@@ -380,7 +383,7 @@ export function parseDataflow(text) {
                             targets: l[1].split(','),
                             color: l[1]
                         }
-                        if( l[0] == "delete") {
+                        if( l[0] == "delete" || l[0] == "combine") {
                             event.marker = 'interchange';
                         }
                         // Parse offset if any:
@@ -505,6 +508,8 @@ export async function generateDataflow(dfl) {
             return `<i>Transform ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "merge") {
             return `<i>Merge ${e.sources} into ${e.target}</i>.<br>${e.description || ''}`;
+        } else if( e.type == "combine") {
+            return `<i>Combine ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "delete") {
             return `<i>Delete ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "start") {
