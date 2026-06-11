@@ -12,93 +12,117 @@ If you have any comments or corrections please let [me](https://anjackson.net/) 
 
 ## Introduction
 
-The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. See also [Inside the Archive #49: World Digital Preservation Day 2025 part one | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one). A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
+The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. [Inside the Archive blog](https://www.bfi.org.uk/bfi-national-archive/inside-archive/inside-archive-blog), recent entries
 
-TBA "BFI Blog", "Website Blog" ?
+- [World Digital Preservation Day 2025 part one](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one)
+- [Inside the Archive #50: World Digital Preservation Day 2025 part two](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-50-world-digital-preservation-day-2025-part-two)
+- [Inside the Archive #59: Screencraft, floppy disc fever and resilient TV capture | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-59-screencraft-floppy-disc-fever-resilient-tv-capture)
+- [Inside the Archive #67: Collecting born-digital work | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-67-collecting-born-digital-work)
+
+A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
 
 Q: No digitisation represented? Only born digital...
 A (emailed): Not intentional, just reflecting what I'd thought about, and my focus on digital bitstreams rather than information carriers.
 
-## Bitstream Preservation Dataflow
+Note focus on acquisition of born digital material, digitisation is not covered in detail. This covers A/V and images, not documents, which are not currently preserved actively
 
-The following dataflow diagram summarises the flow of data into the BFI National Archive's Digital Preservation Infrastructure (DPI). This general dataflow is shared across all content streams.
+## Digital Preservation Infrastructure (DPI) Dataflow
+
+The following dataflow diagram summarises the flow of data into the BFI National Archive's Digital Preservation Infrastructure (DPI). This bitstream preservation dataflow is shared across all content streams.
+
 
 
 ```dataflow
 dataflow 1.0
-title "BFI National Archive Overall Bitstream Workflow"
-zoom 0.8
+title "BFI National Archive Digital Preservation Infrastructure (DPI) Workflow"
+zoom 2.0
+offset 33 32
 height 600
 
-data data "Source Data" black
-data record "CID Record" darkblue
-data aip-id "CID Archival Information Package Identifier" darkblue
-data aip "Archival Information Package" red
-data dip "Dissemination Information Package" green
+data item "Item" grey
+data data "Data" black
+data bd-data "Born-Digital Data" black
+data carrier "Carrier" brown
+data carrier-data "Carrier Data" black
+data record "CID Record" blue
+data cid "CID Preservation Package Identifier" blue
+data pp "Preservation Package" red
+data ppmd "Preservation Package Metadata" blue
+data checksum "Checksum" orange
+data ar "Access Rendition" green
 data replica_3 "Tape 3" darkred
 
-place internet "Internet"
 place rr "Reading Room"
 place website "BFI Website"
+
+place depositors "Third-Party\nPartners"
+place internet "Internet"
+place cc "BFI National Archive\nPhysical Collection"
+place ts "Transfer Station"
 place cdi "Collections\nInformation\nDatabase (CID)"
 place access "Access Storage"
-place workspace "Working Storage"
+place nas "NAS Storage in Archive Network (PB-scale)"
 place tape1 "Tape Robot 1"
 place tape2 "Tape Robot 2"
 place vault "Tape Vault"
 
-start data@internet 
-"""Digital collections material is deposited by third-parties over the internet, via a dedicated connection."""
 
-move data@internet data@workspace "Deposit"
-"""Deposits arrive and are places in working storage, as Submission Information Packages (SIP). The precise details depend on the content stream."""
+start item@cc "BFI Holdings"
+"""The BFI National Archive holds a large collection of film and television media and associated artefacts. Some of these may be selected for digitisation and digital preservation."""
+
+derive item@cc data@cc "Digitise"
+"""The BFI National Archive’s Conservation Centre is where items from the National Archive are digitised. See <a href="https://www.bfi.org.uk/features/day-life-bfi-national-archive">this blog post</a> to find out more."""
+
+move data@cc data@nas "Internal\nTransfer"
+"""The digitised items from the Conservation Centre are transferred to the PB-scale Network-Attached Storage (NAS) on the archive network."""
+
+# ----
+
+start item@depositors
+"""The BFI also works with external partners to add born-digital productions to the national collections."""
+
+derive item@depositors bd-data@depositors "Internet\nTransfer"@N
+"""This"""
+
+move bd-data@depositors bd-data@internet "Upload\nSent"
+merge bd-data@internet bd-data@nas "Upload\nReceived"@W@0.82
+"""Born digital content may be delivered over the internet, via a dedicated physical connection."""
+space
+
+derive item@depositors carrier@depositors "Copy To\nTransfer\nMedia"@N [0,1]
+move carrier@depositors carrier@ts "Post/Courier\nTransfer Media"@E@0.4
+"""Or data maybe submitted on portable carriers (HDD/SSD/data tape).  For example, some submissions can be as large as 10TB in size, making internet transfer impractical."""
+
+derive carrier@ts carrier-data@ts "Extract\nDigital Media" [0,0]
+"""The files held on the physical carrier are extracted on a network-isolated Transfer Station."""
+
+merge carrier-data@ts carrier-data@nas "Internal\nTransfer"@W@0.7
+"""The digital files are then transferred to the PB-scale Network-Attached Storage (NAS) on the archive network."""
+
+delete carrier@ts "Return/Dispose\nTransfer Media"@E [0,1]
+"""The physical media are then returned or disposed of in an appropriate manner."""
+
+
+space
 
 space 
-derive data@workspace record@workspace "Basic\nDocumentation"@S [0,-1]
-move record@workspace record@cdi "Create\nCID Record"
-copy record@cdi aip-id@workspace "Retrieve\n CID"@E [0,-1]
-"""An identifier is created for the archival information package."""
+start record@cdi "Basic\nDocumentation"@S [0,1]
+"""A Basic Documentation metadata record is created for the item in the Collections Information Database (CID)."""
+
+copy record@cdi cid@nas "Retrieve\n CID"@W [0,1]
+"""The CID for the item is retrieved from the DCI."""
+
 
 space 
-derive data@workspace aip@workspace "Generate\nthe AIP"@S [0,-1]
-"""An archival information package is generated from the submitted data. This stage varies a great deal between content streams. It may be manual or automated."""
-
-#move aip-id@workspace record@cdi "Record\nAIP ID"
-"""If the AIP was generated successfully, the AIP ID is recorded in the Collections Information Database."""
-
-copy aip@workspace replica_1@tape1,replica_2@tape2 "Copy to\ntapes 1 & 2"
-"""The AIP is then copied to two tapes managed by two separate tape robots."""
-
-derive replica_2@tape2 replica_3@tape2 "Copy to\ntape 3"@S [0,-2]
-"""The second tape robot creates an additional copy on a separate tape."""
-
-move replica_3@tape2 replica_3@vault "Transfer tape 3 to vault"@E
-"""As the third-copy tapes are filled, they are collected and transferred to a third location."""
-
-derive aip@workspace dip@workspace "Create DIP"@N [0,1]
-"""A smaller access copy, or Dissemination Information Package (DIP), is generated from the SIP/AIP."""
-
-copy dip@workspace dip@access "Copy DIP"
-"""The access copy is transferred to the storage location used to provide access to end users."""
-
-delete data@workspace,aip@workspace,dip@workspace,aip-id@workspace "Delete Working Copies"@S 
-"""All the intermediary file and the original submission are now deleted."""
-
-status "Ingest Complete"
-
-end 
-```
-
-Notes to integrate:
-
-
-1. Deposit
-2. CID Record Creation
-3. Assign ID to digital file (rename file)
-
-- CID record creation generates unique ID
-- Sources: Portable carriers, HDD/SSD/data tape
-- We don't use BagIt or other format AIP container/process
+combine cid@nas "Rename\nusing CID"@N [0,0]
+"""
+- UID from the CID record is use to name the digital media, but:
+- Filenames and folder names stored in CID as acquired.
+"""
+space
+transform data@nas pp@nas "QC &\nValidation\n(& Wrapping)"@S
+"""
+- We don't use BagIt or other AIP container/process, TAR or RAWCooked (latter very strongly preferred, where cannot use FFv1 Matroska)
 - we do 
   - validation
   - QC
@@ -106,7 +130,71 @@ Notes to integrate:
   - prep for autoingest (file naming to standard)
   - some TAR, some RAWcooked
 - only acquisitions here, not digitisation from physical collections, is this intentional?
-- this diagram only covers A/V and images, not documents (not currently preserving actively)
+- this diagram only covers A/V and images, not documents (not currently preserving actively) 
+- visual + audio + encoding standards
+
+- Usually a manifest is present, either from the source in the relevant standard. RAWCooked generated e.g. create from DPX files.
+- Digital media records are created, write MediaInfo etc.
+- Extract MediaInfo from files, sent to CID.
+- AIP is called "Preservation Package"
+
+- PP: A/V as separate bitstreams in some PP, usually in standards-based packages, ProRes sometimes use as AR and this combines them.
+"""
+
+space
+derive pp@nas ar@nas "Create\nAccess\nRendition"@S [0,-1]
+"""A smaller access copy, or Dissemination Information Package (DIP), is generated from the SIP/AIP.
+
+- DIP is called "Access Renditions" low-bitrate lossy JPG and MP4 files access, and a reference to this is stored in the CID. precise details depend on the nature of the content. Preservation file media records also point to access.
+- AR is from ? Always retaining the original, generated from a package that contains the original.
+
+- Sometimes preserve in formats that cannot be transcoded for access. Don't always create ARs.
+
+The autoingest job kicks in here
+"""
+
+
+space
+derive pp@nas ppmd@nas "Extract\nMetadata"@N [0,1]
+
+merge ppmd@nas record@cdi "Add Metadata To\nExtended Documentation"
+"""If the AIP was generated successfully, the AIP ID is recorded in the Collections Information Database.
+- TBC: "CID gets a record for every file ingest to the DPI, with automated metadata from MediaInfo (Python)" This is actually per package, right, every file?
+- Any access restrictions are added to CID, displayed in the DPI, and used to limit onward delivery.
+Manual and automated.
+Standards compliant record(s) using EN 15907 (moving image), ISAD(G) (screen craft), RDA (library).
+"""
+
+copy pp@nas replica_1@tape1,replica_2@tape2 "Copy to\ntapes 1 & 2"
+"""The AIP is then copied to two tapes managed by two separate tape libraries (>20PB scale, IBM3592 & LTO9, two different tape technologies???). - Policy on the tape library system, replication happens automatically."""
+derive replica_2@tape2 replica_3@tape2 "Copy to\ntape 3"@S [0,-1]
+"""The second tape robot creates an additional copy on a separate LTO9 tape."""
+
+derive replica_1@tape1 checksum@tape1 "Calculate\nChecksum"@N [0,1]
+"""
+- Local MD5 is generated, which is strongly preferred by the data tape system. This is not a cryptographic use case.
+- Retrieval check is from ?
+  - Send to data-tape, it generates and MD as it writes to tape. This is used as the comparison usually, but can differ when the tape system has chunked things for writing to tape.
+"""
+
+move checksum@tape1 checksum@nas "Retrieve\nChecksum"@E
+combine checksum@nas "Fixity\nCheck"@N 
+
+move replica_3@tape2 replica_3@vault "Transfer tape 3 to vault"@E
+"""As the third-copy tapes are filled, they are collected and transferred to a third location.
+- Tape held over 50 miles away,, not networked, for diaster recovert. annual random recovery checks that the data restores, verified against CID.
+"""
+
+copy ar@nas ar@access "Transfer"
+"""The access copy is transferred to the storage location used to provide access to end users."""
+
+delete data@nas,pp@nas,ar@nas "Delete\nWorking Copies"@E
+"""All the intermediary file and the original submission are now deleted, after confirming lossless transfer to data tape."""
+
+status "Ingest Complete"
+
+end 
+```
 
 
 At the end of the ingest process, there are immediately accessible 'access copies' (DIPs) and the 'preservation copies' (AIPs) are stored on multiple tapes.  The Collections Information Database (CID) contains all metadata needed for management and discovery of content, along with the appropriate identifier for the information packages that contain the digital assets. The CID remains the master metadata store, and this metadata is preserved independently of the DPI.
@@ -115,7 +203,7 @@ The code for the core `autoingest job` and related workflows is here: [bfidatadi
 
 ## Access Dataflow
 
-There are two different modes of access. Some content is available over the public web (rights clearance required), while TBC???virtually all collection material is available on site. 
+There are two different modes of access. Some content is available over the public web (rights clearance required), while virtually all collection material is discoverable via the collections search and is available on site, by submitting an access request. 
 
 ### Internet Access
 
@@ -146,7 +234,7 @@ place rr "Reading\nRoom"
 place website "BFI Website"
 place cdi "Collections\nInformation\nDatabase (CID)"
 place access "Access Storage"
-place workspace "Working Storage"
+place nas "Working Storage"
 place tape1 "Tape Robot 1"
 place tape2 "Tape Robot 2"
 place vault "Tape Vault"
@@ -201,7 +289,7 @@ place rr "Reading\nRoom"
 place website "BFI Website"
 place cdi "Collections\nInformation\nDatabase (CID)"
 place access "Access Storage"
-place workspace "Working Storage"
+place nas "Working Storage"
 place tape1 "Tape Robot 1"
 place tape2 "Tape Robot 2"
 place vault "Tape Vault"
@@ -232,17 +320,7 @@ delete aip_tape@tape1 "Unload\nTape"
 end 
 ```
 
-## Content Stream Variations
-
-Building on the generic DPI workflow, different types of content are handled as follows:
-
-TBA: Meaning of Workspace below is unclear:
-
-- Items for different streams land in different folders in the `workspace` working area.
-- Custom Python scripts process items by arranging them in and moving them between folders under shared naming conventions.
-- If the stream is not fully automated, any manual Digital Acquisitions or QC work is done at this point. If all is well, a corresponding `autoingest job` is created.
-- TBC: "CID gets a record for every file ingest to the DPI, with automated metadata from MediaInfo (Python)" This is actually per package, right, every file?
-- Any access restrictions are added to CID, displayed in the DPI, and used to limit onward delivery.
+## Content Streams
 
 Some links and notes about the details on the content stream variations are given below.
 

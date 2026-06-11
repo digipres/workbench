@@ -99,7 +99,7 @@ export function generateTubeMapData(df, wf) {
         const t1 = time*dt;
         const t2 = (time + 1)*dt;
         // Add new lines if there has been a copy event.
-        if( event.type == "copy" || event.type == "move" ) {
+        if( event.type == "copy" || event.type == "move" || event.type == "merge") {
             const source = parseItemInPlace(df, event.source);
             var targets = getTargets(df, event);
             targets.forEach( (target ) => {
@@ -125,34 +125,37 @@ export function generateTubeMapData(df, wf) {
                     lines[target.item].name = `${source.itemId}@${target.place.id}`;
                     delete lines[target.item].terminated;
                     delete lines[event.source];
-                }
-            });
-        } else if( event.type == "merge" ) {
-            /* This describes the idea of transferring data and merging it into another larger data set in a single event.
-              This might be more accurately a copy/move followed by a 'combine' event, but it useful as it is.*/
-            const sources = getTargets(df, event, 'source');
-            var targets = getTargets(df, event);
-            sources.forEach( (source) => {
-                targets.forEach( (target ) => {
-                    const y1 = source.index*ds;
-                    const y2 = target.index*ds;
-                    // Where we start from:
-                    var item = source.item;
-                    if (!lines[item]) {
-                        throw new Error(`Attempt to ${event.type} ${item} but this does not exist!`);
-                    } else {
-                        console.log([source, target]);
-                    }
-                    setupEntitiesForEvent(lines, stations, item, event );
-                    pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
-                    // Create a post-merge marker 'station'?
-                    // Add this is a 'name' to the last line segment line  and .marker = "interchange"???
-                    //lines[item].nodes[-1].name = terminus
-                    // Record as a merge:
+                } else if( event.type == "merge") {
                     lines[source.item].terminated = t2;
-                    lines[item].name = `${target.itemId}@${target.place.id}`;
-                });
+                    lines[item].name = `${target.itemId}@${target.place.id}`; 
+                } 
             });
+        // } else if( event.type == "merge" ) {
+        //     /* This describes the idea of transferring data and merging it into another larger data set in a single event.
+        //       This might be more accurately a copy/move followed by a 'combine' event, but it useful as it is.*/
+        //     const sources = getTargets(df, event, 'source');
+        //     var targets = getTargets(df, event);
+        //     sources.forEach( (source) => {
+        //         targets.forEach( (target ) => {
+        //             const y1 = source.index*ds;
+        //             const y2 = target.index*ds;
+        //             // Where we start from:
+        //             var item = source.item;
+        //             if (!lines[item]) {
+        //                 throw new Error(`Attempt to ${event.type} ${item} but this does not exist!`);
+        //             } else {
+        //                 console.log([source, target]);
+        //             }
+        //             setupEntitiesForEvent(lines, stations, item, event );
+        //             pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
+        //             // Create a post-merge marker 'station'?
+        //             // Add this is a 'name' to the last line segment line  and .marker = "interchange"???
+        //             //lines[item].nodes[-1].name = terminus
+        //             // Record as a merge:
+        //             lines[source.item].terminated = t2;
+        //             lines[item].name = `${target.itemId}@${target.place.id}`;
+        //         });
+        //     });
         } else if( event.type == "derive" || event.type == "transform" ) {
             const source = parseItemInPlace(df, event.source);
             var targets = getTargets(df, event);
@@ -361,7 +364,7 @@ export function parseDataflow(text) {
                             event.targets = l[2].split(",");
                             event.color = event.source;
                         } else if( l[0] == "merge") {
-                            event.sources = l[1].split(","),
+                            event.source = l[1],
                             event.target = l[2]
                             event.color = event.target;
                         } else {
@@ -574,7 +577,7 @@ export async function generateDataflow(dfl) {
     return div;
 }
 
-export function enableTooltips() {
+export function enableTooltips(tt_element) {
     tippy('[data-tippy-content]',{
         allowHTML: true,
         sticky: true,
@@ -582,7 +585,7 @@ export function enableTooltips() {
         interactive: true,
         // Need to do this to see interactive tooltips:
         // https://atomiks.github.io/tippyjs/v5/faq/#my-tooltip-appears-cut-off-or-is-not-showing-at-all
-        appendTo: document.body
+        appendTo: tt_element // document.body
     });
 }
 
@@ -685,6 +688,14 @@ export function rasterize(svg) {
     }
   }
 
+// Support full-screen mode:
+function toggleFullscreen(element) {
+    if(!document.fullscreenElement) {
+        element.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
 
 // Set up a mutation observer so we can update when in 'npm run dev' mode.
 // Options for the observer (which mutations to observe)
@@ -725,14 +736,30 @@ export async function renderDataflows() {
         const save_button = Inputs.button("SVG", {value: serialize(dataflow.svg.node()), reduce: saveSvg, disabled: false });
         save_button.style.position = 'absolute';
         save_button.style.left = '3px';
+        save_button.style.top = '26px';
         dataflow.insertAdjacentElement('afterBegin', save_button);
         const save_png_button = Inputs.button("PNG", {value: await rasterize(dataflow.svg.node()), reduce: saveImage, disabled: false });
         save_png_button.style.position = 'absolute';
         save_png_button.style.left = '3px';
-        save_png_button.style.top = '25px';
+        save_png_button.style.top = '51px';
         dataflow.insertAdjacentElement('afterBegin', save_png_button);
+        
+        const fullscreen_button = Inputs.button("Toggle Fullscreen View", { value: dataflow, reduce: toggleFullscreen, disabled: false });
+        fullscreen_button.style.position = 'absolute';
+        fullscreen_button.style.left = '3px';
+        fullscreen_button.style.top = '1px';
+        dataflow.insertAdjacentElement('afterBegin', fullscreen_button);
 
+        // Support full-screen mode:
+        dataflow.tabIndex = 0; // < Make the full dataflow focusable.
+        // Entry full-screen mode if you press Enter when focused:
+        dataflow.addEventListener("keydown", (e) => {
+            if( e.key === "Enter" ) {
+                toggleFullscreen(dataflow);
+            }
+        });
+        // And ensure tooltips show...
+        enableTooltips(dataflow);
     }
-    enableTooltips();
 }
 

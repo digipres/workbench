@@ -7,11 +7,14 @@
 
 This page uses Dataflow diagrams to explore some of the digital preservation services at [Cambridge University Library](https://www.lib.cam.ac.uk/) (CUL).
 
-For more contents, visit [the CUL digital preservation homepage](https://www.lib.cam.ac.uk/digitalpreservation)
+For more information, visit [the CUL digital preservation homepage](https://www.lib.cam.ac.uk/digitalpreservation) or read the blogs posts from [Digital Preservation at the University of Cambridge Libraries and Archives](https://digitalpreservation-blog.lib.cam.ac.uk/).
 
 ## Overview
 
-...relationship between Transfer Service and the Deposit Service? And overall access and other services?
+...relationship between Transfer Service and the Deposit Service and Digital Preservation Service And Repositry?!? And overall access and other services?
+
+[Building our repository ingest workflow | by John Gostick | Digital Preservation at the University of Cambridge Libraries and Archives](https://digitalpreservation-blog.lib.cam.ac.uk/building-our-repository-ingest-workflow-e09a0d2cdddc)
+
 
 ## The Transfer Service
 
@@ -47,7 +50,7 @@ place camera "Camera"
 place hub "Attached to Workstation"
 place adele "ADELE/FRED/Tom Jr/Mac\nWorkstations"
 place db "Transfer Service Data Tracker"
-place s3 "Deposit Service\nS3 Bucket"
+place s3 "Digital Preservation Service\nS3 Bucket"
 
 start arc@stacks "Digital Carrier In Archive" [0,2]
 """Digital carriers are often discovered during archival processing. When they are found, a Group Assessment Record is set up in ArchivesSpace."""
@@ -135,7 +138,10 @@ end
 
 ```
 
-### The Deposit Service
+## The Digital Preservation Service
+
+Or repository?
+
 
 
 
