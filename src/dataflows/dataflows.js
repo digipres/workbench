@@ -550,28 +550,36 @@ export async function generateDataflow(dfl) {
                 .attr('type', 'text/css')
                 .text("@import url('https://fonts.googleapis.com/css?family=Hammersmith+One');");
     
-    // Set up zoom:
-    const zoom = d3.zoom().scaleExtent([0.1, 6]).on("zoom", zoomed);
+    const zoomToInit = function () {
+        // Set up zoom:
+        const zoom = d3.zoom().scaleExtent([0.2, 6]).on("zoom", zoomed);
+        
+        var zoomContainer = svg.call(zoom);
+        var initialScale = wf.initialZoom || 0.75;
+        var initialTranslate = wf.initialOffset || undefined; // e.g. [100,10] percentages of the total w/h
     
-    var zoomContainer = svg.call(zoom);
-    var initialScale = wf.initialZoom || 0.75;
-    var initialTranslate = wf.initialOffset || undefined; // e.g. [100,10] percentages of the total w/h
-    
-    zoom.scaleTo(zoomContainer, initialScale);
-    if( initialTranslate ) {
-        zoom.translateTo(
-            zoomContainer,
-            (0.5-initialTranslate[0]/100)*width,
-            (0.5-initialTranslate[1]/100)*height
-        );
+        //console.log(width, height);
+        //console.log(div.offsetWidth, div.offsetHeight);
+        //console.log(zoomContainer, initialScale, initialTranslate);
+        zoom.scaleTo(zoomContainer, initialScale);
+        if( initialTranslate ) {
+            zoom.translateTo(
+                zoomContainer,
+                (0.5 - initialTranslate[0]/100.0)*width,
+                (0.5 - initialTranslate[1]/100.0)*height
+            );
+        }
     }
     
+zoomToInit();
+
     function zoomed(event) {
         svg.select("g").attr("transform", event.transform.toString());
     }
 
     // Attach a reference here so we can use it from the client: 
     div.svg = svg;
+    div.zoomToInit = zoomToInit;
 
 
     return div;
@@ -689,9 +697,9 @@ export function rasterize(svg) {
   }
 
 // Support full-screen mode:
-function toggleFullscreen(element) {
+function toggleFullscreen(dataflow) {
     if(!document.fullscreenElement) {
-        element.requestFullscreen();
+        dataflow.requestFullscreen();
     } else {
         document.exitFullscreen();
     }
@@ -736,18 +744,24 @@ export async function renderDataflows() {
         const save_button = Inputs.button("SVG", {value: serialize(dataflow.svg.node()), reduce: saveSvg, disabled: false });
         save_button.style.position = 'absolute';
         save_button.style.left = '3px';
-        save_button.style.top = '26px';
+        save_button.style.top = '1px';
+        save_button.style.width = 'auto';
         dataflow.insertAdjacentElement('afterBegin', save_button);
         const save_png_button = Inputs.button("PNG", {value: await rasterize(dataflow.svg.node()), reduce: saveImage, disabled: false });
         save_png_button.style.position = 'absolute';
-        save_png_button.style.left = '3px';
-        save_png_button.style.top = '51px';
+        save_png_button.style.left = '51px';
+        save_png_button.style.top = '1px';
+        save_png_button.style.width = 'auto';
         dataflow.insertAdjacentElement('afterBegin', save_png_button);
         
-        const fullscreen_button = Inputs.button("Toggle Fullscreen View", { value: dataflow, reduce: toggleFullscreen, disabled: false });
+        const fullscreen_button = Inputs.button("Toggle Fullscreen");
         fullscreen_button.style.position = 'absolute';
-        fullscreen_button.style.left = '3px';
+        fullscreen_button.style.left = '100px';
         fullscreen_button.style.top = '1px';
+        fullscreen_button.style.width = 'auto';
+        fullscreen_button.onclick = function() {
+            toggleFullscreen(dataflow);
+        }
         dataflow.insertAdjacentElement('afterBegin', fullscreen_button);
 
         // Support full-screen mode:
@@ -758,6 +772,12 @@ export async function renderDataflows() {
                 toggleFullscreen(dataflow);
             }
         });
+        // Reset zoom when fullscreen mode changes:
+        //dataflow.addEventListener("fullscreenchange", function () {
+        //    dataflow.zoomToInit();
+        //});
+
+
         // And ensure tooltips show...
         enableTooltips(dataflow);
     }

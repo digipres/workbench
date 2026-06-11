@@ -26,7 +26,7 @@ A (emailed): Not intentional, just reflecting what I'd thought about, and my foc
 
 Note focus on acquisition of born digital material, digitisation is not covered in detail. This covers A/V and images, not documents, which are not currently preserved actively
 
-## Digital Preservation Infrastructure (DPI) Dataflow
+## Ingest & Preservation
 
 The following dataflow diagram summarises the flow of data into the BFI National Archive's Digital Preservation Infrastructure (DPI). This bitstream preservation dataflow is shared across all content streams.
 
@@ -197,23 +197,22 @@ end
 ```
 
 
-At the end of the ingest process, there are immediately accessible 'access copies' (DIPs) and the 'preservation copies' (AIPs) are stored on multiple tapes.  The Collections Information Database (CID) contains all metadata needed for management and discovery of content, along with the appropriate identifier for the information packages that contain the digital assets. The CID remains the master metadata store, and this metadata is preserved independently of the DPI.
+At the end of the ingest process, there are immediately accessible 'access copies' (DIPs) and the 'preservation copies' (AIPs) are stored on multiple tapes.  The Collections Information Database (CID) contains all metadata needed for management and discovery of content, along with the appropriate identifier for the information packages that contain the digital assets. CID remains the master metadata store, and this metadata is preserved independently of DPI (unique identifier is the join key).
 
 The code for the core `autoingest job` and related workflows is here: [bfidatadigipres/BFI_scripts](https://github.com/bfidatadigipres/BFI_scripts).
 
-## Access Dataflow
+## Internet Access For Public Users
 
 There are two different modes of access. Some content is available over the public web (rights clearance required), while virtually all collection material is discoverable via the collections search and is available on site, by submitting an access request. 
 
-### Internet Access
 
 Public internet access uses the 'access copies':
 
 ```dataflow
 dataflow 1.0
 title "BFI National Archive Public Access Workflow"
-zoom 0.84
-offset 0 0
+zoom 1.0
+offset 25 25
 height 300
 
 data request "User Request/Query" black
@@ -259,7 +258,7 @@ move dip@website dip@internet  "Deliver DIP"@W
 end 
 ```
 
-### On-Site Access
+## On-Premises Access For Public Users
 
 Only BFI staff are able to access the highest-quality (very high bitrate) 'preservation copies'. These copies are retrieved from tape on demand:
 
@@ -319,6 +318,10 @@ delete aip_tape@tape1 "Unload\nTape"
 
 end 
 ```
+
+## BFI Network Access For Staff Users
+
+...
 
 ## Content Streams
 
