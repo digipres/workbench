@@ -25,9 +25,9 @@ The overall dataflow for this service is shown below. You can use your mouse to 
 ```dataflow
 dataflow 1.0
 title "CUL Transfer Service"
-zoom 1.5
-height 600
-offset 26 24
+zoom 2.0
+height 800
+offset 34 30
 
 data arc "Archives" darkred
 data sup "Supplemental Material" darkred
@@ -43,10 +43,11 @@ data rec "Transfer Service Record" darkblue
 data rep "Transfer Service Report" darkblue
 data id "Transfer Service Item ID" blue
 
-place as "ArchivesSpace"
 place stacks "The Archival Stacks"
+place as "ArchivesSpace"
 place pam "PAM Workstation"
 place rr "Reading Room\nTheses Collection"
+place supspread "Supplemental Thesis\nCarriers Spreadsheet"
 place box "Archives Digital Carrier Box"
 place rrbox "Reading Room Digital Carrier Box"
 place mysmedia "Mystery Media"
@@ -70,12 +71,21 @@ move leg@mysmedia leg@shelf "Accept\nCarrier"
 start sup@rr "Supplementary Material In Reading Rooms" [0,2]
 """
 This source of digital content comes from supplemental material alongside Ph.D. theses.
+"""
 
-Supplemental Thesis Carriers Spreadsheet Shared spreadsheet
+start rec@supspread
 """
-move sup@rr sup@rrbox "Place Media In\nDigital Carrier Box"@E
+A shared spreadsheet is used to coordinate the handling of supplementary material.
 """
-The reading room staff label the media with an identifier associated with the thesis and place them in a dedicated carrier box. This identifier can then be used in the Transfer Service Data Tracker, with multiple media items being identified by a trailing <tt>_1/_2/</tt>etc.
+
+derive rec@supspread iar@supspread "Add Entry\nFor Carrier"@N
+"""
+A basic record and an identifier associated with the thesis is recorded in the shared spreadsheet. This identifier can then be used in the Transfer Service Data Tracker.
+"""
+
+move sup@rr sup@rrbox "Place Media In\nDigital Carrier Box"@E@0.6
+"""
+The reading room staff label the media with the thesis identifier (with multiple media items being identified by a trailing <tt>_1/_2/</tt>etc.) and place them in a dedicated carrier box. 
 """
 move sup@rrbox sup@shelf "Transfer\nCarrier Box"
 """The Reading Room carrier box is transferred to the shelves of the Transfer Lab."""
@@ -83,7 +93,7 @@ move sup@rrbox sup@shelf "Transfer\nCarrier Box"
 start gar@as 
 """A Group Assessment Record is created in ArchiveSpace. This documents the basic facts of the digital carrier, like any identifiers and the media type, to help the Transfer Service know how to proceed."""
 
-move arc@stacks arc@pam "Connect\nTo PAM"
+move arc@stacks arc@pam "Connect\nTo PAM"@W@0.3
 """The archivist can transfer the carrier to a Pre-Appraisal Machine (PAM). This can be used to take a copy of the most common forms of media and make it accessible enough to appraise."""
 
 derive arc@pam content@pam "Copy\nContent" [0,1]
@@ -163,6 +173,9 @@ space
 
 derive rec@db rep@db "Update\nTransfer\nRecord"
 """The Transfer Service Data Tracker record is updated to include a report on the technical details of the transfer, including: Which workstation was used. Which programs and versions. Which connectors, and which specific drives."""
+
+derive iar@supspread uar@supspread "Update\nCarrier\nEntry"@N
+"""The outcome of the transfer is recorded in the shared spreadsheet."""
 
 derive iar@as uar@as "Update\nAssessment\nRecord"@N
 """The outcome of the transfer is recorded in ArchiveSpace. If transfers are unsuccessful, the record will note if the transfer may be possible given more time or resources."""
