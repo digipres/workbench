@@ -11,7 +11,7 @@ For more information, visit [the CUL digital preservation homepage](https://www.
 
 ## Overview
 
-...relationship between Transfer Service and the Deposit Service and Digital Preservation Service And Repositry?!? And overall access and other services?
+...relationship between Transfer Service and the Deposit Service and Digital Preservation Service/Digital Repository? And overall access and other services?
 
 [Building our repository ingest workflow | by John Gostick | Digital Preservation at the University of Cambridge Libraries and Archives](https://digitalpreservation-blog.lib.cam.ac.uk/building-our-repository-ingest-workflow-e09a0d2cdddc)
 
@@ -30,27 +30,33 @@ height 600
 offset 26 24
 
 data arc "Archives" darkred
-data sup "Supplemental Material"
+data sup "Supplemental Material" darkred
 data leg "Legacy Material" red
+data assessment "Assessment" red
 data content "Content" red
 data photo "Photographs of Legacy Carriers" green
 data sip "SIP" black
 data gar "Group Assessment Record" darkblue
-data iar "Individual Assessment Record" blue
+data iar "Individual Assessment Record" darkblue
+data uar "Updated Assessment Record" darkblue
 data rec "Transfer Service Record" darkblue
+data rep "Transfer Service Report" darkblue
 data id "Transfer Service Item ID" blue
 
 place as "ArchivesSpace"
 place stacks "The Archival Stacks"
 place pam "PAM Workstation"
+place rr "Reading Room\nTheses Collection"
+place box "Archives Digital Carrier Box"
+place rrbox "Reading Room Digital Carrier Box"
 place mysmedia "Mystery Media"
-place box "Digital Carrier Box"
 place shelf "Transfer Lab Shelf"
 place camera "Camera"
 place hub "Attached to Workstation"
 place adele "ADELE/FRED/Tom Jr/Mac\nWorkstations"
 place db "Transfer Service Data Tracker"
-place s3 "Digital Preservation Service\nS3 Bucket"
+place s3 "Digital Repository\nS3 Bucket"
+
 
 start arc@stacks "Digital Carrier In Archive" [0,2]
 """Digital carriers are often discovered during archival processing. When they are found, a Group Assessment Record is set up in ArchivesSpace."""
@@ -58,11 +64,24 @@ start arc@stacks "Digital Carrier In Archive" [0,2]
 start leg@mysmedia "Legacy Media In Collections" [0,1]
 """Material is also found on various carriers within the library collections."""
 
-start gar@as 
-"""A Group Assessment Record is created in ArchiveSpace. This documents the basic facts of the digital carrier, like any identifiers and the media type, to help the Transfer Service know how to proceed."""
-
 move leg@mysmedia leg@shelf "Accept\nCarrier"
 """If a data owner can be identified, the media can be accepted by the service for transfer and will be placed on shelves in the Transfer Lab."""
+
+start sup@rr "Supplementary Material In Reading Rooms" [0,2]
+"""
+This source of digital content comes from supplemental material alongside Ph.D. theses.
+
+Supplemental Thesis Carriers Spreadsheet Shared spreadsheet
+"""
+move sup@rr sup@rrbox "Place Media In\nDigital Carrier Box"@E
+"""
+The reading room staff label the media with an identifier associated with the thesis and place them in a dedicated carrier box. This identifier can then be used in the Transfer Service Data Tracker, with multiple media items being identified by a trailing <tt>_1/_2/</tt>etc.
+"""
+move sup@rrbox sup@shelf "Transfer\nCarrier Box"
+"""The Reading Room carrier box is transferred to the shelves of the Transfer Lab."""
+
+start gar@as 
+"""A Group Assessment Record is created in ArchiveSpace. This documents the basic facts of the digital carrier, like any identifiers and the media type, to help the Transfer Service know how to proceed."""
 
 move arc@stacks arc@pam "Connect\nTo PAM"
 """The archivist can transfer the carrier to a Pre-Appraisal Machine (PAM). This can be used to take a copy of the most common forms of media and make it accessible enough to appraise."""
@@ -70,7 +89,7 @@ move arc@stacks arc@pam "Connect\nTo PAM"
 derive arc@pam content@pam "Copy\nContent" [0,1]
 """The content of the carrier is copied onto PAM and inspected using the tools available there."""
 
-derive gar@as iar@as "Create\nIndividual\nAssessment\nRecord"
+derive gar@as iar@as "Create\nIndividual\nAssessment\nRecord"@N
 """If the contents of the carrier is deemed in scope, an Individual Assessment Record is created in ArchiveSpace. This creates a unique identifier for this transfer."""
 
 move arc@pam arc@box "Place Media In\nDigital Carrier Box"@E@0.45
@@ -79,8 +98,8 @@ move arc@pam arc@box "Place Media In\nDigital Carrier Box"@E@0.45
 start rec@db
 """An record is created for this item in the Transfer Service Data Tracker. This created the ID that will be used to track the item. This database acts as the digital asset register for this service."""
 
-derive rec@db id@db "Create ID"
-"""An identifier is created for this item. This identifier links this item together across ArchiveSpace, the Transfer Service, and the downstream Digital Preservation Service."""
+derive rec@db id@db "Create/Import\nIdentifier
+"""An identifier is created or imported for this item (with spaces/slashes/special characters replaced by underscores). For archival media, this is minted in ArchiveSpace and links this item together across ArchiveSpace, the Transfer Service, and the downstream Digital Preservation Service."""
 
 delete content@pam "Delete\nAppraisal\nCopy"@N [0,1]
 """The appraisal copy is automatically deleted. <br><br> Note that if the source carrier is deemed out of scope, it will also be destroyed. If it's non-sensitive, the carrier is transferred to the IT department, and on to their eWaste contractor. If the carrier is sensitive, it is forensically wiped and shredded."""
@@ -90,13 +109,13 @@ space
 move arc@box arc@shelf "Transfer\nCarrier Box"
 """The Transfer Service orders up the the carrier box and moves it to the shelves of the Transfer Lab"""
 
-move id@db id@adele "Copy ID" 
-"""The transfer identifier is copied from the tracker and transferred to the workstation."""
+move id@db id@adele "Copy\nIdentifier" 
+"""The transfer identifier is copied from the tracker and pasted into the command line for a Powershell script that helps set up the right folder structure on the workstation."""
 
 space
 
 transform id@adele sip@adele "Create\nSIP Folder"
-"""The identifier is used to create a SIP folder that will hold the transfer. It contains a data folder and a metadata folder, named according to item identifiers. The data folder will contain the physical or logical disk contents. The metadata folder will contain photographs and the log and hash manifest from the media extraction process."""
+"""The Powershell script uses the identifier to create a SIP folder that will hold the transfer. It contains a data folder and a metadata folder, named according to item identifiers. The data folder will contain the physical or logical disk contents. The metadata folder will contain photographs and the log and hash manifest from the media extraction process."""
 
 start photo@camera "Photograph\nCarrier"@N [0,1]
 """A camera attached to the workstation is used to record what the carrier look like."""
@@ -112,8 +131,15 @@ move leg@shelf leg@hub "Connect\nCarrier" [0,1]
 """The carrier is connected or inserted into the appropriate drive of the workstation."""
 
 space
-copy leg@hub content@adele "Extract\nContent & Logs"@W [0,1]
-"""The device in the workstation makes a copy of the content, logging the process as it goes, along with the checksums of each file. This may be a physical disk image of a logical copy of the disk contents, depending on teh situation."""
+
+derive leg@hub assessment@hub "Assess\nContent"@N
+"""The contents of the carrier is inspected in order to determine how to proceed. In the case of supplementary thesis material, the contents of the carrier is also compared with any relevant records on the <a href="https://www.repository.cam.ac.uk/">Apollo institutional repository</a> (run by the Open Research Systems team)."""
+space
+combine assessment@hub "Decide\nStrategy"@N [0,1]
+"""Depending on the outcome of the assessment, an appropriate transfer strategy is chosen. This may be a full disk image, or a logical copy of the contents of the carrier, or the content may not be copied at all if it is deemed to be a duplicate of content held elsewhere. For supplementary material, it may also make sense to notify Open Research Team and discuss whether the content should be added to the relevant Apollo record."""
+
+copy leg@hub content@adele "Content\nExtraction"@W [0,1]
+"""The device in the workstation makes a copy of the content, logging the process as it goes, along with the checksums of each file. This may be a physical disk image of a logical copy of the disk contents, potentially via emulation, depending on the situation."""
 
 combine content@adele "Add data\nto SIP"
 """The extracted file contents and the log are written into the data and metadata folders of the SIP."""
@@ -127,20 +153,31 @@ move arc@shelf arc@box "Return\nCarrier Box"
 move arc@box arc@stacks "Return Carrier"
 """Once in the archive, the carriers are retrieved from the carrier box and returned to the stacks."""
 
+move sup@shelf sup@rrbox "Return\nCarrier Box"@E
+move sup@rrbox sup@rr "Return\nCarrier"@E
+
 copy sip@adele sip@s3 "Upload with\nRClone"@W@0.75
 """Completed SIPs are the uploaded to a dedicated S3 bucket using <a href="https://rclone.org/">RClone</a>. Content appearing here will then be ingested downstream."""
 
+space 
+
+derive rec@db rep@db "Update\nTransfer\nRecord"
+"""The Transfer Service Data Tracker record is updated to include a report on the technical details of the transfer, including: Which workstation was used. Which programs and versions. Which connectors, and which specific drives."""
+
+derive iar@as uar@as "Update\nAssessment\nRecord"@N
+"""The outcome of the transfer is recorded in ArchiveSpace. If transfers are unsuccessful, the record will note if the transfer may be possible given more time or resources."""
 
 end
 
 """"""
 
-
 ```
 
-## The Digital Preservation Service
+At the end of the process, all digital material destined for long-term preservation is uploaded to an S3 bucket. This is used to hand content over to the Digital Repository, which can also pull in the records in the Transfer Service Data Tracker as needed.
 
-Or repository?
+## The Digital Repository
+
+OR Digital Preservation Service/System?
 
 
 

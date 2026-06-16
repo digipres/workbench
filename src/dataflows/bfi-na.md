@@ -206,6 +206,8 @@ The code for the core `autoingest job` and related workflows is here: [bfidatadi
 There are two different modes of access. Some content is available over the public web (rights clearance required), while virtually all collection material is discoverable via the collections search and is available on site, by submitting an access request. 
 
 
+[A Colour Box | Replay](https://replay.bfi.org.uk/video/06895210-f265-5ae0-80e5-eb9b52d987bb), and [Collections Search | BFI | British Film Institute](https://collections-search.bfi.org.uk/web/Details/ChoiceFilmWorks/%20%20%20%20%20%20%20%20%20%20150000650)
+
 Public internet access uses the 'access copies':
 
 ```dataflow
