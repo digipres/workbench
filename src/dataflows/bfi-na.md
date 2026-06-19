@@ -172,7 +172,6 @@ end
 ```
 
 
-
 <!--
 
 ## Internet Access For Public Users
@@ -302,6 +301,8 @@ end
 -->
 
 ## Further Information
+
+Links and references discovered during this work.
 
 ### Blogs
 
