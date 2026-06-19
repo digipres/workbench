@@ -1,36 +1,21 @@
 # British Film Institute National Archive
 ## Dataflows at the BFI National Archive
 
-<div class="warning">
+<div class="tip">
 
-This page reflects my understanding of how thing work at the BFI National Archive, as of 2025, based on publicly available resources and some discussions with BFI staff during and after a site visit. I may have made many errors and omitted many omissions!
-
-If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
+This page reflects is based on a point-in-time understanding of how thing work at the BFI National Archive, as of 2026, based on publicly available resources and some discussions with BFI staff during and after a site visit. If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
 
 </div>
 
-
 ## Introduction
 
-The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. [Inside the Archive blog](https://www.bfi.org.uk/bfi-national-archive/inside-archive/inside-archive-blog), recent entries
+The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. The [Further Information](#further-information) section below has links to more detailed information.
 
-- [World Digital Preservation Day 2025 part one](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one)
-- [Inside the Archive #50: World Digital Preservation Day 2025 part two](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-50-world-digital-preservation-day-2025-part-two)
-- [Inside the Archive #59: Screencraft, floppy disc fever and resilient TV capture | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-59-screencraft-floppy-disc-fever-resilient-tv-capture)
-- [Inside the Archive #67: Collecting born-digital work | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-67-collecting-born-digital-work)
-
-A number of posts on more detailed technical matters are available via [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
-
-Q: No digitisation represented? Only born digital...
-A (emailed): Not intentional, just reflecting what I'd thought about, and my focus on digital bitstreams rather than information carriers.
-
-Note focus on acquisition of born digital material, digitisation is not covered in detail. This covers A/V and images, not documents, which are not currently preserved actively
+In this overview, the focus on the acquisition of born-digital A/V material and images. Digitisation is recognised as a source, but is not covered in any detail. Born-digital documents do not appear in the diagrams as those are not being actively preserved at this time.
 
 ## Ingest & Preservation
 
-The following dataflow diagram summarises the flow of data into the BFI National Archive's Digital Preservation Infrastructure (DPI). This bitstream preservation dataflow is shared across all content streams.
-
-
+The following dataflow diagram summarises the flow of data into the BFI National Archive's Digital Preservation Infrastructure (DPI).
 
 ```dataflow
 dataflow 1.0
@@ -71,7 +56,7 @@ start item@cc "BFI Holdings"
 """The BFI National Archive holds a large collection of film and television media and associated artefacts. Some of these may be selected for digitisation and digital preservation."""
 
 derive item@cc data@cc "Digitise"
-"""The BFI National Archive’s Conservation Centre is where items from the National Archive are digitised. See <a href="https://www.bfi.org.uk/features/day-life-bfi-national-archive">this blog post</a> to find out more."""
+"""The BFI National Archive’s Conservation Centre is where items from the National Archive are digitised. See e.g. <a href="https://www.bfi.org.uk/features/day-life-bfi-national-archive">this blog post</a> to find out more."""
 
 move data@cc data@nas "Internal\nTransfer"
 """The digitised items from the Conservation Centre are transferred to the PB-scale Network-Attached Storage (NAS) on the archive network."""
@@ -82,16 +67,20 @@ start item@depositors
 """The BFI also works with external partners to add born-digital productions to the national collections."""
 
 derive item@depositors bd-data@depositors "Internet\nTransfer"@N
-"""This"""
+"""Born digital content may be delivered over the internet, where the external partner initiates the upload of a collection item."""
 
 move bd-data@depositors bd-data@internet "Upload\nSent"
+"""The upload happens over a dedicated physical connection."""
+
 merge bd-data@internet bd-data@nas "Upload\nReceived"@W@0.82
-"""Born digital content may be delivered over the internet, via a dedicated physical connection."""
+"""The upload lands in the PB-scale Network-Attached Storage (NAS) on the archive network."""
+
 space
 
 derive item@depositors carrier@depositors "Copy To\nTransfer\nMedia"@N [0,1]
+"""Born digital content can also be submitted on portable carriers (HDD/SSD/data tape).  For example, some submissions can be as large as 10TB in size, making internet transfer impractical."""
 move carrier@depositors carrier@ts "Post/Courier\nTransfer Media"@E@0.4
-"""Or data maybe submitted on portable carriers (HDD/SSD/data tape).  For example, some submissions can be as large as 10TB in size, making internet transfer impractical."""
+"""The portable carrier is send to the BFI National Archive."""
 
 derive carrier@ts carrier-data@ts "Extract\nDigital Media" [0,0]
 """The files held on the physical carrier are extracted on a network-isolated Transfer Station."""
@@ -102,94 +91,80 @@ merge carrier-data@ts carrier-data@nas "Internal\nTransfer"@W@0.7
 delete carrier@ts "Return/Dispose\nTransfer Media"@E [0,1]
 """The physical media are then returned or disposed of in an appropriate manner."""
 
-
 space
 
 space 
 start record@cdi "Basic\nDocumentation"@S [0,1]
 """A Basic Documentation metadata record is created for the item in the Collections Information Database (CID)."""
 
-copy record@cdi cid@nas "Retrieve\n CID"@W [0,1]
-"""The CID for the item is retrieved from the DCI."""
+copy record@cdi uid@nas "Retrieve\n UID"@W [0,1]
+"""A unique identifier (UID) for the item is retrieved from the CID."""
 
 
 space 
-combine cid@nas "Rename\nusing CID"@N [0,0]
+combine uid@nas "Rename\nusing UID"@N [0,0]
 """
-- UID from the CID record is use to name the digital media, but:
-- Filenames and folder names stored in CID as acquired.
+The root folder of the digital media is renamed using the unique identifier from the CID. Note that all original file and folder names will be recorded in the CID.
 """
 space
 transform data@nas pp@nas "QC &\nValidation\n(& Wrapping)"@S
 """
-- We don't use BagIt or other AIP container/process, TAR or RAWCooked (latter very strongly preferred, where cannot use FFv1 Matroska)
-- we do 
-  - validation
-  - QC
-  - some normalisation 
-  - prep for autoingest (file naming to standard)
-  - some TAR, some RAWcooked
-- only acquisitions here, not digitisation from physical collections, is this intentional?
-- this diagram only covers A/V and images, not documents (not currently preserving actively) 
-- visual + audio + encoding standards
+The digital media undergoes validation and quality control, as appropriate based on the kind of content and the visual and audio encoding standards it is expected to meet. Usually a manifest is present, either added at source or included via the relevant standard, and this is used to verify completeness and fixity. The files are then prepared for the downstream <tt>autoingest</tt> process. This includes file renaming to an internal standard, and repackaging into a single binaries where appropriate. This may use the TAR format, but <a href="https://mediaarea.net/RAWcooked">RAWCooked</a> processing is very strongly preferred wherever the resulting 'FFv1 in Matroska' file is appropriate. For example, DPX files are normalised in this way. <a href="https://mediaarea.net/MediaConch">MediaConch</a> is used to define and implement policies in ways that can be shared between the parties involved.
 
-- Usually a manifest is present, either from the source in the relevant standard. RAWCooked generated e.g. create from DPX files.
-- Digital media records are created, write MediaInfo etc.
-- Extract MediaInfo from files, sent to CID.
-- AIP is called "Preservation Package"
-
-- PP: A/V as separate bitstreams in some PP, usually in standards-based packages, ProRes sometimes use as AR and this combines them.
+<br><br>The resulting Preservation Package roughly corresponds to the OAIS notion of an Archival Information Package.
 """
 
 space
 derive pp@nas ar@nas "Create\nAccess\nRendition"@S [0,-1]
-"""A smaller access copy, or Dissemination Information Package (DIP), is generated from the SIP/AIP.
-
-- DIP is called "Access Renditions" low-bitrate lossy JPG and MP4 files access, and a reference to this is stored in the CID. precise details depend on the nature of the content. Preservation file media records also point to access.
-- AR is from ? Always retaining the original, generated from a package that contains the original.
-
-- Sometimes preserve in formats that cannot be transcoded for access. Don't always create ARs.
-
-The autoingest job kicks in here
 """
-
+Sometimes content is preserved in formats that cannot be transcoded for access, but in most cases low-bitrate lossy JPG and MP4 files are generated as "Access Renditions" (roughly corresponding to an OAIS Dissemination Information Package). Preservation Packages can use separate audio and video bitstreams, if this is how the standards-based source is built. But on access, a single Access Rendition is more useful, so a ProRes or MP4 file may be generated for staff or public access purposes.
+"""
 
 space
 derive pp@nas ppmd@nas "Extract\nMetadata"@N [0,1]
+"""
+The <a href="https://mediaarea.net/en/MediaInfo">MediaInfo</a> tool use used to extract technical metadata from the Preservation Package and any Access Renditions.
+"""
 
 merge ppmd@nas record@cdi "Add Metadata To\nExtended Documentation"
-"""If the AIP was generated successfully, the AIP ID is recorded in the Collections Information Database.
-- TBC: "CID gets a record for every file ingest to the DPI, with automated metadata from MediaInfo (Python)" This is actually per package, right, every file?
-- Any access restrictions are added to CID, displayed in the DPI, and used to limit onward delivery.
-Manual and automated.
-Standards compliant record(s) using EN 15907 (moving image), ISAD(G) (screen craft), RDA (library).
+"""
+The CID is updated with standards compliant record(s), using EN 15907 (moving image), ISAD(G) (screen craft), RDA (library). Records are added for the Access Renditions and the Preservation Packages. The Preservation Package records also refer to the Access Renditions as well as containing the original file and folder names, the technical metadata from MediaInfo, and any access restrictions (for limiting onward delivery).
 """
 
 copy pp@nas replica_1@tape1,replica_2@tape2 "Copy to\ntapes 1 & 2"
-"""The AIP is then copied to two tapes managed by two separate tape libraries (>20PB scale, IBM3592 & LTO9, two different tape technologies???). - Policy on the tape library system, replication happens automatically."""
-derive replica_2@tape2 replica_3@tape2 "Copy to\ntape 3"@S [0,-1]
-"""The second tape robot creates an additional copy on a separate LTO9 tape."""
+"""
+At this point, the <tt>autoingest</tt> job takes over, and the the Preservation Package is passed to the tape libraries. Both are >20PB scale, and each uses a different tape technology (IBM3592 & LTO9). The tape library policy system manages replication.
+"""
 
+space
 derive replica_1@tape1 checksum@tape1 "Calculate\nChecksum"@N [0,1]
 """
-- Local MD5 is generated, which is strongly preferred by the data tape system. This is not a cryptographic use case.
-- Retrieval check is from ?
-  - Send to data-tape, it generates and MD as it writes to tape. This is used as the comparison usually, but can differ when the tape system has chunked things for writing to tape.
+The data tape system calculates the MD5 sum of the content as it is written to tape. MD5 is used because this is well-supported by the data tape system and sufficient for detecting accidental transfer failures.
 """
 
 move checksum@tape1 checksum@nas "Retrieve\nChecksum"@E
+"""
+The MD5 sum is retrieved from the tape library, unless the package was very large and had to be chunked for writing to tape. In that case, the package is read in full and the MD5 checksum is re-calculated.
+"""
 combine checksum@nas "Fixity\nCheck"@N 
+"""
+The retrieved MD5 checksum is compared with the local package checksum.
+"""
+
+derive replica_2@tape2 replica_3@tape2 "Copy to\ntape 3"@S [0,-1]
+"""The second tape robot creates an additional copy on an additional, separate LTO9 tape."""
 
 move replica_3@tape2 replica_3@vault "Transfer tape 3 to vault"@E
-"""As the third-copy tapes are filled, they are collected and transferred to a third location.
-- Tape held over 50 miles away,, not networked, for diaster recovert. annual random recovery checks that the data restores, verified against CID.
+"""
+As the third-copy tapes are filled, they are collected and transferred to a third location over 50 miles away. This disaster recovery strategy is tested annually through random recovery checks where the data is restored from selected tapes and the results verified against the records in the CID.
 """
 
 copy ar@nas ar@access "Transfer"
-"""The access copy is transferred to the storage location used to provide access to end users."""
+"""The Access Rendition is transferred to a suitable storage location used to provide access to end users."""
 
 delete data@nas,pp@nas,ar@nas "Delete\nWorking Copies"@E
 """All the intermediary file and the original submission are now deleted, after confirming lossless transfer to data tape."""
+
 
 status "Ingest Complete"
 
@@ -197,9 +172,8 @@ end
 ```
 
 
-At the end of the ingest process, there are immediately accessible 'access copies' (DIPs) and the 'preservation copies' (AIPs) are stored on multiple tapes.  The Collections Information Database (CID) contains all metadata needed for management and discovery of content, along with the appropriate identifier for the information packages that contain the digital assets. CID remains the master metadata store, and this metadata is preserved independently of DPI (unique identifier is the join key).
 
-The code for the core `autoingest job` and related workflows is here: [bfidatadigipres/BFI_scripts](https://github.com/bfidatadigipres/BFI_scripts).
+<!--
 
 ## Internet Access For Public Users
 
@@ -325,45 +299,33 @@ end
 
 ...
 
-## Content Streams
+-->
 
-Some links and notes about the details on the content stream variations are given below.
+## Further Information
 
-### Digital Film TBA ? focus on streamers for BFI part
+### Blogs
 
-* [iPRES 2024: “You oughta be in pictures”: Insights to Digital Moving Image Preservation from the BFI, EYE, and LOC](https://www.digipres.org/publications/ipres/ipres-2024/papers/you-oughta-be-in-pictures-insights-to-digital-moving-image-prese/)  
+- The blog series [Inside the Archive](https://www.bfi.org.uk/bfi-national-archive/inside-archive/inside-archive-blog):
+  - [World Digital Preservation Day 2025 part one](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-49-world-digital-preservation-day-2025-part-one)
+  - [Inside the Archive #50: World Digital Preservation Day 2025 part two](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-50-world-digital-preservation-day-2025-part-two)
+  - [Inside the Archive #59: Screencraft, floppy disc fever and resilient TV capture | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-59-screencraft-floppy-disc-fever-resilient-tv-capture)
+  - [Inside the Archive #67: Collecting born-digital work | Inside the Archive](https://www.bfi.org.uk/inside-the-archive/news/inside-archive-67-collecting-born-digital-work)
+- [For the love of FOSS](https://digitensions.home.blog/), published by Joanna White (Knowledge, Learning and Collections Developer).
 
-### Digitised Video & Film
+### Presentations
 
-* [Digital Preservation Workflow Webinars 2023](https://www.dpconline.org/events/eventdetail/114/-/digital-preservation-workflow-webinars-2023) (recordings available via that link):  
-  * Stephen McConnachie, BFI \- MediaConch workflow  
-    * MediaConch as a policy checking tool. See [the policy registry](https://mediaarea.net/MediaConchOnline/publicPolicies).
-    * Bash Intro Recommendations:
-      * [https://amiaopensource.github.io/ffmprovisr/](https://amiaopensource.github.io/ffmprovisr/)   
-      * [https://wizardzines.com/zines/bite-size-bash/](https://wizardzines.com/zines/bite-size-bash/)   
-      * [https://smallsharpsoftwaretools.com/](https://smallsharpsoftwaretools.com/)   
-    * Scripting loops of MediaConch CLI, supplied ID and format ID (file extension based), to route to the right MediaConch policy
-    * [Reconsidering the Checksum for Audiovisual Preservation](https://dericed.com/papers/reconsidering-the-checksum-for-audiovisual-preservation/)   
-    * Shared concrete tools and policies make the workflow better, because the supplier can deploy exactly the same practice upstream.
-    * Policies need to be living documents, to adapt to feedback and process, with experts on both sides.
-  * Joanna White, BFI \- [RAWCooked workflow](https://www.dpconline.org/docs/events-1/2023-events/workflow-webinars/2816-bfi-national-archive-dpx-rawcooked-workflow/file)  
-    * Digitisation Output, high res film scan, DPX \-\> FFV1  
-    * [https://github.com/bfidatadigipres/dpx\_encoding](https://github.com/bfidatadigipres/dpx_encoding)   
-    * [https://mediaarea.net/RAWcooked](https://mediaarea.net/RAWcooked)   
-    * BFI sponsoring feature development. Working with developers to test fixes prior to release.
-    * MD5Frame: important reversible data that rawcooked can check, i.e. checking the content not the technical metadata.  
-    * Workflow systems need to be engineered to cope with transient errors due to e.g. overload.
-    * Audio/Image separation of workflows at the institutional levels.
-    * 6 NASs, 64 thread transcoding server, 3 QNAP, Isilon. 100Gb network locally.
+- [iPRES 2024: “You oughta be in pictures”: Insights to Digital Moving Image Preservation from the BFI, EYE, and LOC](https://www.digipres.org/publications/ipres/ipres-2024/papers/you-oughta-be-in-pictures-insights-to-digital-moving-image-prese/)
+- The MediaConch validation workflow and the [RAWCooked workflow](https://www.dpconline.org/docs/events-1/2023-events/workflow-webinars/2816-bfi-national-archive-dpx-rawcooked-workflow/file) were presented as part of the [Digital Preservation Workflow Webinars 2023](https://www.dpconline.org/events/eventdetail/114/-/digital-preservation-workflow-webinars-2023).
+- [FOSDEM 2024](https://archive.fosdem.org/2024/) lightning talk: [System for Television Off-air Recording and Archiving, BFI National Television Archive](https://archive.fosdem.org/2024/schedule/event/fosdem-2024-2177-system-for-television-off-air-recording-and-archiving-bfi-national-television-archive/)  
+- An introduction to STORA: System for Television Off-air Recording and Archiving: [Making the BFI National Archive the most open in the world? Start with open source.](https://blog.bfi.org.uk/knowledge-and-collections/start-with-open-source/) 
+- [SIPping from the fount of collective knowledge](https://www.dpconline.org/blog/wdpd/blog-tom-wilson-wdpd2024)  
 
-### System for Television Off-air Recording and Archiving
 
-* [FOSDEM 2024](https://archive.fosdem.org/2024/) lightning talk: [System for Television Off-air Recording and Archiving, BFI National Television Archive](https://archive.fosdem.org/2024/schedule/event/fosdem-2024-2177-system-for-television-off-air-recording-and-archiving-bfi-national-television-archive/)  
-* [Making the BFI National Archive the most open in the world? Start with open source.](https://blog.bfi.org.uk/knowledge-and-collections/start-with-open-source/) An introduction to STORA: System for Television Off-air Recording and Archiving
+### Code
 
-### Born Digital Documents
+- The core `autoingest job` and related workflows are here: [bfidatadigipres/BFI_scripts](https://github.com/bfidatadigipres/BFI_scripts). 
+- Converting DPX high-resolution DPX film scans to FFv1: [bfidatadigipres/dpx\_encoding](https://github.com/bfidatadigipres/dpx_encoding)  
 
-* [SIPping from the fount of collective knowledge \- Digital Preservation Coalition](https://www.dpconline.org/blog/wdpd/blog-tom-wilson-wdpd2024)  
 
 ```js
 import { renderDataflows } from "./dataflows.js";
