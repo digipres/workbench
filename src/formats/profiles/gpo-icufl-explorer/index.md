@@ -4,11 +4,11 @@ sql:
   # Best/fastest for local development, but not stored remotely due to being Yet Another Large File requiring Git LFS or similar:
   #icufl: ./gpo-icufl-files.parquet
   # GitHub Pages, seems to work fine, if not terribly quickly
-  icufl: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
+  #icufl: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
   # Netlify, seems to get blocked/dropped.
   #icufl: https://digipres-practices.netlify.app/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-files.parquet
-  # Own server, does not range request? Too old?
-  #icufl: https://services.anjackson.net/gpo-icufl-files.parquet
+  # Own Trying statichost.eu free tier:
+  icufl: https://digipres.statichost.page/gpo-icufl-files.parquet
   # And the items data:
   icufl_items: https://www.digipres.org/practices/reports/gpo-icufl-collection-analysis-2026/data/gpo-icufl-items.csv
 ---
