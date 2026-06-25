@@ -11,7 +11,7 @@ toc: true
 <a href="https://dpconline.org"><img src="./images/DPCLogoSquare.png" width="120" style="float: right; margin: 5px;"></a>
 The DigiPres Workbench is a collection of tools, reports, visualisations and tutorials to help you to preserve your digital collections.
 
-First funded by Yale University Library and the Digital Preservation Coalition (DPC) as part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), with maintenance and updates via the [Digital Preservation Coalition Member Support programme](https://www.dpconline.org/digipres/discover-good-practice/dedicated-support-for-members).
+First developed as part of the [_Registries of Good Practice_ project](https://github.com/digipres/registries-of-practice-project), with maintenance and updates via the [Digital Preservation Coalition Member Support programme](https://www.dpconline.org/digipres/discover-good-practice/dedicated-support-for-members).
 
 If you have any questions, please do [get in touch](#contact).
 
