@@ -32,7 +32,7 @@ place tna-out "On-Site Archival\nAccess Station"
 place tna-oc "On-Site Offline\nOCFL Repository"
 
 start records@ssys
-"""The National Archives of the UK accepts records from a wide range of government departments""""
+"""The National Archives of the UK accepts records from a wide range of government departments"""
 
 copy records@ssys records@tna-in "Transfer"
 """Records intended for long-term retention are transferred to the workstation of the staff member(s) involved."""
