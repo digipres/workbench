@@ -505,7 +505,7 @@ export async function generateDataflow(dfl) {
         if( e.type == "derive" ) {
             return `<i>Derive ${e.target} from ${e.source}</i>.<br>${e.description || ''}`;
         } else if( e.type == "copy") {
-            return `<i>Copy ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+            return `<i>Copy ${e.source} to ${e.target || e.targets.join(', ')}</i>.<br>${e.description || ''}`;
         } else if( e.type == "move") {
             return `<i>Move ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "transform") {
