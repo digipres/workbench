@@ -1,6 +1,6 @@
 // This polyfill adds support for saving files on Firefox:
 // (note that it cannot polyfill enough for the FS scanner to function)
-import { showSaveFilePicker } from 'npm:file-system-access'
+//import { showSaveFilePicker } from 'npm:file-system-access'
 
 export async function save_dataset(dataset) {
 
