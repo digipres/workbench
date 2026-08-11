@@ -1,5 +1,5 @@
 # British Film Institute National Archive
-## Dataflows at the BFI National Archive
+## Born-digital workflows for long-term preservation
 
 <div class="tip">
 
@@ -11,7 +11,7 @@ This page reflects is based on a point-in-time understanding of how thing work a
 
 The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. The [Further Information](#further-information) section below has links to more detailed information.
 
-In this overview, the focus on the acquisition of born-digital A/V material and images. Digitisation is recognised as a source, but is not covered in any detail. Born-digital documents do not appear in the diagrams as those are not being actively preserved at this time.
+In this overview, the focus on the acquisition of born-digital A/V material and images. Digitisation is recognised as a source, but is not covered in any detail. Born-digital _documents_ do not appear in the diagrams as those are not being actively preserved at this time.
 
 ## Ingest & Preservation
 
