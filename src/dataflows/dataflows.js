@@ -76,7 +76,9 @@ function pushCopyEvent(lines, stations, item, event, sx, sy, tx, ty){
 function getTargets(df, event, name='target') {
     var results = [];
     if( event[name] ) {
-        results.push(parseItemInPlace(df, event[name]));
+        event[name].split(',').map(e_name => {
+            results.push(parseItemInPlace(df, e_name));
+        });
     } else {
         results = event[`${name}s`].map( (t) => parseItemInPlace(df, t) );
     }
@@ -115,7 +117,8 @@ export function generateTubeMapData(df, wf) {
                 if( event.type == "copy") {
                     item = target.item;
                     // Pass properties through by default:
-                    event.color = event.color || lines[source.item].color;
+                    //event.color = event.color || lines[source.item].color; 
+                    event.color = lines[source.item].color || event.color;
                     event.shiftCoords = event.shiftCoords || lines[source.item].shiftCoords || [0,0];
                 }
                 setupEntitiesForEvent(lines, stations, item, event );
@@ -158,35 +161,37 @@ export function generateTubeMapData(df, wf) {
         //         });
         //     });
         } else if( event.type == "derive" || event.type == "transform" ) {
-            const source = parseItemInPlace(df, event.source);
+            var sources = getTargets(df, event, 'source');
             var targets = getTargets(df, event);
-            targets.forEach( (target ) => {
-                var item = target.item;
-                const y2 = target.index*ds;
-                var parentShiftCoords = null;
-                if( lines[source.item] ) {
-                    parentShiftCoords = lines[source.item].shiftCoords || [0,0];
-                } else {
-                    throw new Error(`Attempt to ${event.type} from ${source.item} that does not exist!`)
-                }
-                // Check the actual thing changes:
-                if( source.item == target.item ) {
-                    throw new Error(`Attempt to ${event.type} from ${source.item} to ${target.item}!`)
-                }
-                setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
-                lines[item].nodes.push({
-                    "coords": [0.5*(t1+t2),y2],
-                    "name": event.name,
-                    "labelPos": event.markerPos || "S",
-                    "marker": event.marker || undefined,
-                    "shiftCoords": event.markerShiftCoords || event.shiftCoords|| lines[source.item].shiftCoords || [0,0]
-                });
-                if( event.type == "transform") {
-                    lines[source.item].terminated = t2;
-                    lines[source.item].nodes.push({
-                      "coords": [0.5*(t1+t2),y2],
+            sources.forEach( ( source ) => {
+                targets.forEach( (target ) => {
+                    var item = target.item;
+                    const y2 = target.index*ds;
+                    var parentShiftCoords = null;
+                    if( lines[source.item] ) {
+                        parentShiftCoords = lines[source.item].shiftCoords || [0,0];
+                    } else {
+                        throw new Error(`Attempt to ${event.type} from ${source.item} that does not exist!`)
+                    }
+                    // Check the actual thing changes:
+                    if( source.item == target.item ) {
+                        throw new Error(`Attempt to ${event.type} from ${source.item} to ${target.item}!`)
+                    }
+                    setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
+                    lines[item].nodes.push({
+                        "coords": [0.5*(t1+t2),y2],
+                        "name": event.name,
+                        "labelPos": event.markerPos || "S",
+                        "marker": event.marker || undefined,
+                        "shiftCoords": event.markerShiftCoords || event.shiftCoords|| lines[source.item].shiftCoords || [0,0]
                     });
-                }
+                    if( event.type == "transform") {
+                        lines[source.item].terminated = t2;
+                        lines[source.item].nodes.push({
+                        "coords": [0.5*(t1+t2),y2],
+                        });
+                    }
+                });
             });
         } else if( event.type == "start" ) {
             var sources = getTargets(df, event);
