@@ -3,16 +3,14 @@
 
 <div class="warning">
 
-This is an experiment in visualising how data flows over time. There are a number of outstanding issues and limitations with this approach. Please see [the `dataflow` GitHub issues](https://github.com/digipres/workbench/issues?q=state:open+label:"dataflows") for more detail.
+This is an experiment in visualising the techical architecture of digital preservation services by focussing on how data flows over time. There are a number of outstanding issues and limitations with this approach. Please see [the `dataflow` GitHub issues](https://github.com/digipres/workbench/issues?q=state:open+label:"dataflows") for more detail.
 
 </div>
 
 
 ## Introduction
 
-Workflows are where a set of tools and systems become integrated into the institutional teams, processes and goals they support. As such, workflows will often outlast the components they depend on, and so documenting and understanding workflows is a crucial part of the pr
-
-Dataflow diagrams show how data gets copied from system to system, over time.  The different places where data can be stored are laid out from top to bottom, and the sequence of events the data can go through are plotted from left to right. The lines of the 'tube map' or 'metro' layout show how the data moves, and you can inspect the event 'stations' to get more information about each event.
+Dataflow diagrams are a way of showing how data gets copied between systems, over time.  The different places where data can be stored are laid out from top to bottom, and the sequence of events the data can go through are plotted from left to right. The lines of the 'tube map' or 'metro' layout show how the data moves, and you can inspect the event 'stations' to get more information about each event.
 
 ### Using OAIS As An Example
 
@@ -122,8 +120,9 @@ _TBA: Dataflow diagrams can also be used to explore [the OAIS model in more deta
 
 A number of well-established and long-running digital preservation services have been studied as part of the _Registries of Good Practice_ project.  There are a wide range of successful approaches and strategies, and here we use dataflow diagrams as a way to document what real-life digital preservation looks like, with annotated pop-ups used to add rich contextual detail.
 
-<!-- - [BFI National Archive (c.2025)](./bfi-na) -->
-
+- [BFI National Archive](./bfi-na)
+- [Cambridge University Library](./cul.md)
+- [National Archives (UK)](./tna-cc.md)
 - [UK Web Archive (c.2023)](./ukwa)
 
 ## Dataflow Definition Language
