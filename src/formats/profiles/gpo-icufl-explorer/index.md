@@ -35,7 +35,7 @@ See [the full report](https://www.digipres.org/practices/reports/gpo-icufl-colle
 This system depends on a database file containing information on over six million files. It might take a while (minutes) to start up and respond, depending on your device, download speed and the host server status.
 </div>
 
-## Query
+## Query by File Extension
 First, enter an extension of interest, e.g. `dbf`/`pdf`/`bat`/`shp`.
 
 ```js
@@ -89,7 +89,7 @@ If you select an item in the list (using the small circle in the left-hand colum
 
 
 
-## All file extensions in this item
+### All file extensions in this item
 
 This table shows all of the file extensions in the selected item, and counts up how many files have that extension, and now many bytes these files take up in total. This can be useful for spotting items with similar patterns of files extensions and file extensions that commonly appear together.
 
@@ -107,7 +107,7 @@ display(Inputs.table(exts, {
 }));
 ```
 
-## Files with extension '${ext}' in the selected item
+### Files with extension '${ext}' in the selected item
 
 This lists files in the item that have the extension '${ext}' (up to 1,000 files). Can be slow to load/refresh.
 
@@ -116,10 +116,11 @@ This lists files in the item that have the extension '${ext}' (up to 1,000 files
 function item_file_linker(path, i, d) {
   if( path != null && path != "" ) {
     const fid = d.get(i).fid;
+    const item_id = d.get(i).item_id;
     const full_path = `${fid}/${path}`;
     const file_name = full_path.substring(full_path.lastIndexOf('/')+1);
     const dir = full_path.substring(0, full_path.lastIndexOf('/'));
-    return htl.html`<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${q_item_id}/${dir}" target="_blank">${dir}</a>/<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${q_item_id}/${full_path}" target="_blank">${file_name}</a>`;
+    return htl.html`<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${item_id}/${dir}" target="_blank">${dir}</a>/<a href="https://webapp1.dlib.indiana.edu/virtual_disk_library/index.cgi/${item_id}/${full_path}" target="_blank">${file_name}</a>`;
   } else {
     return null;
   }
@@ -140,4 +141,37 @@ Inputs.table(files, {
     "size"
   ]
  })
+```
+
+## Focus on Floppy Disks
+
+This part uses a query that focusses on floppy disks only, to make it easier to find example files from floppy media. It limits the number of matches it returns, to avoid overloading the results table.
+
+```js
+const path_filter = view(
+  Inputs.text({
+    label: "Path Filter",
+    placeholder: "Path string?",
+    value: ""
+  })
+);
+```
+
+
+```js
+const floppies = await sql([`SELECT item_id, fid, path, extension FROM icufl WHERE media LIKE '%.img' AND LOWER(path) LIKE LOWER('%${path_filter}%') ORDER BY item_id DESC, media DESC LIMIT 1000`]);
+```
+
+Found ${floppies.numRows} items with paths matching '${path_filter}'. The following table shoes a list of all items that match:
+
+
+```js
+const floppies_view = view(Inputs.table(floppies, {
+  format: {
+    size: show_big_int,
+    item_id: item_linker,
+    path: item_file_linker
+  },
+  select: false
+}));
 ```

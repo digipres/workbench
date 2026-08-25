@@ -201,7 +201,9 @@ Lets dig into those long-tailed format distributions.
 </div>
 
 
+## Fine-grained Collection Profiles
 
+The work here focuses on sharing simple collection summaries based on file extensions. But it's also worth exploring how to share and use very detailed collection profiles, where we have metadata about every file. The [GPO File Explorer](./gpo-icufl-explorer/) page shows how that could work.
 
 ## Feedback & Futures
 
