@@ -102,7 +102,7 @@ export function generateTubeMapData(df, wf) {
         const t1 = time*dt;
         const t2 = (time + 1)*dt;
         // Add new lines if there has been a copy event.
-        if( event.type == "copy" || event.type == "move" || event.type == "merge") {
+        if( event.type == "copy" || event.type == "move" || event.type == "transfer" || event.type == "merge") {
             const source = parseItemInPlace(df, event.source);
             var targets = getTargets(df, event);
             targets.forEach( (target ) => {
@@ -113,7 +113,7 @@ export function generateTubeMapData(df, wf) {
                 if (!lines[item]) {
                     throw new Error(`Attempt to ${event.type} ${item} but this does not exist!`);
                 }
-                // If it's a move, update the source item instead:
+                // If it's a copy, update the source item instead:
                 if( event.type == "copy") {
                     item = target.item;
                     // Pass properties through by default:
@@ -123,8 +123,8 @@ export function generateTubeMapData(df, wf) {
                 }
                 setupEntitiesForEvent(lines, stations, item, event );
                 pushCopyEvent(lines, stations, item, event, t1, y1, t2, y2 );
-                // But if it's a move, rename the line to match the new location:
-                if( event.type == "move") {
+                // But if it's a move/transfer, rename the line to match the new location:
+                if( event.type == "move" || event.type == "transfer" ) {
                     lines[target.item] = lines[item];
                     lines[target.item].name = `${source.itemId}@${target.place.id}`;
                     delete lines[target.item].terminated;
@@ -160,38 +160,42 @@ export function generateTubeMapData(df, wf) {
         //             lines[item].name = `${target.itemId}@${target.place.id}`;
         //         });
         //     });
-        } else if( event.type == "derive" || event.type == "transform" ) {
+        } else if( event.type == "derive" || event.type == "transform" || event.type == "combine" ) {
             var sources = getTargets(df, event, 'source');
             var targets = getTargets(df, event);
-            sources.forEach( ( source ) => {
-                targets.forEach( (target ) => {
-                    var item = target.item;
-                    const y2 = target.index*ds;
-                    var parentShiftCoords = null;
-                    if( lines[source.item] ) {
-                        parentShiftCoords = lines[source.item].shiftCoords || [0,0];
-                    } else {
-                        throw new Error(`Attempt to ${event.type} from ${source.item} that does not exist!`)
-                    }
-                    // Check the actual thing changes:
-                    if( source.item == target.item ) {
-                        throw new Error(`Attempt to ${event.type} from ${source.item} to ${target.item}!`)
-                    }
-                    setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
-                    lines[item].nodes.push({
-                        "coords": [0.5*(t1+t2),y2],
-                        "name": event.name,
-                        "labelPos": event.markerPos || "S",
-                        "marker": event.marker || undefined,
-                        "shiftCoords": event.markerShiftCoords || event.shiftCoords|| lines[source.item].shiftCoords || [0,0]
-                    });
-                    if( event.type == "transform") {
-                        lines[source.item].terminated = t2;
-                        lines[source.item].nodes.push({
-                        "coords": [0.5*(t1+t2),y2],
-                        });
-                    }
+            // Start with the first item as the primary source:
+            var source = sources[0];
+            const y2 = targets[0].index*ds;
+            targets.forEach( (target ) => {
+                var item = target.item;
+                var parentShiftCoords = null;
+                if( lines[source.item] ) {
+                    parentShiftCoords = lines[source.item].shiftCoords || [0,0];
+                } else {
+                    throw new Error(`Attempt to ${event.type} from ${source.item} that does not exist!`)
+                }
+                // Check the actual thing changes:
+                if( source.item == target.item ) {
+                    throw new Error(`Attempt to ${event.type} from ${source.item} to ${target.item}!`)
+                }
+                setupEntitiesForEvent(lines, stations, item, event, parentShiftCoords );
+                lines[item].nodes.push({
+                    "coords": [0.5*(t1+t2),y2],
+                    "name": event.name,
+                    "labelPos": event.markerPos || "S",
+                    "marker": event.marker || undefined,
+                    "shiftCoords": event.markerShiftCoords || event.shiftCoords|| lines[source.item].shiftCoords || [0,0]
                 });
+            });
+            // And clear up the sources:
+            sources.forEach( (source) => {
+                if( event.type == "transform" || event.type == "combine") {
+                    lines[source.item].terminated = t2;
+                    console.log(source, lines[source.item].shiftCoords);
+                    lines[source.item].nodes.push({
+                    "coords": [0.5*(t1+t2),y2],
+                    });
+                }
             });
         } else if( event.type == "start" ) {
             var sources = getTargets(df, event);
@@ -221,7 +225,7 @@ export function generateTubeMapData(df, wf) {
                 // Note that start point is marked:
                 lines[source.item].markedAtStart = true;
             });
-        } else if( event.type == "delete" || event.type == "combine" ) {
+        } else if( event.type == "delete" ) {
             const targets = getTargets(df, event);
             targets.forEach( (target) => {
                 var item = target.item;
@@ -352,12 +356,12 @@ export function parseDataflow(text) {
                     // Set up an event:
                     var event = undefined;
                     // Parse the line parts and create an event with the right shape:
-                    if( ["move", "copy", "derive", "transform", "merge"].includes(l[0])) {
+                    if( ["move", "transfer", "copy", "derive", "transform", "merge", "combine"].includes(l[0])) {
                         event = {
                             label: l[3] || l[0],
                             type: l[0],
                         };
-                        if( l[0] == "transform") {
+                        if( l[0] == "transform" || l[0] == "combine") {
                             event.marker = 'interchange';
                         }
                         // Parse offset if any:
@@ -384,7 +388,7 @@ export function parseDataflow(text) {
                             label: l[1] || l[0],
                             type: l[0],
                         }
-                    } else if( l[0] == "delete" || l[0] == "combine" || l[0] == "start" ) {
+                    } else if( l[0] == "delete" || l[0] == "start" ) {
                         // FIXME START is kinda broken because only one color is allowed and there could be multiple starts
                         event = {
                             label: l[2] || l[0],
@@ -392,7 +396,7 @@ export function parseDataflow(text) {
                             targets: l[1].split(','),
                             color: l[1]
                         }
-                        if( l[0] == "delete" || l[0] == "combine") {
+                        if( l[0] == "delete" ) {
                             event.marker = 'interchange';
                         }
                         // Parse offset if any:
@@ -513,12 +517,14 @@ export async function generateDataflow(dfl) {
             return `<i>Copy ${e.source} to ${e.target || e.targets.join(', ')}</i>.<br>${e.description || ''}`;
         } else if( e.type == "move") {
             return `<i>Move ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+        } else if( e.type == "transfer") {
+            return `<i>transfer ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "transform") {
-            return `<i>Transform ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+            return `<i>Transform ${e.source } to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "merge") {
             return `<i>Merge ${e.sources} into ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "combine") {
-            return `<i>Combine ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
+            return `<i>Combine ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "delete") {
             return `<i>Delete ${e.targets.join(', ') || e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "start") {

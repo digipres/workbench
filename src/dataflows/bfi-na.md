@@ -102,12 +102,12 @@ copy record@cdi uid@nas "Retrieve\n UID"@W [0,1]
 
 
 space 
-combine uid@nas "Rename\nusing UID"@N [0,0]
+combine data@nas,uid@nas data_uid@nas "Rename\nusing UID"@N [0,0]
 """
 The root folder of the digital media is renamed using the unique identifier from the CID. Note that all original file and folder names will be recorded in the CID.
 """
 space
-transform data@nas pp@nas "QC &\nValidation\n(& Wrapping)"@S
+transform data_uid@nas pp@nas "QC &\nValidation\n(& Wrapping)"@S
 """
 The digital media undergoes validation and quality control, as appropriate based on the kind of content and the visual and audio encoding standards it is expected to meet. Usually a manifest is present, either added at source or included via the relevant standard, and this is used to verify completeness and fixity. The files are then prepared for the downstream <tt>autoingest</tt> process. This includes file renaming to an internal standard, and repackaging into a single binaries where appropriate. This may use the TAR format, but <a href="https://mediaarea.net/RAWcooked">RAWCooked</a> processing is very strongly preferred wherever the resulting 'FFv1 in Matroska' file is appropriate. For example, DPX files are normalised in this way. <a href="https://mediaarea.net/MediaConch">MediaConch</a> is used to define and implement policies in ways that can be shared between the parties involved.
 
@@ -146,7 +146,7 @@ move checksum@tape1 checksum@nas "Retrieve\nChecksum"@E
 """
 The MD5 sum is retrieved from the tape library, unless the package was very large and had to be chunked for writing to tape. In that case, the package is read in full and the MD5 checksum is re-calculated.
 """
-combine checksum@nas "Fixity\nCheck"@N 
+delete checksum@nas "Fixity\nCheck"@N 
 """
 The retrieved MD5 checksum is compared with the local package checksum.
 """

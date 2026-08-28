@@ -10,6 +10,60 @@ This page describes the [The National Archives (TNA)](https://www.nationalarchiv
 
 Digital records are stored, actively preserved, and accessed using a commercial off-the-shelf digital preservation managed service. To mitigates supplier risks, simplify exit-planning, facilitate disaster recovery and business continuity, and ensure complete ongoing control of the data inside that service, the team has built a system which maintains an extracted decoupled copy of all digital files and metadata. 
 
+
+## Transfer Digital Records
+
+```dataflow
+dataflow 1.0
+title "UK National Archives: Transfer Digital Records"
+zoom 0.6
+height 400
+offset 30 16
+
+data records "Records" black
+data md "Metadata" darkblue
+data pkg "Files & JSON" red 
+
+place ssys "Transferring Bodies\nFile System"
+place tdr-in "TDR Ingest\nS3 Bucket"
+place tdr-prc "TDR Ingest State\nS3 Bucket"
+place tdr-out "TDR Export\nS3 Bucket"
+place tna-wrk "On-Site Archival\nStaff Workstation"
+
+place dpms "Cloud-based Commercial\nDigital Preservation\nManaged Service"
+place tna-acc "On-Site Archival\nAccess Station"
+place tna-oc "On-Site Offline\nOCFL Repository"
+
+start records@ssys
+"""We begin with users in our transferring bodies with a set of records ready to transfer. These records will have previously gone through a sensitivity review organised by the transferring body, and the records will now be on the user’s file system ready to upload to Transfer Digital Records (TDR)."""
+
+derive records@ssys md@ssys "Derive\nMetadata"@N [0,1]
+
+copy records@ssys records@tdr-in "Upload"
+"""Users upload these records through a web UI into TDR, which is backed by AWS S3 storage."""
+
+move records@tdr-in records@tdr-prc "Move"
+"""TDR then performs checks on the uploaded files to ensure they are safe to handle and of known file formats, your DROID/PRONOM process. As records progress through these checks they move through several S3 buckets."""
+
+transfer md@ssys md@tdr-prc "Upload"@E
+"""The user will then upload their metadata into TDR and this will go through more checks to validate it and reconcile against the uploaded files. """
+
+#copy md@tdr-prc md@tna-wrk "Review"
+#delete md@tna-wrk
+combine records@tdr-prc,md@tdr-prc pkg@tdr-prc "Reconcile"
+
+space
+copy pkg@tdr-prc pkg@tdr-out "Transfer"@E
+"""Once the user completes this transfer, TDR outputs the records as files+JSON sidecars into S3 for our preservation service to act upon."""
+
+delete pkg@tdr-prc "Delete"@N
+
+end
+```
+
+
+## Preservation Service
+
 ## Custodial Copy Dataflow
 
 ```dataflow

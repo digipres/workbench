@@ -212,7 +212,7 @@ start photo@camera "Photograph\nCarrier"@N [0,1]
 move photo@camera photo@adele "Take\nPhotographs"
 """Pictures are taken of the front and back of the carrier, and these photos are added to the metadata folder of the SIP."""
 
-combine photo@adele "Add photos\nto SIP"
+delete photo@adele "Add photos\nto SIP"
 """The photographs are added to the SIP metadata folder."""
 
 space
@@ -224,13 +224,13 @@ space
 derive leg@hub assessment@hub "Assess\nContent"@N
 """The contents of the carrier is inspected in order to determine how to proceed. In the case of supplementary thesis material, the contents of the carrier is also compared with any relevant records on the <a href="https://www.repository.cam.ac.uk/">Apollo institutional repository</a> (run by the Open Research Systems team)."""
 space
-combine assessment@hub "Decide\nStrategy"@N [0,1]
+delete assessment@hub "Decide\nStrategy"@N [0,1]
 """Depending on the outcome of the assessment, an appropriate transfer strategy is chosen. This may be a full disk image, or a logical copy of the contents of the carrier, or the content may not be copied at all if it is deemed to be a duplicate of content held elsewhere. For supplementary material, it may also make sense to notify Open Research Team and discuss whether the content should be added to the relevant Apollo record."""
 
 copy leg@hub content@adele "Content\nExtraction"@W [0,1]
 """The device in the workstation makes a copy of the content, logging the process as it goes, along with the checksums of each file. This may be a physical disk image of a logical copy of the disk contents, potentially via emulation, depending on the situation."""
 
-combine content@adele "Add data\nto SIP"
+delete content@adele "Add data\nto SIP"
 """The extracted file contents and the log are written into the data and metadata folders of the SIP."""
 
 move leg@hub leg@shelf "Reshelve\nCarrier"
