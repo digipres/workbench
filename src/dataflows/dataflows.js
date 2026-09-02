@@ -518,7 +518,7 @@ export async function generateDataflow(dfl) {
         } else if( e.type == "move") {
             return `<i>Move ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "transfer") {
-            return `<i>transfer ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
+            return `<i>Transfer ${e.source} to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "transform") {
             return `<i>Transform ${e.source } to ${e.target}</i>.<br>${e.description || ''}`;
         } else if( e.type == "merge") {
