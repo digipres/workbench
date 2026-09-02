@@ -14,6 +14,8 @@ Digital records are stored, actively preserved, and accessed using a commercial 
 
 We begin with users in our transferring bodies with a set of records ready to transfer. These records will have previously gone through a sensitivity review organised by the transferring body, and the records will now be on the user’s file system ready to upload to the Transfer Digital Records (TDR) service.
 
+The users' upload the records and associate metadata, which are reconciled and then manually reviewed by archives staff before being transferred for ingest into the preservation service.
+
 ```dataflow
 dataflow 1.0
 title "UK National Archives: Transfer Digital Records"
@@ -68,9 +70,9 @@ end
 
 ## Preservation Service & Custodial Copy
 
-Our preservation service consists of 3 parts, [the automated workflow to ingest to the cloud managed system](https://github.com/nationalarchives/dr2-ingest/blob/5e588f966d65dc796a6c4805a312994ffc468e0b/docs/images/dr2-end-to-end.svg "https://github.com/nationalarchives/dr2-ingest/blob/5e588f966d65dc796a6c4805a312994ffc468e0b/docs/images/dr2-end-to-end.svg"), the cloud managed system itself, and [our custodial copy system](https://github.com/nationalarchives/dr2-custodial-copy "https://github.com/nationalarchives/dr2-custodial-copy"). 
+The preservation service consists of 3 parts, [the automated workflow to ingest to the cloud managed system](https://github.com/nationalarchives/dr2-ingest/blob/5e588f966d65dc796a6c4805a312994ffc468e0b/docs/images/dr2-end-to-end.svg "https://github.com/nationalarchives/dr2-ingest/blob/5e588f966d65dc796a6c4805a312994ffc468e0b/docs/images/dr2-end-to-end.svg"), the cloud managed system itself, and [our custodial copy system](https://github.com/nationalarchives/dr2-custodial-copy "https://github.com/nationalarchives/dr2-custodial-copy"). 
 
-The workflow prepares [Open Preservation Exchange (OPEX)](https://developers.preservica.com/documentation/open-preservation-exchange-opex) packages for their current cloud-based commercial Digital Preservation Management System (DPMS). After these packages are ingested or updated by the DPMS, a custodial copy is take and stored in [Oxford Common File Layout (OCFL)](https://ocfl.io/) packages and held independently of the DPMS. 
+The workflow prepares [Open Preservation Exchange (OPEX)](https://developers.preservica.com/documentation/open-preservation-exchange-opex) packages for the current cloud-based commercial Digital Preservation Management System (DPMS). After these packages are ingested (or later updated) by the DPMS, a custodial copy is taken and stored in [Oxford Common File Layout (OCFL)](https://ocfl.io/) packages, held independently of the DPMS. 
 
 ```dataflow
 dataflow 1.0
@@ -146,7 +148,6 @@ copy ac@dpms ac@tna-wrk
 """Users within TNA can navigate our digital archive through this system to query and access record content."""
 
 end
-
 ```
 
 ## Further Information
