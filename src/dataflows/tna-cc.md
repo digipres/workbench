@@ -2,9 +2,7 @@
 
 ## A decoupled Custodial Copy for cloud-based Digital Preservation Systems
 
-::: {.caution label="WARNING!"}
-This is a work in progress! Everything may change!
-:::
+<div class="caution" label="WARNING!">This is a work in progress! Everything may change!</div>
 
 ## Introduction
 
@@ -77,13 +75,14 @@ The workflow prepares [Open Preservation Exchange (OPEX)](https://developers.pre
 ```dataflow
 dataflow 1.0
 title "TNA Custodial Copy"
-zoom 1.0
-height 600
-offset 12 10
+zoom 1.2
+height 525
+offset 24 12
 
 data pkg_ok "Files & JSON (reviewed)" red
-data opex "OPEX Package" blue
+data opex "OPEX Package" darkred
 data checksum "Fixity Information" orange
+data opex_out "OPEX Package Updates" blue
 data ocfl "OCFL Package" darkblue
 data ac "Access Copy" green
 
@@ -101,27 +100,31 @@ place tna-tape-3-offsite "Tape 3\n(Held Offsite)"
 
 
 start pkg_ok@tdr-out
+"""Packages from the TDR service arrive via the TDR Export S3 Bucket"""
 
 copy pkg_ok@tdr-out pkg_ok@dr2-ingest-state "Copy For Processing"
 """The first of these begins by copying the S3 objects into its own storage and transforming many individual records into a package to be ingested to the cloud managed system."""
 
-copy pkg_ok@dr2-ingest-state opex@dr2-ingest "Assemble\nOPEX Package"
+derive pkg_ok@dr2-ingest-state opex@dr2-ingest-state "Extract\nRecords"@N [0,1]
+transfer opex@dr2-ingest-state opex@dr2-ingest "Assemble\nOPEX Package"
 """This transformation goes through several steps, firstly creating a single JSON file containing all the metadata for the contents of the package, and then using that data to create an OPEX package for the cloud managed system."""
 
 copy opex@dr2-ingest opex@dpms "Ingest\nTo DPMS"
 """When an OPEX is ready we trigger an ingest in the cloud managed system to read the OPEX package and copy into its own managed storage."""
 
 space
-derive opex@dpms checksum@dpms "Calculate\nFixity"@N [0,1]
+derive opex@dpms checksum@dpms "Calculate\nFixity"@N [0,2]
 transfer checksum@dpms checksum@dr2-ingest  "Read\nFixity"@E
 combine checksum@dr2-ingest opex@dr2-ingest "Confirm\nTransfer"@N
 """Following the ingest, we confirm that each record in our OPEX package now exists in the cloud managed system and that the fixity matches."""
 
 space
 
-derive opex@dpms ocfl@dpms "Read OBEX\nPackage\nUpdates" [0,-1]
-transfer ocfl@dpms ocfl@tna-cc "Download As\nOCFL Packages"@E
-"""Once in the cloud managed system, we’re listening for changes to items inside of it and react to new ingests or updates to existing items. This change data is fed to our custodial copy system, which interrogates the cloud managed system to download files and metadata to our OCFL repo, transforming it on the way through. """
+derive opex@dpms opex_out@dpms "Read OPEX\nPackage\nUpdates" [0,0]
+"""Once in the cloud managed system, we’re listening for changes to items inside of it and react to new ingests or updates to existing items."""
+transfer opex_out@dpms opex_out@tna-cc "Download"@E
+transform opex_out@tna-cc ocfl@tna-cc "Store As\nOCFL Packages"
+"""This change data is fed to our custodial copy system, which interrogates the cloud managed system to download files and metadata to our OCFL repo, transforming it on the way through."""
 
 copy ocfl@tna-cc ocfl@tna-tape-1,ocfl@tna-tape-2,ocfl@tna-tape-3 "Copy OCFL onto\nthree tapes."
 """Once in our OCFL repo, the item is stored on disk storage, which we then synchronise to tape for resilience; we write 3 tape copies."""
@@ -129,13 +132,13 @@ copy ocfl@tna-cc ocfl@tna-tape-1,ocfl@tna-tape-2,ocfl@tna-tape-3 "Copy OCFL onto
 move ocfl@tna-tape-3 ocfl@tna-tape-3-offsite "Tape 3\nTaken Offsite"@E
 """One of the three tape copies is then sent off-site."""
 
-delete opex@dr2-ingest "Delete"@N
+delete opex@dr2-ingest "Delete"@N [0,1]
 """Once we have confirmation that the tape copies have written and the tapes have been distributed, we remove the record data from our temporary storage in TDR and our ingest process."""
 delete pkg_ok@dr2-ingest-state "Delete"@E
 delete pkg_ok@tdr-out "Delete"@N
 
 
-derive opex@dpms ac@dpms "Generate Access\nCopies/Thumbnails/etc."@N [0,1]
+derive opex@dpms ac@dpms "Generate Access\nCopies/Thumbnails/etc."@N [0,2]
 """The cloud managed system does its own work to characterise the files and produce thumbnails/access copies."""
 
 space
