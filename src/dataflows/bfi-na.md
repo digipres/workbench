@@ -11,7 +11,7 @@ This page is based on a point-in-time understanding of how thing work at the BFI
 
 The BFI's own [Data and Digital Preservation teams web page](https://www.bfi.org.uk/bfi-national-archive/look-behind-scenes/bfi-national-archive-teams/data-digital-preservation-teams) provides a concise introduction to their digital preservation activities. The [Further Information](#further-information) section below has links to more detailed information.
 
-In this overview, the focus on the acquisition of born-digital A/V material and images. Digitisation is recognised as a source, but is not covered in any detail. Born-digital _documents_ do not appear in the diagrams as those are not being actively preserved at this time.
+In this overview, the focus on the acquisition of born-digital A/V material and images. Digitisation is recognised as a source, but is not covered in any detail. Born-digital _documents_ do not appear in the diagrams as those are not being actively preserved at this time. Off Air TV collecting is also not recognised in this diagram.
 
 ## Ingest & Preservation
 
@@ -40,7 +40,7 @@ data replica_3 "Tape 3" darkred
 place rr "Reading Room"
 place website "BFI Website"
 
-place depositors "Third-Party\nPartners"
+place depositors "Third-Party\nDonors/Partners"
 place internet "Internet"
 place cc "BFI National Archive\nPhysical Collection"
 place ts "Transfer Station"
@@ -64,16 +64,16 @@ move data@cc data@nas "Internal\nTransfer"
 # ----
 
 start item@depositors
-"""The BFI also works with external partners to add born-digital productions to the national collections."""
+"""The BFI National Archive under it’s Collections Policy acquires born digital works to its national collections. These are selected by BFI Curators under agreed criteria."""
 
 derive item@depositors bd-data@depositors "Internet\nTransfer"@N
 """Born digital content may be delivered over the internet, where the external partner initiates the upload of a collection item."""
 
 move bd-data@depositors bd-data@internet "Upload\nSent"
-"""The upload happens over a dedicated physical connection."""
+"""Upload delivered over a preferred dedicated cloud-based transfer system."""
 
-merge bd-data@internet bd-data@nas "Upload\nReceived"@W@0.82
-"""The upload lands in the PB-scale Network-Attached Storage (NAS) on the archive network."""
+merge bd-data@internet bd-data@nas "Download\nReceived"@W@0.82
+"""Media downloaded into the PB-scale Network-Attached Storage (NAS) on the archive network."""
 
 space
 
@@ -88,7 +88,7 @@ derive carrier@ts carrier-data@ts "Extract\nDigital Media" [0,0]
 merge carrier-data@ts carrier-data@nas "Internal\nTransfer"@W@0.7
 """The digital files are then transferred to the PB-scale Network-Attached Storage (NAS) on the archive network."""
 
-delete carrier@ts "Return/Dispose\nTransfer Media"@E [0,1]
+delete carrier@ts "Return\nTransfer Media"@E [0,1]
 """The physical media are then returned or disposed of in an appropriate manner."""
 
 space
@@ -104,7 +104,7 @@ copy record@cdi uid@nas "Retrieve\n UID"@W [0,1]
 space 
 combine data@nas,uid@nas data_uid@nas "Rename\nusing UID"@N [0,0]
 """
-The root folder of the digital media is renamed using the unique identifier from the CID. Note that all original file and folder names will be recorded in the CID.
+The digital media is renamed using the unique identifier from the CID. Note that all original file and folder names will be recorded in the CID.
 """
 space
 transform data_uid@nas pp@nas "QC &\nValidation\n(& Wrapping)"@S
@@ -113,6 +113,8 @@ The digital media undergoes validation and quality control, as appropriate based
 
 <br><br>The resulting Preservation Package roughly corresponds to the OAIS notion of an Archival Information Package.
 """
+
+derive pp@nas checksum@nas "Calculate\nLocal\nChecksum"@N [0,1]
 
 space
 derive pp@nas ar@nas "Create\nAccess\nRendition"@S [0,-1]
@@ -142,11 +144,11 @@ derive replica_1@tape1 checksum@tape1 "Calculate\nChecksum"@N [0,1]
 The data tape system calculates the MD5 sum of the content as it is written to tape. MD5 is used because this is well-supported by the data tape system and sufficient for detecting accidental transfer failures.
 """
 
-move checksum@tape1 checksum@nas "Retrieve\nChecksum"@E
+move checksum@tape1 checksum_2@nas "Retrieve\nChecksum"@E
 """
 The MD5 sum is retrieved from the tape library, unless the package was very large and had to be chunked for writing to tape. In that case, the package is read in full and the MD5 checksum is re-calculated.
 """
-delete checksum@nas "Fixity\nCheck"@N 
+delete checksum@nas,checksum_2@nas "Fixity\nCheck"@N 
 """
 The retrieved MD5 checksum is compared with the local package checksum.
 """
