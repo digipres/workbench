@@ -1,8 +1,14 @@
 # UKWA Dataflows
 ## How the UK Web Archive worked (c.2023)
 
-This document summarised the overall dataflow of the UK Web Archive, as of mid-2023, just before the [British Library cyberattack that year](https://en.wikipedia.org/wiki/British_Library_cyberattack).
 
+<div class="tip">
+
+This page is based on a point-in-time understanding of how thing worked at the UK Web Archive, as of mid-2023, just before the [British Library cyberattack that year](https://en.wikipedia.org/wiki/British_Library_cyberattack). If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
+
+</div>
+
+This document summarised the overall dataflow of
 ## Introduction
 
 The UK Web Archive is a shared service for the legal deposit libraries of the United Kingdom, operated by the British Library, operating under legal deposit regulations since 2013 (and on a permission-based footing prior to that).  It archives billions of resources from millions of domains and an annual basis, with specific sites of interest archived more frequently as needed. As of 2023, the web archive was over a petabyte in size, and held tens of billions of unique resources.

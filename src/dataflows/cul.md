@@ -1,6 +1,13 @@
 # Cambridge University Library
 ## Dataflows for some of CUL's digital preservation services
 
+<div class="tip">
+
+This page is based on a point-in-time understanding of how thing work at Cambridge University Library (CUL), as of 2026, based on publicly available resources and discussions with CUL staff. If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
+
+</div>
+
+
 ## Introduction
 
 This page uses Dataflow diagrams to explore some of the digital preservation services at [Cambridge University Library](https://www.lib.cam.ac.uk/) (CUL).

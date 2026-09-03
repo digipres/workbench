@@ -3,7 +3,7 @@
 
 <div class="tip">
 
-This page reflects is based on a point-in-time understanding of how thing work at the BFI National Archive, as of 2026, based on publicly available resources and some discussions with BFI staff during and after a site visit. If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
+This page is based on a point-in-time understanding of how thing work at the BFI National Archive, as of 2026, based on publicly available resources and some discussions with BFI staff during and after a site visit. If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
 
 </div>
 

@@ -3,7 +3,7 @@
 
 <div class="warning">
 
-This is an experiment in visualising the techical architecture of digital preservation services by focussing on how data flows over time. There are a number of outstanding issues and limitations with this approach. Please see [the `dataflow` GitHub issues](https://github.com/digipres/workbench/issues?q=state:open+label:"dataflows") for more detail.
+This is an experiment in visualising the technical architecture of digital preservation services by focussing on how data flows over time. There are a number of outstanding issues and limitations with this approach. Please see [the `dataflow` GitHub issues](https://github.com/digipres/workbench/issues?q=state:open+label:"dataflows") for more detail.
 
 </div>
 

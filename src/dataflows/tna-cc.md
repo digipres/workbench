@@ -2,7 +2,12 @@
 
 ## A decoupled Custodial Copy for cloud-based Digital Preservation Systems
 
-<div class="caution" label="WARNING!">This is a work in progress! Everything may change!</div>
+<div class="tip">
+
+This page is based on a point-in-time understanding of how thing work at the National Archives (UK), as of 2026, based on publicly available resources and discussions with staff. If you have any comments or corrections please let [me](https://anjackson.net/) know via: _andrew.jackson [at] dpconline.org_
+
+</div>
+
 
 ## Introduction
 
