@@ -50,6 +50,9 @@ export default {
       open: true,
       pages: [
         {name: "All About Dataflows", path: "/dataflows/"},
+        {name: "OAIS Dataflows", path: "/dataflows/oais"},
+        {name: "Real Dataflows", path: "/dataflows/real"},
+        {name: "Dataflows Editor", path: "/dataflows/editor"},
       ]
     },
     {
