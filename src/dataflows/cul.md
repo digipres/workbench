@@ -1,8 +1,6 @@
 # Cambridge University Library
 ## Dataflows for some of CUL's digital preservation services
 
-<div class="caution" label="WARNING!">This is a work in progress! Everything may change!</div>
-
 ## Introduction
 
 This page uses Dataflow diagrams to explore some of the digital preservation services at [Cambridge University Library](https://www.lib.cam.ac.uk/) (CUL).
@@ -187,7 +185,7 @@ At the end of the process, all digital material destined for long-term preservat
 
 The Digital Preservation Services are a sophisticated suite of preservation tools and services working across on-site and cloud-hosted systems. You can find an overview in this blog: [Building our repository ingest workflow](https://digitalpreservation-blog.lib.cam.ac.uk/building-our-repository-ingest-workflow-e09a0d2cdddc)
 
-Here we use a Dataflow diagram to dig a little deeper into the overall preservation architecture, after which we will present a deep-dive into one particularly interesting component: [the Transfer Service](#the-digital-preservation-service).
+It supports a number of ingest streams, including from [the Transfer Service](#the-transfer-service) shown above.
 
 ```dataflow
 dataflow 1.0
@@ -272,6 +270,7 @@ end
 
 ```
 
+The approach is built around the Fedora repository service. Notably, this is a stateless service that mediates access to different storage services, rather than storing any data directly within itself.  This means it shows up as a temporary location in the dataflow.
 
 
 
