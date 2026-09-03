@@ -1,19 +1,25 @@
 # UKWA Dataflows
 ## How the UK Web Archive worked (c.2023)
 
-<div class="caution" label="DRAFTY CONTENT WARNING!">This page is nowhere near complete, and may never be so!</div>
-
-This documents my understanding of the UK Web Archive dataflow in mid-2023.
+This document summarised the overall dataflow of the UK Web Archive, as of mid-2023, just before the [British Library cyberattack that year](https://en.wikipedia.org/wiki/British_Library_cyberattack).
 
 ## Introduction
 
-blah. Data Lake.
+The UK Web Archive is a shared service for the legal deposit libraries of the United Kingdom, operated by the British Library, operating under legal deposit regulations since 2013 (and on a permission-based footing prior to that).  It archives billions of resources from millions of domains and an annual basis, with specific sites of interest archived more frequently as needed. As of 2023, the web archive was over a petabyte in size, and held tens of billions of unique resources.
 
-## Dataflow
+## Overall Dataflow
+
+The on-site in-house infrastructure of the UK Web Archive used a tripartite service design, with clear data standard and protocols between the parts:
+
+- **Ingest**: Metadata and crawl parameters are defined by curators. Crawlers download web content into WARC files.
+- **Archival Storage**: A HDFS cluster where the WARC files and metadata are kept.
+- **Access**: The WARCs and metadata are indexed and made available.
+
+These three parts run simultaneously, but in concert act as in the following dataflow:
 
 ```dataflow
 dataflow 1.0
-title: "UKWA Crawler Dataflow"
+title: "UKWA Overall Dataflow"
 zoom 0.9
 height 300
 offset 10 0
@@ -40,6 +46,7 @@ data playback "Playback" green
 
 # Events
 start website@internet
+"""A tool called W3ACT is used to define the crawl schedules and parameters for new harvests, and to describe the harvested material."""
 start w3act@w3act
 start pywb@pywb
 
@@ -68,6 +75,12 @@ delete warcs@pywb,cdx@pywb " "@S
 # And we're done:
 end
 ```
+
+Note that this diagram does not include the details of how the UK Web Archive website works, which is where the curated sites are presented in their associated curatorial collections.  At the time of writing, it just focussed on the steps that enable playback rather than including any search or browse discovery systems.
+
+### Access Alone
+
+The full diagram is quite complicated, so it can help to break it up into section. The following diagram focusses on the access side of the web archive:
 
 
 ```dataflow
@@ -120,14 +133,16 @@ delete warcs@pywb,cdx@pywb " "
 # And we're done:
 end
 ```
-
+<!-- 
 Example block diagram
 
-<!-- See https://mermaid.js.org/syntax/block.html -->
-```mermaid
+``` mermaid
 block-beta
   a b c
 ```
+-->
+
+<!-- See https://mermaid.js.org/syntax/block.html -->
 
 ```js
 import { renderDataflows } from "./dataflows.js";
