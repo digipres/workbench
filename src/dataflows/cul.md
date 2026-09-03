@@ -63,32 +63,36 @@ space
 copy ro@apollo_export ro@aws_step "Copy For\nProcessing"@W@0.07 [0,1]
 space
 
-
 transform bdsc@aws_step pp@aws_step "Assemble\nPreservation\nPackage"
 
 move pp@aws_step pp@fedora "Upload To\nFedora"@E
 space 
 
-move pp@fedora pp@aws_s3 "Write To S3\nPreservation Storage"
+move pp@fedora pp@aws_s3 "Write To S3\nRepository Storage"
 
-delete bdsc_2@aws_step,dsc@aws_step,ro@aws_step "Clean Up"@N
+delete bdsc_2@aws_step,dsc@aws_step,ro@aws_step "Clean Up"@E
 space
 
-copy pp@aws_s3 pp@fedora "Read From S3\nPreservation Storage"@E
-move pp@fedora pp@aws_step
-derive pp@aws_step md@aws_step "Derive"@N [0,1]
-move md@aws_step md@solr
+# Access
+copy pp@aws_s3 pp@fedora "Read From S3\nRepository Storage"@E
+transfer pp@fedora pp@aws_step "Read From\nFedora"
+derive pp@aws_step md@aws_step "Derive\nMetadata"@N [0,1]
+transfer md@aws_step md@solr "Upload\nTo Solr"@E
 delete pp@aws_step "Clean Up"
-copy md@solr md@workbench
+transfer md@solr md@workbench "Query\nSolr"
 
-copy pp@aws_s3 pp@fedora "Read From S3\nPreservation Storage"@E
-move pp@fedora pp@workbench
+copy pp@aws_s3 pp@fedora "Read From S3\nRepository Storage"@E
+move pp@fedora pp@workbench "Read From\nFedora"@E
 
+# Replication
 derive pp@aws_s3 pp_2@aws_s3 " " [0,-1]
-move pp_2@aws_s3 pp_2@aws_s3_2
+transfer pp_2@aws_s3 pp_2@aws_s3_2 "Replicate To\nS3 Glacier"
 
 derive pp_2@aws_s3_2 pp_3@aws_s3_2 " " [0,-2]
-move pp_3@aws_s3_2 pp_3@azure_blobs
+transfer pp_3@aws_s3_2 pp_3@azure_blobs "Replicate To\nAzure Blob Service"
+
+delete bdsc@ts "Clean Up"@E
+delete bdsc@dep_s3 "Clean Up"@E
 
 end
 

@@ -134,10 +134,10 @@ copy ocfl@tna-cc ocfl@tna-tape-1,ocfl@tna-tape-2,ocfl@tna-tape-3 "Copy OCFL onto
 move ocfl@tna-tape-3 ocfl@tna-tape-3-offsite "Tape 3\nTaken Offsite"@E
 """One of the three tape copies is then sent off-site."""
 
-delete opex@dr2-ingest "Delete"@N [0,1]
+delete opex@dr2-ingest "Delete"@E [0,1]
 """Once we have confirmation that the tape copies have written and the tapes have been distributed, we remove the record data from our temporary storage in TDR and our ingest process."""
 delete pkg_ok@dr2-ingest-state "Delete"@E
-delete pkg_ok@tdr-out "Delete"@N
+delete pkg_ok@tdr-out "Delete"@E
 
 
 derive opex@dpms ac@dpms "Generate Access\nCopies/Thumbnails/etc."@N [0,2]
