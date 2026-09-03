@@ -9,95 +9,6 @@ This page uses Dataflow diagrams to explore some of the digital preservation ser
 
 For more information, visit [the CUL digital preservation homepage](https://www.lib.cam.ac.uk/digitalpreservation) or read the blogs posts from [Digital Preservation at the University of Cambridge Libraries and Archives](https://digitalpreservation-blog.lib.cam.ac.uk/).
 
-## Digital Preservation Services
-
-The Digital Preservation Services are a sophisticated suite of preservation tools and services working across on-site and cloud-hosted systems. You can find an overview in this blog: [Building our repository ingest workflow](https://digitalpreservation-blog.lib.cam.ac.uk/building-our-repository-ingest-workflow-e09a0d2cdddc)
-
-Here we use a Dataflow diagram to dig a little deeper into the overall preservation architecture, after which we will present a deep-dive into one particularly interesting component: [the Transfer Service](#the-digital-preservation-service).
-
-```dataflow
-dataflow 1.0
-title "CUL Digital Preservation Services Overview"
-zoom 1.4
-offset 23 21
-
-data ros "Research Outputs" orange
-data ro "Research Output" orange
-data bdsc "Born Digital Special Collections" black
-data dsc "Digitised Special Collections" brown
-data pp "Preservation Package" red
-data pp_2 "Preservation Package" #cc0000
-data pp_3 "Preservation Package" darkred
-data md "Item Metadata" darkgreen
-
-place apollo "Apollo\n(Research Outputs)"
-place apollo_export "Apollo Export (AWS S3)"
-place dsc_drive "Digitised Images\nShared Drive"
-place dep_s3 "Deposit Service\nExport (AWS S3)"
-place ts "Transfer Service Export\n(AWS S3 + Data Tracker)"
-place workbench "Workbench"
-place solr "Solr Search\nService"
-place aws_step "AWS Function"
-place fedora "Fedora Server"
-place aws_s3 "AWS S3 Standard"
-place aws_s3_2 "AWS S3 Glacier"
-place azure_blobs "Azure Blob Store"
-
-start ros@apollo
-start dscs@dsc_drive
-start bdsc@dep_s3
-start bdsc@ts
-
-copy bdsc@ts bdsc@aws_step "Copy For\nProcessing"
-copy bdsc@dep_s3 bdsc_2@aws_step "Copy For\nProcessing"@E
-space
-
-derive dscs@dsc_drive dsc@dsc_drive "Monitor\nShared Drive" [0,-1]
-move dsc@dsc_drive dsc@aws_step "Copy For\nProcessing"
-
-
-derive ros@apollo ro@apollo "Generate Export\nOf AIPs & Changes"@N [0,1]
-move ro@apollo ro@apollo_export "Write To S3 Bucket"
-space
-
-copy ro@apollo_export ro@aws_step "Copy For\nProcessing"@W@0.07 [0,1]
-space
-
-transform bdsc@aws_step pp@aws_step "Assemble\nPreservation\nPackage"
-
-move pp@aws_step pp@fedora "Upload To\nFedora"@E
-space 
-
-move pp@fedora pp@aws_s3 "Write To S3\nRepository Storage"
-
-delete bdsc_2@aws_step,dsc@aws_step,ro@aws_step "Clean Up"@E
-space
-
-# Access
-copy pp@aws_s3 pp@fedora "Read From S3\nRepository Storage"@E
-transfer pp@fedora pp@aws_step "Read From\nFedora"
-derive pp@aws_step md@aws_step "Derive\nMetadata"@N [0,1]
-transfer md@aws_step md@solr "Upload\nTo Solr"@E
-delete pp@aws_step "Clean Up"
-transfer md@solr md@workbench "Query\nSolr"
-
-copy pp@aws_s3 pp@fedora "Read From S3\nRepository Storage"@E
-move pp@fedora pp@workbench "Read From\nFedora"@E
-
-# Replication
-derive pp@aws_s3 pp_2@aws_s3 " " [0,-1]
-transfer pp_2@aws_s3 pp_2@aws_s3_2 "Replicate To\nS3 Glacier"
-
-derive pp_2@aws_s3_2 pp_3@aws_s3_2 " " [0,-2]
-transfer pp_3@aws_s3_2 pp_3@azure_blobs "Replicate To\nAzure Blob Service"
-
-delete bdsc@ts "Clean Up"@E
-delete bdsc@dep_s3 "Clean Up"@E
-
-end
-
-```
-
 
 ## The Transfer Service
 
@@ -271,6 +182,95 @@ end
 
 At the end of the process, all digital material destined for long-term preservation is uploaded to an S3 bucket. This is used to hand content over to the Digital Repository, which can also pull in the records in the Transfer Service Data Tracker as needed.
 
+
+## Digital Preservation Services
+
+The Digital Preservation Services are a sophisticated suite of preservation tools and services working across on-site and cloud-hosted systems. You can find an overview in this blog: [Building our repository ingest workflow](https://digitalpreservation-blog.lib.cam.ac.uk/building-our-repository-ingest-workflow-e09a0d2cdddc)
+
+Here we use a Dataflow diagram to dig a little deeper into the overall preservation architecture, after which we will present a deep-dive into one particularly interesting component: [the Transfer Service](#the-digital-preservation-service).
+
+```dataflow
+dataflow 1.0
+title "CUL Digital Preservation Services Overview"
+zoom 1.4
+offset 23 21
+
+data ros "Research Outputs" orange
+data ro "Research Output" orange
+data bdsc "Born Digital Special Collections" black
+data dsc "Digitised Special Collections" brown
+data pp "Preservation Package" red
+data pp_2 "Preservation Package" #cc0000
+data pp_3 "Preservation Package" darkred
+data md "Item Metadata" darkgreen
+
+place apollo "Apollo\n(Research Outputs)"
+place apollo_export "Apollo Export (AWS S3)"
+place dsc_drive "Digitised Images\nShared Drive"
+place dep_s3 "Deposit Service\nExport (AWS S3)"
+place ts "Transfer Service Export\n(AWS S3 + Data Tracker)"
+place workbench "Workbench"
+place solr "Solr Search\nService"
+place aws_step "AWS Function"
+place fedora "Fedora Server"
+place aws_s3 "AWS S3 Standard"
+place aws_s3_2 "AWS S3 Glacier"
+place azure_blobs "Azure Blob Store"
+
+start ros@apollo
+start dscs@dsc_drive
+start bdsc@dep_s3
+start bdsc@ts
+
+copy bdsc@ts bdsc@aws_step "Copy For\nProcessing"
+copy bdsc@dep_s3 bdsc_2@aws_step "Copy For\nProcessing"@E
+space
+
+derive dscs@dsc_drive dsc@dsc_drive "Monitor\nShared Drive" [0,-1]
+move dsc@dsc_drive dsc@aws_step "Copy For\nProcessing"
+
+
+derive ros@apollo ro@apollo "Generate Export\nOf AIPs & Changes"@N [0,1]
+move ro@apollo ro@apollo_export "Write To S3 Bucket"
+space
+
+copy ro@apollo_export ro@aws_step "Copy For\nProcessing"@W@0.07 [0,1]
+space
+
+transform bdsc@aws_step pp@aws_step "Assemble\nPreservation\nPackage"
+
+move pp@aws_step pp@fedora "Upload To\nFedora"@E
+space 
+
+move pp@fedora pp@aws_s3 "Write To S3\nRepository Storage"
+
+delete bdsc_2@aws_step,dsc@aws_step,ro@aws_step "Clean Up"@E
+space
+
+# Access
+copy pp@aws_s3 pp@fedora "Read From S3\nRepository Storage"@E
+transfer pp@fedora pp@aws_step "Read From\nFedora"
+derive pp@aws_step md@aws_step "Derive\nMetadata"@N [0,1]
+transfer md@aws_step md@solr "Upload\nTo Solr"@E
+delete pp@aws_step "Clean Up"
+transfer md@solr md@workbench "Query\nSolr"
+
+copy pp@aws_s3 pp@fedora "Read From S3\nRepository Storage"@E
+move pp@fedora pp@workbench "Read From\nFedora"@E
+
+# Replication
+derive pp@aws_s3 pp_2@aws_s3 " " [0,-1]
+transfer pp_2@aws_s3 pp_2@aws_s3_2 "Replicate To\nS3 Glacier"
+
+derive pp_2@aws_s3_2 pp_3@aws_s3_2 " " [0,-2]
+transfer pp_3@aws_s3_2 pp_3@azure_blobs "Replicate To\nAzure Blob Service"
+
+delete bdsc@ts "Clean Up"@E
+delete bdsc@dep_s3 "Clean Up"@E
+
+end
+
+```
 
 
 
