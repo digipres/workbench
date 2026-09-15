@@ -127,7 +127,7 @@ combine checksum@dr2-ingest opex@dr2-ingest "Confirm\nTransfer"@N
 
 space
 
-derive opex@dpms opex_out@dpms "Read OPEX\nPackage\nUpdates" [0,0]
+derive opex@dpms opex_out@dpms "Listen For\nUpdates" [0,0]
 """Once in the cloud managed system, we’re listening for changes to items inside of it and react to new ingests or updates to existing items."""
 transfer opex_out@dpms opex_out@tna-cc "Download"@E
 transform opex_out@tna-cc ocfl@tna-cc "Store As\nOCFL Packages"
