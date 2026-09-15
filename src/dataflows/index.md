@@ -1,7 +1,7 @@
 # Dataflows
 ## Mapping out how data flows from place to place
 
-<div class="warning">
+<div class="tip">
 
 This is an experiment in visualising how digital preservation services work by focussing on how data flows over time. See [here](https://github.com/digipres/workbench/issues?q=state:open+label:"dataflows") for known/outstanding issues.
 
