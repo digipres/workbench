@@ -44,7 +44,7 @@ if ( ext_q != "" ) {
 ```js
 function registry_linker(value, i, formats) {
   const reg_url = formats.get(i).registry_url;
-  const truncated = truncateString(value, 50);
+  const truncated = truncateString(value, 35);
   if( reg_url ) {
     return html`<a href="${reg_url}" target="_blank">${truncated}</a>`;
   } else {
@@ -63,11 +63,21 @@ function truncateString(str, num) {
 function software_links(x) { 
   const items = []
   const value = x.toArray().forEach( (r) => {
-    items.push(html`<a href="${r.registry_url}" target="_blank">${r.name}</a>`)
-    items.push(", ")
+    if( r.name ) {
+      if( r.registry_url ) {
+        items.push(html`<a href="${r.registry_url}" target="_blank">${r.name}</a>`)
+      } else {
+        items.push(html`${r.name}`)
+      }
+      items.push(", ")
+    }
   });
   // Return the items, dropping the ", " at the end:
-  return html`${items.slice(0, items.length-1)}`;
+  if( items.length > 0 ) {
+    return html`${items.slice(0, items.length-1)}`;
+  } else {
+    return '';
+  }
 }
 
 ```
@@ -76,18 +86,20 @@ function software_links(x) {
 
 const selected = view(Inputs.table(formats, {
   required: false,
-  layout: 'auto',
+  layout: 'fixed',
   sort: 'name',
   columns: [ 
     'registry_id',
     'name',
-    'version',
     'extensions',
     'readers',
     'writers'
   ],
   header: {
     'registry_id': 'source'
+  },
+  width: {
+    'name': 300
   },
   format: {
     name: registry_linker,
@@ -126,8 +138,4 @@ ${selected.reverse().map( (f) => {
 - Drop extensions.parquet or switch it to denormalise the full dataset and see if it's faster.
 - File registry has a lot of empty names
 - Registry URLs :
-  - missing prefix for Just Solve
-  - Have erroneous trailing slash for LOC
   - Go nowhere for file, mediainfo, tcdb, trid
-  - Don't work for NARA
-  - Have an extra `pronom:` in for PRONOM
