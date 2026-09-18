@@ -32,7 +32,7 @@ const sql = await DuckDBClient.sql({formats: `https://www.digipres.org/_data/for
 // Clean up the extension:
 const ext = ext_q.replace(/^[\*\.]+/,'');
 // Return a promise as this will get resolved when writing the table:
-const formats = sql([`SELECT * FROM formats WHERE '${ext}' in extensions`]);
+const formats = sql([`SELECT * FROM formats WHERE '${ext}' in extensions AND name != ''`]);
 // And update the URL for the page
 if ( ext_q != "" ) {
   search_params.set('ext', ext);
@@ -44,16 +44,20 @@ if ( ext_q != "" ) {
 ```js
 function registry_linker(value, i, formats) {
   const reg_url = formats.get(i).registry_url;
+  const truncated = truncateString(value, 50);
   if( reg_url ) {
-    return html`<a href="${reg_url}" target="_blank">${value}</a>`;
+    return html`<a href="${reg_url}" target="_blank">${truncated}</a>`;
   } else {
-    return html`${value}`;
+    return html`${truncated}`;
   }
 }
 
-function clipper(value) {
-  const title = (value.length > 50) ? value.substring(0,50) + "..." : value;
-  return title;
+function truncateString(str, num) {
+  if (str.length > num) {
+    return str.slice(0, num) + "...";
+  } else {
+    return str;
+  }
 }
 
 function software_links(x) { 
@@ -69,22 +73,25 @@ function software_links(x) {
 ```
 
 ```js
+
 const selected = view(Inputs.table(formats, {
   required: false,
   layout: 'auto',
   sort: 'name',
   columns: [ 
-    'name',
     'registry_id',
+    'name',
     'version',
     'extensions',
     'readers',
     'writers'
   ],
+  header: {
+    'registry_id': 'source'
+  },
   format: {
-    name: clipper,
-    extensions: (x) => x.toArray().join(', '),
-    registry_id: registry_linker,
+    name: registry_linker,
+    extensions: (x) => truncateString(x.toArray().join(', '), 16),
     readers: software_links,
     writers: software_links
   }
